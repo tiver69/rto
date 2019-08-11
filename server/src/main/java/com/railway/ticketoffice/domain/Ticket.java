@@ -1,23 +1,31 @@
 package com.railway.ticketoffice.domain;
 
+import lombok.Data;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDate;
 
 @Entity
-class Ticket {
+@Data
+@Table(name = "tickets")
+public class Ticket {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-//    private Passenger passenger;
-//    private Station departureStation;
-//    private Station destinationStation;
+    @ManyToOne
+    @JoinColumn(name = "passenger_id", referencedColumnName = "id", nullable = false)
+    private Passenger passenger;
+    @ManyToOne
+    @JoinColumn(name = "departure_station_id", referencedColumnName = "id", nullable = false)
+    private Station departureStation;
+    @ManyToOne
+    @JoinColumn(name = "destination_station_id", referencedColumnName = "id", nullable = false)
+    private Station destinationStation;
     private LocalDate departureDate;
-//    private TrainCoach trainCoach;
+    @ManyToOne
+    @JoinColumn(name = "coach_id", referencedColumnName = "id", nullable = false)
+    private TrainCoach trainCoach;
     private Integer place;
     private Integer price;
 }
