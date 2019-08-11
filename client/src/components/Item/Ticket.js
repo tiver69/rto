@@ -4,15 +4,16 @@ import { Link } from "react-router-dom";
 
 class Ticket extends Component {
   render() {
+    const { ticket } = this.props;
     return (
       <div className="d-block d-md-flex listing-horizontal">
         <div className="img d-block ticket-active-background-pic">
           <span className="category">
-            COACH - 5
+            COACH - {ticket.trainCoach.number}
             <br />
-            PLACE - 4
+            PLACE - {ticket.place}
             <br />
-            PRICE - 164₴
+            PRICE - {ticket.price}₴
             <br />
           </span>
         </div>
@@ -37,20 +38,24 @@ class Ticket extends Component {
             </span>
           </Link>
 
-          <h3>Zaporizhzhya 1 - Im. T. Shevchenka</h3>
+          <h3>
+            {" "}
+            {ticket.departureStation.name} - {ticket.destinationStation.name}
+          </h3>
 
           <p>
-            <IcoMoon className="icon" icon="road" /> Train number #72
+            <IcoMoon className="icon" icon="road" /> Train number #
+            {ticket.trainCoach.train.id}
           </p>
 
           <p>
-            <IcoMoon className="icon" icon="clock" /> Departure - 2019-05-15
-            18:20:00.0
+            <IcoMoon className="icon" icon="clock" /> Departure -{" "}
+            {ticket.departureDate} TIME_TO_DO
           </p>
 
           <p>
-            <IcoMoon className="icon" icon="clock" /> Arrival - 2019-05-16
-            02:55:00.0
+            <IcoMoon className="icon" icon="clock" /> Arrival - DATE_TO_DO
+            TIME_TO_DO
           </p>
         </div>
       </div>

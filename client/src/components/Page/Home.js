@@ -1,9 +1,27 @@
 import React, { Component } from "react";
 import Ticket from "../Item/Ticket";
 import IcoMoon from "react-icomoon";
+import { connect } from "react-redux";
+import { getTickets } from "../../actions/ticketActions";
+import PropTypes from "prop-types";
 
 class Home extends Component {
+  componentDidMount() {
+    this.props.getTickets();
+  }
+
   render() {
+    const { tickets } = this.props.ticket;
+
+    const ticketObject = {
+      departureStation: "test1",
+      destinationStation: "test1",
+      departureDate: "test1",
+      trainCoach: "test1",
+      place: "test1",
+      price: "test1"
+    };
+
     return (
       <React.Fragment>
         {/* <!-- header --> */}
@@ -71,7 +89,9 @@ class Home extends Component {
                   </li>
                 </ul> */}
 
-                <Ticket />
+                {tickets.map(ticket => (
+                  <Ticket key={ticket.id} ticket={ticket} />
+                ))}
 
                 {/* <!-- pages --> */}
                 <div className="col-12 mt-5 text-center">
@@ -155,4 +175,16 @@ class Home extends Component {
   }
 }
 
-export default Home;
+Home.propTypes = {
+  ticket: PropTypes.object.isRequired,
+  getTickets: PropTypes.func.isRequired
+};
+
+const mapStateToProps = state => ({
+  ticket: state.ticket
+});
+
+export default connect(
+  mapStateToProps,
+  { getTickets }
+)(Home);

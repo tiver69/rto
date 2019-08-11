@@ -8,18 +8,22 @@ import { BrowserRouter as Router, Route } from "react-router-dom";
 import SignIn from "./components/Page/SignIn";
 import SignUp from "./components/Page/SignUp";
 import Home from "./components/Page/Home";
+import { Provider } from "react-redux";
+import store from "./store";
 
 function App() {
   return (
-    <Router>
-      <div className="App site-wrap">
-        <Header />
-        <Route exact path="/" component={Landing} />
-        <Route exact path="/home" component={Home} />
-        <Route exact path="/sign-in" component={SignIn} />
-        <Route exact path="/sign-up" component={SignUp} />
-      </div>
-    </Router>
+    <Provider store={store}>
+      <Router>
+        <div className="App site-wrap">
+          <Header />
+          <Route exact path="/" component={Landing} />
+          <Route exact path="/home" component={Home} />
+          <Route exact path="/sign-in" component={SignIn} />
+          <Route exact path="/sign-up" component={SignUp} />
+        </div>
+      </Router>
+    </Provider>
   );
 }
 
