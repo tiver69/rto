@@ -23,4 +23,9 @@ public class TicketRepositoryTest {
     public void findAll() {
         System.out.println(ticketRepository.findAll());
     }
+
+    @Test
+    public void findAllByPassengerId() {
+        System.out.println(ticketRepository.findAllByPassengerId(1L));
+    }
 }

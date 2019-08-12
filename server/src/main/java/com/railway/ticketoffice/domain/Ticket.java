@@ -1,6 +1,7 @@
 package com.railway.ticketoffice.domain;
 
 import lombok.Data;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -28,4 +29,19 @@ public class Ticket {
     private TrainCoach trainCoach;
     private Integer place;
     private Integer price;
+
+
+    @Override
+    public String toString() {
+        return "Ticket{" +
+                "id=" + id +
+                ", passenger=" + passenger +
+                ", departureStation=" + departureStation +
+                ", destinationStation=" + destinationStation +
+                ", departureDate=" + departureDate +
+                ", trainCoach=" + trainCoach +
+                ", place=" + place +
+                ", price=" + price +
+                "}\n";
+    }
 }
