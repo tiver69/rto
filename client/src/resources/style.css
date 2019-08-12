@@ -24,15 +24,24 @@ body {
   color: #7971ea !important;
 }
 
-a {
+a,
+.a-button {
   color: #7971ea;
   -webkit-transition: 0.3s all ease;
   -o-transition: 0.3s all ease;
   transition: 0.3s all ease;
 }
-a:hover {
+a:hover,
+.a-button:hover {
   color: #7971ea;
   text-decoration: none;
+}
+
+.a-button {
+  background: none !important;
+  border: none;
+  padding: 0 !important;
+  cursor: pointer;
 }
 
 h1,

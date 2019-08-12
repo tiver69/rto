@@ -1,15 +1,24 @@
 import React, { Component } from "react";
 import IcoMoon from "react-icomoon";
 import { Link } from "react-router-dom";
+import classnames from "classnames";
 
 class Ticket extends Component {
   render() {
     const { ticket } = this.props;
     return (
       <div className="d-block d-md-flex listing-horizontal">
-        <div className="img d-block ticket-active-background-pic">
+        <div
+          className={classnames(
+            "img d-block",
+            {
+              "ticket-active-background-pic": ticket.active
+            },
+            { "ticket-history-background-pic": !ticket.active }
+          )}
+        >
           <span className="category">
-            COACH - {ticket.trainCoach.number}
+            COACH - {ticket.coachNumber}
             <br />
             PLACE - {ticket.place}
             <br />
@@ -17,45 +26,34 @@ class Ticket extends Component {
             <br />
           </span>
         </div>
-        {/* <div className="img d-block ticket-history-background-pic">
-             <span className="category">
-                   <fmt:message key="ticket.coach"/> - <c:out value="${ticket.getTicket().getTrainCoach().getNumber()}"/><br/>
-                   <fmt:message key="ticket.place"/> - <c:out value="${ticket.getTicket().getPlace()}"/><br/>
-                   <fmt:message key="ticket.price"/> - <c:out value="${ticket.getTicket().getPrice()}"/>₴<br/>
-             </span>
-           </div> */}
 
         <div className="lh-content">
-          <Link
-            to="/todo"
-            href="returnTicket?ticketId=${ticket.getTicket().getId()}"
-            className="bookmark"
-            method="delete"
-          >
-            <span>
-              <IcoMoon className="icon" icon="blocked" />
-              Return
-            </span>
-          </Link>
-
+          {ticket.active && (
+            <Link to="/todo" className="bookmark">
+              <span>
+                <IcoMoon className="icon" icon="blocked" />
+                Return
+              </span>
+            </Link>
+          )}
           <h3>
             {" "}
-            {ticket.departureStation.name} - {ticket.destinationStation.name}
+            {ticket.departureStation} - {ticket.destinationStation}
           </h3>
 
           <p>
             <IcoMoon className="icon" icon="road" /> Train number #
-            {ticket.trainCoach.train.id}
+            {ticket.trainId}
           </p>
 
           <p>
             <IcoMoon className="icon" icon="clock" /> Departure -{" "}
-            {ticket.departureDate} TIME_TO_DO
+            {ticket.departureDateTime}
           </p>
 
           <p>
-            <IcoMoon className="icon" icon="clock" /> Arrival - DATE_TO_DO
-            TIME_TO_DO
+            <IcoMoon className="icon" icon="clock" /> Arrival -{" "}
+            {ticket.arrivalDateTime}
           </p>
         </div>
       </div>
