@@ -20,11 +20,6 @@ public class TicketController {
     @Autowired
     private TicketService ticketService;
 
-    @GetMapping("/all")
-    public List<Ticket> findAllTickets(){
-        return ticketService.findAll();
-    }
-
     @GetMapping("/{passengerId}")
     public List<TicketDto> findAllByPassenger(@PathVariable Long passengerId) {
         LOG.info("Tickets request for passenger#"+passengerId);

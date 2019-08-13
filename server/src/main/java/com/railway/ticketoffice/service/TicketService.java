@@ -32,10 +32,6 @@ public class TicketService {
 
     private static DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
-    public List<Ticket> findAll() {
-        return ticketRepository.findAll();
-    }
-
     public List<TicketDto> findAllByPassenger(Long id) {
 
         List<Ticket> tickets = ticketRepository.findAllByPassengerId(id);

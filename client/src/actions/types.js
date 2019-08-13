@@ -1,2 +1,3 @@
-export const GET_TICKETS = "GET_TICKETS";
 export const GET_PASSENGER_TICKETS = "GET_PASSENGER_TICKETS";
+
+export const GET_STATIONS = "GET_STATIONS";
