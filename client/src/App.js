@@ -18,7 +18,7 @@ function App() {
         <div className="App site-wrap">
           <Header />
           <Route exact path="/" component={Landing} />
-          <Route exact path="/home" component={Home} />
+          <Route exact path="/home/:passengerId" component={Home} />
           <Route exact path="/sign-in" component={SignIn} />
           <Route exact path="/sign-up" component={SignUp} />
         </div>

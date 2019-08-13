@@ -21,4 +21,9 @@ public class StopRepositoryTest {
     public void findAll() {
         System.out.println(stopRepository.findAll());
     }
+
+    @Test
+    public void findByTrainIdAndStationId(){
+        System.out.println(stopRepository.findByTrainIdAndStationId(72L, 1L));
+    }
 }

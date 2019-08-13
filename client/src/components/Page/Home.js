@@ -2,24 +2,66 @@ import React, { Component } from "react";
 import Ticket from "../Item/Ticket";
 import IcoMoon from "react-icomoon";
 import { connect } from "react-redux";
-import { getTickets } from "../../actions/ticketActions";
+import { getTickets, getPassengerTickets } from "../../actions/ticketActions";
 import PropTypes from "prop-types";
+import classnames from "classnames";
 
 class Home extends Component {
+  constructor() {
+    super();
+    this.state = {
+      displayActive: true
+    };
+  }
+
+  onDisplayActiveClick = e => {
+    this.setState({
+      displayActive: true
+    });
+  };
+
+  onDisplayHistoryClick = e => {
+    this.setState({
+      displayActive: false
+    });
+  };
+
   componentDidMount() {
-    this.props.getTickets();
+    const { passengerId } = this.props.match.params;
+    this.props.getPassengerTickets(passengerId);
   }
 
   render() {
     const { tickets } = this.props.ticket;
 
-    const ticketObject = {
-      departureStation: "test1",
-      destinationStation: "test1",
-      departureDate: "test1",
-      trainCoach: "test1",
-      place: "test1",
-      price: "test1"
+    const filterActiveTickets = tickets => {
+      let active = [];
+      const passengerTickets = tickets.map(ticket => (
+        <Ticket key={ticket.id} ticket={ticket} />
+      ));
+
+      for (let i = 0; i < passengerTickets.length; i++) {
+        if (passengerTickets[i].props.ticket.active.toString() === "true") {
+          active.push(passengerTickets[i]);
+        }
+      }
+
+      return <React.Fragment>{active}</React.Fragment>;
+    };
+
+    const filterHistoryTickets = tickets => {
+      let history = [];
+      const passengerTickets = tickets.map(ticket => (
+        <Ticket key={ticket.id} ticket={ticket} />
+      ));
+
+      for (let i = 0; i < passengerTickets.length; i++) {
+        if (passengerTickets[i].props.ticket.active.toString() === "false") {
+          history.push(passengerTickets[i]);
+        }
+      }
+
+      return <React.Fragment>{history}</React.Fragment>;
     };
 
     return (
@@ -53,45 +95,42 @@ class Home extends Component {
 
                 <ul className="ticket-menu">
                   <li>
-                    <div className="text-center border-primary">
-                      <a
-                        href="home?displayType=0"
-                        className="color-black-opacity-5"
+                    <div
+                      className={classnames("text-center", {
+                        "border-primary": this.state.displayActive
+                      })}
+                    >
+                      <button
+                        className="color-black-opacity-5 a-button"
+                        onClick={this.onDisplayActiveClick.bind(this)}
                       >
                         Active
-                      </a>
+                      </button>
                     </div>
                   </li>
 
                   <li>
-                    <div className="text-center">
-                      <a
-                        href="home?displayType=1"
-                        className="color-black-opacity-5"
+                    <div
+                      className={classnames("text-center", {
+                        "border-primary": !this.state.displayActive
+                      })}
+                    >
+                      <button
+                        className="color-black-opacity-5 a-button"
+                        onClick={this.onDisplayHistoryClick.bind(this)}
                       >
                         History
-                      </a>
+                      </button>
                     </div>
                   </li>
                 </ul>
 
-                {/* <ul className="ticket-menu">
-                  <li>
-                    <div className="text-center">
-                      <a href="home?displayType=0" className="color-black-opacity-5"><fmt:message key="user.home.active"/></a>
-                    </div>
-                  </li>
-
-                  <li>
-                    <div className="text-center border-primary">
-                       <a href="home?displayType=1" className="color-black-opacity-5"><fmt:message key="user.home.history"/></a>
-                    </div>
-                  </li>
-                </ul> */}
-
-                {tickets.map(ticket => (
+                {/* {tickets.map(ticket => (
                   <Ticket key={ticket.id} ticket={ticket} />
-                ))}
+                ))} */}
+
+                {this.state.displayActive && filterActiveTickets(tickets)}
+                {!this.state.displayActive && filterHistoryTickets(tickets)}
 
                 {/* <!-- pages --> */}
                 <div className="col-12 mt-5 text-center">
@@ -111,9 +150,9 @@ class Home extends Component {
                 <div className="mb-5">
                   <h3 className="h5 text-black mb-3">
                     Booking tickets{" "}
-                    <a className="f-right p-color">
+                    <button className="f-right p-color a-button">
                       <IcoMoon icon="tab" />
-                    </a>
+                    </button>
                   </h3>
 
                   <form action="findTrain" method="get">
@@ -128,7 +167,7 @@ class Home extends Component {
                           name="departureStation"
                           id="departureStationSelect"
                         >
-                          <option value="${station.getId()}">Station1</option>
+                          <option value="1">Station1</option>
                         </select>
                       </div>
                     </div>
@@ -143,7 +182,7 @@ class Home extends Component {
                           name="destinationStation"
                           id="destinationStationSelect"
                         >
-                          <option value="${station.getId()}">Station1</option>
+                          <option value="1">Station1</option>
                         </select>
                       </div>
                     </div>
@@ -177,7 +216,8 @@ class Home extends Component {
 
 Home.propTypes = {
   ticket: PropTypes.object.isRequired,
-  getTickets: PropTypes.func.isRequired
+  getTickets: PropTypes.func.isRequired,
+  getPassengerTickets: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
@@ -186,5 +226,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { getTickets }
+  { getTickets, getPassengerTickets }
 )(Home);
