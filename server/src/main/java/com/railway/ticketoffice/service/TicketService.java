@@ -1,11 +1,13 @@
 package com.railway.ticketoffice.service;
 
+import com.railway.ticketoffice.controller.TicketController;
 import com.railway.ticketoffice.domain.Stop;
 import com.railway.ticketoffice.domain.Ticket;
 import com.railway.ticketoffice.dto.TicketDto;
 import com.railway.ticketoffice.repository.StopRepository;
 import com.railway.ticketoffice.repository.TicketRepository;
 import com.railway.ticketoffice.util.DateTimeUtil;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +21,8 @@ import java.util.List;
 
 @Service
 public class TicketService {
+
+    private static Logger LOG = Logger.getLogger(TicketService.class);
 
     @Autowired
     private TicketRepository ticketRepository;
@@ -37,7 +41,7 @@ public class TicketService {
         List<Ticket> tickets = ticketRepository.findAllByPassengerId(id);
         List<TicketDto> ticketsDto = new ArrayList<>();
 
-        tickets.stream().forEach(ticket -> {
+        tickets.forEach(ticket -> {
             Long trainId = ticket.getTrainCoach().getTrain().getId();
             Long departureStationId = ticket.getDepartureStation().getId();
             Long destinationStationId = ticket.getDestinationStation().getId();
@@ -67,6 +71,8 @@ public class TicketService {
                             .isActive(DateTimeUtil.isFuture(arrivalDateTime))
                             .build());
         });
+
+        LOG.info(String.format("Tickets request for passenger#%d - found %d", id, ticketsDto.size()));
         return ticketsDto;
     }
 
