@@ -17,6 +17,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.railway.ticketoffice.util.DateTimeUtil.DATE_TIME_FORMATTER;
+
 @Service
 public class TicketService {
 
@@ -26,12 +28,14 @@ public class TicketService {
     private TicketRepository ticketRepository;
 
     @Autowired
+    private PassengerService passengerService;
+
+    @Autowired
     private StopRepository stopRepository;
 
-    private static DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    public List<TicketDto> findAllByPassenger(Long id) throws IllegalArgumentException {
 
-    public List<TicketDto> findAllByPassenger(Long id) {
-
+        if (!passengerService.checkIfExistById(id)) throw new IllegalArgumentException();
         List<Ticket> tickets = ticketRepository.findAllByPassengerId(id);
         List<TicketDto> ticketsDto = new ArrayList<>();
 
@@ -40,13 +44,13 @@ public class TicketService {
             Long departureStationId = ticket.getDepartureStation().getId();
             Long destinationStationId = ticket.getDestinationStation().getId();
             LocalDate departureDate = ticket.getDepartureDate();
+
             LocalTime departureTime = stopRepository.
                     findByTrainIdAndStationId(trainId, departureStationId).map(Stop::getDeparture)
                     .orElseThrow(IllegalArgumentException::new);
             LocalTime arrivalTime = stopRepository.
                     findByTrainIdAndStationId(trainId, destinationStationId).map(Stop::getArrival)
                     .orElseThrow(IllegalArgumentException::new);
-
             LocalDateTime arrivalDateTime = DateTimeUtil.getArrivalDate(departureDate, departureTime, arrivalTime)
                     .atTime(arrivalTime);
 
@@ -58,8 +62,8 @@ public class TicketService {
                             .trainId(trainId)
                             .coachNumber(ticket.getTrainCoach().getNumber())
                             .departureDateTime(departureDate
-                                    .atTime(departureTime).format(FORMATTER))
-                            .arrivalDateTime(arrivalDateTime.format(FORMATTER))
+                                    .atTime(departureTime).format(DATE_TIME_FORMATTER))
+                            .arrivalDateTime(arrivalDateTime.format(DATE_TIME_FORMATTER))
                             .place(ticket.getPlace())
                             .price(ticket.getPrice())
                             .isActive(DateTimeUtil.isFuture(arrivalDateTime))
