@@ -1,3 +1,7 @@
 export const GET_PASSENGER_TICKETS = "GET_PASSENGER_TICKETS";
 
 export const GET_STATIONS = "GET_STATIONS";
+
+export const SEARCH_FOR_TRAINS = "SEARCH_FOR_TRAINS";
+
+export const GET_ERRORS = "GET_ERRORS";

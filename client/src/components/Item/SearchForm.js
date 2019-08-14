@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import IcoMoon from "react-icomoon";
 import { connect } from "react-redux";
 import { getStations } from "../../actions/stationActions";
+import { searchForTrain } from "../../actions/trainActions";
 import PropTypes from "prop-types";
 import Select from "react-select";
 
@@ -28,12 +29,18 @@ class SearchForm extends Component {
 
   onSubmit(e) {
     e.preventDefault();
-    const trainSearch = {
+    const direction = {
       departureDate: this.state.departureDate,
       departureStation: this.state.departureStation.value,
       destinationStation: this.state.destinationStation.value
     };
-    console.log(trainSearch);
+    console.log(direction);
+    this.props.searchForTrain(
+      direction.departureStation,
+      direction.destinationStation,
+      direction.departureDate,
+      this.props.history
+    );
   }
 
   handleDepartureChange = departureStation => {
@@ -111,14 +118,17 @@ class SearchForm extends Component {
 
 SearchForm.propTypes = {
   station: PropTypes.object.isRequired,
-  getStations: PropTypes.func.isRequired
+  train: PropTypes.object.isRequired,
+  getStations: PropTypes.func.isRequired,
+  searchForTrain: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
-  station: state.station
+  station: state.station,
+  train: state.train
 });
 
 export default connect(
   mapStateToProps,
-  { getStations }
+  { getStations, searchForTrain }
 )(SearchForm);
