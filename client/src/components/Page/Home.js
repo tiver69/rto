@@ -1,10 +1,10 @@
 import React, { Component } from "react";
 import Ticket from "../Item/Ticket";
-import IcoMoon from "react-icomoon";
 import { connect } from "react-redux";
-import { getTickets, getPassengerTickets } from "../../actions/ticketActions";
+import { getPassengerTickets } from "../../actions/ticketActions";
 import PropTypes from "prop-types";
 import classnames from "classnames";
+import SearchForm from "../Item/SearchForm";
 
 class Home extends Component {
   constructor() {
@@ -144,68 +144,9 @@ class Home extends Component {
                   </ul>
                 </div>
               </div>
+
               {/* <!-- search form section --> */}
-
-              <div className="col-lg-3 ml-auto">
-                <div className="mb-5">
-                  <h3 className="h5 text-black mb-3">
-                    Booking tickets{" "}
-                    <button className="f-right p-color a-button">
-                      <IcoMoon icon="tab" />
-                    </button>
-                  </h3>
-
-                  <form action="findTrain" method="get">
-                    <IcoMoon icon="location" /> Departure station
-                    <div className="form-group">
-                      <div className="select-wrap">
-                        <span className="icon">
-                          <IcoMoon icon="menu" />
-                        </span>
-                        <select
-                          className="form-control"
-                          name="departureStation"
-                          id="departureStationSelect"
-                        >
-                          <option value="1">Station1</option>
-                        </select>
-                      </div>
-                    </div>
-                    <IcoMoon icon="location" /> Destination station
-                    <div className="form-group">
-                      <div className="select-wrap">
-                        <span className="icon">
-                          <IcoMoon icon="menu" />
-                        </span>
-                        <select
-                          className="form-control"
-                          name="destinationStation"
-                          id="destinationStationSelect"
-                        >
-                          <option value="1">Station1</option>
-                        </select>
-                      </div>
-                    </div>
-                    <div className="form-group">
-                      Date:{" "}
-                      <input
-                        type="date"
-                        name="departureDate"
-                        required="required"
-                        className="form-control"
-                        id="dateInput"
-                      />
-                    </div>
-                    <div className="form-group">
-                      <input
-                        type="submit"
-                        value="Search and Order"
-                        className="btn btn-primary-o"
-                      />
-                    </div>
-                  </form>
-                </div>
-              </div>
+              <SearchForm />
             </div>
           </div>
         </div>
@@ -216,7 +157,6 @@ class Home extends Component {
 
 Home.propTypes = {
   ticket: PropTypes.object.isRequired,
-  getTickets: PropTypes.func.isRequired,
   getPassengerTickets: PropTypes.func.isRequired
 };
 
@@ -226,5 +166,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { getTickets, getPassengerTickets }
+  { getPassengerTickets }
 )(Home);

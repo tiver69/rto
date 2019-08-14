@@ -1,16 +1,15 @@
-import { GET_PASSENGER_TICKETS } from "../actions/types";
+import { SEARCH_FOR_TRAINS } from "../actions/types";
 
 const initialState = {
-  tickets: [],
-  ticket: {}
+  trains: []
 };
 
 export default function(state = initialState, action) {
   switch (action.type) {
-    case GET_PASSENGER_TICKETS:
+    case SEARCH_FOR_TRAINS:
       return {
         ...state,
-        tickets: action.payload
+        trains: action.payload
       };
 
     default:

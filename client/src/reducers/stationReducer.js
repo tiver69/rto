@@ -1,16 +1,15 @@
-import { GET_PASSENGER_TICKETS } from "../actions/types";
+import { GET_STATIONS } from "../actions/types";
 
 const initialState = {
-  tickets: [],
-  ticket: {}
+  stations: []
 };
 
 export default function(state = initialState, action) {
   switch (action.type) {
-    case GET_PASSENGER_TICKETS:
+    case GET_STATIONS:
       return {
         ...state,
-        tickets: action.payload
+        stations: action.payload
       };
 
     default:
