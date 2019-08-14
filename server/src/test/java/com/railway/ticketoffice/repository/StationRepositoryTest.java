@@ -21,4 +21,9 @@ public class StationRepositoryTest {
     public void findAll() {
         System.out.println(stationRepository.findAll());
     }
+
+    @Test
+    public void findById(){
+        System.out.println(stationRepository.findById(1L));
+    }
 }

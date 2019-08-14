@@ -1,7 +1,7 @@
 package com.railway.ticketoffice.service;
 
 import com.railway.ticketoffice.domain.Station;
-import com.railway.ticketoffice.dto.StationSelectOptionDto;
+import com.railway.ticketoffice.dto.StationSelectDto;
 import com.railway.ticketoffice.repository.StationRepository;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,11 +24,11 @@ public class StationService {
         return stations;
     }
 
-    public List<StationSelectOptionDto> findAllForSelect() {
+    public List<StationSelectDto> findAllForSelect() {
         List<Station> stations = stationRepository.findAll();
-        List<StationSelectOptionDto> stationDtoList = new ArrayList<>();
+        List<StationSelectDto> stationDtoList = new ArrayList<>();
         stations.forEach(station -> {
-            stationDtoList.add(StationSelectOptionDto.builder()
+            stationDtoList.add(StationSelectDto.builder()
                     .value(station.getId())
                     .label(station.getName())
                     .build());

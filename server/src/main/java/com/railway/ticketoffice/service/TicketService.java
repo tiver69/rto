@@ -1,6 +1,5 @@
 package com.railway.ticketoffice.service;
 
-import com.railway.ticketoffice.controller.TicketController;
 import com.railway.ticketoffice.domain.Stop;
 import com.railway.ticketoffice.domain.Ticket;
 import com.railway.ticketoffice.dto.TicketDto;
@@ -16,7 +15,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @Service

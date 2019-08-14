@@ -1,10 +1,11 @@
 package com.railway.ticketoffice.controller;
 
-import com.railway.ticketoffice.domain.Station;
-import com.railway.ticketoffice.dto.StationSelectOptionDto;
+import com.railway.ticketoffice.dto.StationSelectDto;
 import com.railway.ticketoffice.service.StationService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,10 +24,12 @@ public class StationController {
     private StationService stationService;
 
 
-    @GetMapping("/select")
-    public List<StationSelectOptionDto> findAllStationForSelect(){
+    @GetMapping(value = "/select", produces = "application/json")
+    public ResponseEntity<?> findAllStationForSelect(){
         LOG.info("Stations request for select");
-        return stationService.findAllForSelect();
+
+        List<StationSelectDto> response = stationService.findAllForSelect();
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
 }

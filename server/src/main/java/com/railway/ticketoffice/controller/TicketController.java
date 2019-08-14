@@ -1,11 +1,11 @@
 package com.railway.ticketoffice.controller;
 
-import com.railway.ticketoffice.domain.Ticket;
 import com.railway.ticketoffice.dto.TicketDto;
-import com.railway.ticketoffice.repository.TicketRepository;
 import com.railway.ticketoffice.service.TicketService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,9 +20,11 @@ public class TicketController {
     @Autowired
     private TicketService ticketService;
 
-    @GetMapping("/{passengerId}")
-    public List<TicketDto> findAllByPassenger(@PathVariable Long passengerId) {
-        LOG.info("Tickets request for passenger#"+passengerId);
-        return ticketService.findAllByPassenger(passengerId);
+    @GetMapping(value = "", produces = "application/json")
+    public ResponseEntity<?> findAllByPassenger(@RequestParam("passengerId") Long passengerId) {
+        LOG.info("Tickets request for passenger#" + passengerId);
+
+        List<TicketDto> response = ticketService.findAllByPassenger(passengerId);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }
