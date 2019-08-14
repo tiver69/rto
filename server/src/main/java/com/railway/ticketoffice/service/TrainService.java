@@ -22,7 +22,16 @@ public class TrainService {
     @Autowired
     private StationRepository stationRepository;
 
-    public List<TrainInfoDto> findAllTrainsInDirectionAtDate(Long departureStation, Long destinationStation, String departureDate) {
+    @Autowired
+    private StationService stationService;
+
+    public List<TrainInfoDto> findAllTrainsInDirectionAtDate(
+            Long departureStation,
+            Long destinationStation,
+            String departureDate) throws IllegalArgumentException {
+        if (!stationService.checkIfExistById(departureStation) || !stationService.checkIfExistById(departureStation))
+            throw new IllegalArgumentException();
+
         LocalDate date = DateTimeUtil.parseString(departureDate);
 
         //TO_DO: filter trains by frequency and requested date

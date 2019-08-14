@@ -1,5 +1,6 @@
 package com.railway.ticketoffice.repository;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,12 +13,14 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @DataJpaTest
+@Ignore
 public class TrainRepositoryTest {
 
     @Autowired
     private TrainRepository trainRepository;
 
     @Test
+
     public void findAll() {
         System.out.println(trainRepository.findAll());
     }

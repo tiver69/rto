@@ -1,13 +1,14 @@
 package com.railway.ticketoffice.domain;
 
-import lombok.Data;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
 
 @Entity
 @Data
+@NoArgsConstructor
+@Builder
 @Table(name = "tickets")
 public class Ticket {
 
@@ -30,6 +31,17 @@ public class Ticket {
     private Integer place;
     private Integer price;
 
+
+    public Ticket(Long id, Passenger passenger, Station departureStation, Station destinationStation, LocalDate departureDate, TrainCoach trainCoach, Integer place, Integer price) {
+        this.id = id;
+        this.passenger = passenger;
+        this.departureStation = departureStation;
+        this.destinationStation = destinationStation;
+        this.departureDate = departureDate;
+        this.trainCoach = trainCoach;
+        this.place = place;
+        this.price = price;
+    }
 
     @Override
     public String toString() {

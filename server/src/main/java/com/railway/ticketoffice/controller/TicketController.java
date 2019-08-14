@@ -24,7 +24,13 @@ public class TicketController {
     public ResponseEntity<?> findAllByPassenger(@RequestParam("passengerId") Long passengerId) {
         LOG.info("Tickets request for passenger#" + passengerId);
 
-        List<TicketDto> response = ticketService.findAllByPassenger(passengerId);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        try {
+            List<TicketDto> response = ticketService.findAllByPassenger(passengerId);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            LOG.error("Tickets request for passenger#" + passengerId+" - passenger not found!");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
     }
 }

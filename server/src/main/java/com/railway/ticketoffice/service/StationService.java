@@ -18,6 +18,10 @@ public class StationService {
     @Autowired
     private StationRepository stationRepository;
 
+    public boolean checkIfExistById(Long id) {
+        return stationRepository.findById(id).isPresent();
+    }
+
     public List<Station> findAll() {
         List<Station> stations = stationRepository.findAll();
         LOG.info("All stations request found - " + stations.size());
