@@ -27,6 +27,9 @@ public class TrainService {
     @Autowired
     private StationService stationService;
 
+    @Autowired
+    private CoachService coachService;
+
     public List<TrainInfoDto> findAllTrainsInDirectionAtDate(
             Long departureStation,
             Long destinationStation,
@@ -48,7 +51,10 @@ public class TrainService {
                             .orElseThrow(IllegalArgumentException::new)
                             .getStation().getName());
             train.setDuration(DateTimeUtil.getDuration(train.getDepartureTime(), train.getArrivalTime()));
+            train.setCoachTypeInfoList(
+                    coachService.findAllCoachesInfoByTrainIdAndDepartureDate(train.getId(), date));
         });
+
 
         LOG.info(String.format(LOG_FORMAT, departureDate, departureStation, destinationStation) + " - found " + trainList.size());
         return trainList;

@@ -1,7 +1,5 @@
 package com.railway.ticketoffice.controller;
 
-import com.railway.ticketoffice.service.TrainService;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +8,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.junit.Assert.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -26,7 +23,7 @@ public class TrainControllerTest {
 
     @Test
     public void shouldReturnOkIfValidParameters() throws Exception {
-        mockMvc.perform(get("/api/train/search?departureStation=1&destinationStation=2&departureDate=2019-10-18"))
+        mockMvc.perform(get("/api/train/search?departureStation=1&destinationStation=2&departureDate=2019-08-31"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON_UTF8));
     }

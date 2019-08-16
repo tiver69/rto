@@ -3,6 +3,7 @@ package com.railway.ticketoffice.dto;
 import lombok.Data;
 
 import java.time.LocalTime;
+import java.util.List;
 
 @Data
 public class TrainInfoDto {
@@ -13,6 +14,8 @@ public class TrainInfoDto {
     private LocalTime departureTime;
     private LocalTime arrivalTime;
     private LocalTime duration;
+
+    private List<CoachTypeInfoDto> coachTypeInfoList;
 
     public TrainInfoDto(Long id, LocalTime departureTime, LocalTime arrivalTime) {
         this.id = id;

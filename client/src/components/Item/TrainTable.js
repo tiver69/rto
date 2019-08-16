@@ -32,10 +32,16 @@ class TrainTable extends Component {
         <td className="column100 column7" data-column="column7">
           <table>
             <tbody>
-              <tr>
-                <td>coachtype : quantity </td>
-                <td>awailable / total</td>
-              </tr>
+              {train.coachTypeInfoList.map(coachType => (
+                <tr key={coachType.coachTypeName}>
+                  <td>
+                    {coachType.coachTypeName} : {coachType.count}{" "}
+                  </td>
+                  <td>
+                    {coachType.availablePlaces} / {coachType.totalPlaces}
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </td>

@@ -1,8 +1,6 @@
 package com.railway.ticketoffice.repository;
 
-import com.railway.ticketoffice.domain.Station;
 import com.railway.ticketoffice.domain.Stop;
-import com.railway.ticketoffice.domain.Train;
 import com.railway.ticketoffice.domain.key.StopKey;
 import com.railway.ticketoffice.dto.TrainInfoDto;
 import org.springframework.data.jpa.repository.Query;
