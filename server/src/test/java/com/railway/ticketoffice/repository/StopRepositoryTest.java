@@ -1,6 +1,5 @@
 package com.railway.ticketoffice.repository;
 
-import com.railway.ticketoffice.domain.Station;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,7 +13,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @DataJpaTest
-@Ignore
 public class StopRepositoryTest {
 
     @Autowired
@@ -34,10 +32,13 @@ public class StopRepositoryTest {
     }
 
     @Test
+    public void findFirstByTrainIdOrderByOrderDesc(){
+        System.out.println(stopRepository.findFirstByTrainIdOrderByOrderDesc(72L));
+    }
+
+    @Test
     public void test() {
         System.out.println(stopRepository.
-                findTrainByDirection(
-                        stationRepository.findById(2L).get(),
-                        stationRepository.findById(1L).get()));
+                findAllTrainsByDirection( 2L, 1L));
     }
 }

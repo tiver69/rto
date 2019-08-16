@@ -1,6 +1,7 @@
 package com.railway.ticketoffice.controller;
 
 import com.railway.ticketoffice.service.TrainService;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,12 +29,6 @@ public class TrainControllerTest {
         mockMvc.perform(get("/api/train/search?departureStation=1&destinationStation=2&departureDate=2019-10-18"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON_UTF8));
-    }
-
-    @Test
-    public void shouldReturnBadRequestIfNotValidStationId() throws Exception {
-        mockMvc.perform(get("/api/train/search?departureStation=0&destinationStation=2&departureDate=2019-10-18"))
-                .andExpect(status().isBadRequest());
     }
 
     @Test

@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.List;
 
+import static com.railway.ticketoffice.controller.TrainController.LOG_FORMAT;
+
 @Service
 public class TrainService {
 
@@ -29,14 +31,27 @@ public class TrainService {
             Long departureStation,
             Long destinationStation,
             String departureDate) throws IllegalArgumentException {
-        if (!stationService.checkIfExistById(departureStation) || !stationService.checkIfExistById(departureStation))
-            throw new IllegalArgumentException();
-
         LocalDate date = DateTimeUtil.parseString(departureDate);
-
         //TO_DO: filter trains by frequency and requested date
-        return stopRepository.findTrainByDirection(stationRepository.findById(departureStation).get(),
-                stationRepository.findById(destinationStation).get());
+        //TO_DO: add arrival date for cases when more than 24 hours
+
+        List<TrainInfoDto> trainList =
+                stopRepository.findAllTrainsByDirection(departureStation, destinationStation);
+
+        trainList.forEach(train -> {
+            train.setFirstStationName(
+                    stopRepository.findByTrainIdAndOrder(train.getId(), 0)
+                            .orElseThrow(IllegalArgumentException::new)
+                            .getStation().getName());
+            train.setLastStationName(
+                    stopRepository.findFirstByTrainIdOrderByOrderDesc(train.getId())
+                            .orElseThrow(IllegalArgumentException::new)
+                            .getStation().getName());
+            train.setDuration(DateTimeUtil.getDuration(train.getDepartureTime(), train.getArrivalTime()));
+        });
+
+        LOG.info(String.format(LOG_FORMAT, departureDate, departureStation, destinationStation) + " - found " + trainList.size());
+        return trainList;
     }
 
 }

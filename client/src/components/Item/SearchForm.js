@@ -38,9 +38,9 @@ class SearchForm extends Component {
     this.props.searchForTrain(
       direction.departureStation,
       direction.destinationStation,
-      direction.departureDate,
-      this.props.history
+      direction.departureDate
     );
+    this.props.history.push("/booking/train");
   }
 
   handleDepartureChange = departureStation => {
@@ -68,9 +68,6 @@ class SearchForm extends Component {
             <IcoMoon icon="location" /> Departure station
             <div className="form-group">
               <div className="select-wrap">
-                <span className="icon">
-                  <IcoMoon icon="menu" />
-                </span>
                 <Select
                   value={this.state.departureStation}
                   onChange={this.handleDepartureChange}
@@ -81,9 +78,6 @@ class SearchForm extends Component {
             <IcoMoon icon="location" /> Destination station
             <div className="form-group">
               <div className="select-wrap">
-                <span className="icon">
-                  <IcoMoon icon="menu" />
-                </span>
                 <Select
                   value={this.state.destinationStation}
                   onChange={this.handleDestinationChange}
@@ -92,7 +86,7 @@ class SearchForm extends Component {
               </div>
             </div>
             <div className="form-group">
-              Date:{" "}
+              <IcoMoon icon="calendar" /> Date:{" "}
               <input
                 type="date"
                 name="departureDate"
