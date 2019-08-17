@@ -278,13 +278,13 @@ form {
 }
 .select-wrap .icon,
 .wrap-icon .icon {
-  position: absolute;
+  /* position: absolute; */
   right: 10px;
   top: 50%;
   -webkit-transform: translateY(-50%);
   -ms-transform: translateY(-50%);
   transform: translateY(-50%);
-  font-size: 22px;
+  font-size: 20px;
 }
 .select-wrap select,
 .wrap-icon select {
@@ -1038,6 +1038,26 @@ form {
 .btn-primary-o:hover {
   color: #fff;
   background-color: #5a50e5;
+}
+
+.overflowXAuto {
+  /* overflow-x: auto;  TODO: fix overflow and select item*/
+}
+
+.float-none {
+  float: none;
+}
+
+.minWidht900 {
+  min-width: 900px;
+}
+
+.w-4 {
+  width: 4%;
+}
+
+.w-23 {
+  width: 23%;
 }
 
 .site-wrap > .container {

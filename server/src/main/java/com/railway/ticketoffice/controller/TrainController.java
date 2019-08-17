@@ -17,7 +17,7 @@ import java.util.List;
 @RequestMapping("/api/train")
 public class TrainController {
 
-    private static String LOG_FORMAT = "Train request for %s, departureStation#%d - arrivalStation#%d";
+    public static String LOG_FORMAT = "Train request for %s, departureStation#%d - arrivalStation#%d";
     private static Logger LOG = Logger.getLogger(TrainController.class);
 
     @Autowired

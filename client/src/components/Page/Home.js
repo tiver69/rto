@@ -145,8 +145,7 @@ class Home extends Component {
                 </div>
               </div>
 
-              {/* <!-- search form section --> */}
-              <SearchForm />
+              <SearchForm history={this.props.history} />
             </div>
           </div>
         </div>

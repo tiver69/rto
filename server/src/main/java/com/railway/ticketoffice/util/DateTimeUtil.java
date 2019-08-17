@@ -1,5 +1,6 @@
 package com.railway.ticketoffice.util;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -17,7 +18,7 @@ public class DateTimeUtil {
         return departureDate;
     }
 
-    public static boolean isFuture(LocalDateTime dateTime){
+    public static boolean isFuture(LocalDateTime dateTime) {
         return dateTime.isAfter(LocalDateTime.now());
     }
 
@@ -25,4 +26,13 @@ public class DateTimeUtil {
         return LocalDate.parse(stringDate, DATE_FORMATTER);
     }
 
+    public static LocalTime getDuration(LocalTime departure, LocalTime arrival) {
+        LocalDateTime departureDateTime = LocalDate.now().atTime(departure);
+        LocalDateTime arrivalDateTime = LocalDate.now().atTime(arrival);
+        if (departure.isAfter(arrival)) {
+            arrivalDateTime = arrivalDateTime.plusDays(1);
+        }
+        long durationInSeconds = Duration.between(departureDateTime, arrivalDateTime).toSeconds();
+        return LocalTime.ofSecondOfDay(durationInSeconds);
+    }
 }

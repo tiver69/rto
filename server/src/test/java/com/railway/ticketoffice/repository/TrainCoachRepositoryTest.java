@@ -23,4 +23,9 @@ public class TrainCoachRepositoryTest {
     public void findAll() {
         System.out.println(trainCoachRepository.findAll());
     }
+
+    @Test
+    public void findAllCoachTypesByTrainId(){
+        System.out.println(trainCoachRepository.countAllCoachTypesByTrainId(72L));
+    }
 }

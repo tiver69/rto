@@ -1,18 +1,24 @@
 package com.railway.ticketoffice.dto;
 
-import com.railway.ticketoffice.domain.Train;
 import lombok.Data;
 
 import java.time.LocalTime;
+import java.util.List;
 
 @Data
 public class TrainInfoDto {
-    private Train train;
+    private Long id;
+    private String firstStationName;
+    private String lastStationName;
+
     private LocalTime departureTime;
     private LocalTime arrivalTime;
+    private LocalTime duration;
 
-    public TrainInfoDto(Train train, LocalTime departureTime, LocalTime arrivalTime) {
-        this.train = train;
+    private List<CoachTypeInfoDto> coachTypeInfoList;
+
+    public TrainInfoDto(Long id, LocalTime departureTime, LocalTime arrivalTime) {
+        this.id = id;
         this.departureTime = departureTime;
         this.arrivalTime = arrivalTime;
     }

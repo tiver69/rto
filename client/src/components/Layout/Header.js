@@ -21,7 +21,7 @@ class Header extends Component {
               >
                 <ul className="site-menu js-clone-nav mr-auto d-none d-lg-block">
                   <li className="active">
-                    <a href="/home">
+                    <a href="/home/1">
                       <span>Home</span>
                     </a>
                   </li>
@@ -39,10 +39,10 @@ class Header extends Component {
                     <IcoMoon className="icon" icon="earth" />
                     <ul className="dropdown">
                       <li>
-                        <a href="#">en</a>
+                        <a href="#.html">en</a>
                       </li>
                       <li>
-                        <a href="#">ru</a>
+                        <a href="#.html">ru</a>
                       </li>
                     </ul>
                   </li>

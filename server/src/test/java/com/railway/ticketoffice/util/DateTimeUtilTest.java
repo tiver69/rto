@@ -7,8 +7,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
-import static org.junit.Assert.*;
-
 public class DateTimeUtilTest {
 
     @Test
@@ -51,4 +49,23 @@ public class DateTimeUtilTest {
         Assert.assertFalse(result);
     }
 
+    @Test
+    public void shouldReturnCorrectDifference(){
+        LocalTime localTime = LocalTime.of(19,30);
+        LocalTime localTime2 = LocalTime.of(7,25);
+        LocalTime result = DateTimeUtil.getDuration(localTime, localTime2);
+        LocalTime expectedResult = LocalTime.of(11,55);
+
+        Assert.assertEquals(result, expectedResult);
+    }
+
+    @Test
+    public void shouldReturnCorrectDifference2(){
+        LocalTime localTime = LocalTime.of(7,25);
+        LocalTime localTime2 = LocalTime.of(19,30);
+        LocalTime result = DateTimeUtil.getDuration(localTime, localTime2);
+        LocalTime expectedResult = LocalTime.of(12,5);
+
+        Assert.assertEquals(result, expectedResult);
+    }
 }

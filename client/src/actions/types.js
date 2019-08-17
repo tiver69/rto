@@ -5,3 +5,5 @@ export const GET_STATIONS = "GET_STATIONS";
 export const SEARCH_FOR_TRAINS = "SEARCH_FOR_TRAINS";
 
 export const GET_ERRORS = "GET_ERRORS";
+
+export const SET_TRAIN_PARAM = "SET_TRAIN_PARAM";
