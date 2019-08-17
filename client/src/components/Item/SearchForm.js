@@ -3,6 +3,7 @@ import IcoMoon from "react-icomoon";
 import { connect } from "react-redux";
 import { getStations } from "../../actions/stationActions";
 import { searchForTrain } from "../../actions/trainActions";
+import { setSearchParam } from "../../actions/searchParamActions";
 import PropTypes from "prop-types";
 import Select from "react-select";
 
@@ -10,9 +11,9 @@ class SearchForm extends Component {
   constructor() {
     super();
     this.state = {
-      departureDate: "",
-      departureStation: 1,
-      destinationStation: 2
+      departureDate: "2019-08-31",
+      departureStation: { value: "1", label: "Zaporizhzhya 1" },
+      destinationStation: { value: "2", label: "Kyiv-Pasazhyrsky" }
     };
     this.onSubmit = this.onSubmit.bind(this);
     this.onChange = this.onChange.bind(this);
@@ -20,7 +21,6 @@ class SearchForm extends Component {
 
   onChange(e) {
     this.setState({ [e.target.name]: e.target.value });
-    // console.log(e.target.value);
   }
 
   componentDidMount() {
@@ -31,15 +31,16 @@ class SearchForm extends Component {
     e.preventDefault();
     const direction = {
       departureDate: this.state.departureDate,
-      departureStation: this.state.departureStation.value,
-      destinationStation: this.state.destinationStation.value
+      departureStation: this.state.departureStation,
+      destinationStation: this.state.destinationStation
     };
-    console.log(direction);
     this.props.searchForTrain(
-      direction.departureStation,
-      direction.destinationStation,
+      direction.departureStation.value,
+      direction.destinationStation.value,
       direction.departureDate
     );
+    console.log(direction);
+    this.props.setSearchParam(direction);
     this.props.history.push("/booking/train");
   }
 
@@ -54,6 +55,7 @@ class SearchForm extends Component {
   };
   render() {
     const { stations } = this.props.station;
+
     return (
       <div className="col-lg-3 ml-auto">
         <div className="mb-5">
@@ -114,7 +116,8 @@ SearchForm.propTypes = {
   station: PropTypes.object.isRequired,
   train: PropTypes.object.isRequired,
   getStations: PropTypes.func.isRequired,
-  searchForTrain: PropTypes.func.isRequired
+  searchForTrain: PropTypes.func.isRequired,
+  setSearchParam: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
@@ -124,5 +127,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { getStations, searchForTrain }
+  { getStations, searchForTrain, setSearchParam }
 )(SearchForm);

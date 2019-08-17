@@ -9,7 +9,6 @@ export const searchForTrain = (
   const res = await axios.get(
     `/api/train/search?departureStation=${departureStation}&destinationStation=${destinationStation}&departureDate=${departureDate}`
   );
-  // history.push("/test");
   dispatch({
     type: SEARCH_FOR_TRAINS,
     payload: res.data

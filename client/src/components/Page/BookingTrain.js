@@ -5,47 +5,39 @@ import LineSearchForm from "../Item/LineSearchForm";
 import TrainTable from "../Item/TrainTable";
 
 class BookingTrain extends Component {
+  constructor() {
+    super();
+    this.state = {
+      choseTrainId: ""
+    };
+    this.onSubmit = this.onSubmit.bind(this);
+  }
+
+  onSubmit(e) {
+    e.preventDefault();
+    // this.props.searchForTrain(
+    //   this.state.choseTrainId
+    // );
+  }
+
   componentDidMount() {
     // console.log(this.props.train);
   }
 
   render() {
     const { trains } = this.props.train;
-    {
-      console.log(trains);
-    }
 
     return (
       <React.Fragment>
         <LineSearchForm />
         {/* <!-- main section --> */}
-
         <div className="site-section">
           <div className="container">
             <div className="row">
               <div className="col">
                 {/* <!-- train list section --> */}
-
                 <h2 className="mb-5 text-primary-o">Results</h2>
-
-                <form action="trainDetail" method="get">
-                  <input
-                    id="departureHidden"
-                    name="departureStationHidden"
-                    type="hidden"
-                  />
-                  <input
-                    id="destinationHidden"
-                    name="destinationStationHidden"
-                    type="hidden"
-                  />
-                  <input
-                    id="dateHidden"
-                    name="departureDateHidden"
-                    type="hidden"
-                    value="${pageContext.request.getParameter('departureDate')}"
-                  />
-
+                <form onSubmit={this.onSubmit}>
                   <div className="limiter">
                     <div className="wrap-table100">
                       <div className="table100 ver4 m-b-110">
@@ -56,37 +48,37 @@ class BookingTrain extends Component {
                                 className="column100 column1"
                                 data-column="column1"
                               >
-                                booking.button
+                                Number
                               </th>
                               <th
                                 className="column100 column2"
                                 data-column="column2"
                               >
-                                direction
+                                From/To
                               </th>
                               <th
                                 className="column100 column4"
                                 data-column="column4"
                               >
-                                departure
+                                Departure
                               </th>
                               <th
                                 className="column100 column5"
                                 data-column="column5"
                               >
-                                booking.arrival
+                                Arrival
                               </th>
                               <th
                                 className="column100 column6"
                                 data-column="column6"
                               >
-                                booking.duration
+                                Duration
                               </th>
                               <th
                                 className="column100 column7"
                                 data-column="column7"
                               >
-                                booking.seats
+                                Seats Available
                               </th>
                             </tr>
                           </thead>
