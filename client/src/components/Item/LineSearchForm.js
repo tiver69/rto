@@ -3,6 +3,7 @@ import IcoMoon from "react-icomoon";
 import { connect } from "react-redux";
 import { getStations } from "../../actions/stationActions";
 import { searchForTrain } from "../../actions/trainActions";
+import { setSearchParam } from "../../actions/searchParamActions";
 import PropTypes from "prop-types";
 import Select from "react-select";
 
@@ -27,7 +28,7 @@ class LineSearchForm extends Component {
   }
 
   async componentWillReceiveProps(nextProps) {
-    if (Object.values(nextProps.search.trainParam).length >= 1) {
+    if (Object.values(nextProps.search.trainParam).length >= 3) {
       const {
         departureDate,
         departureStation,
@@ -45,24 +46,23 @@ class LineSearchForm extends Component {
     e.preventDefault();
     const direction = {
       departureDate: this.state.departureDate,
-      departureStation: this.state.departureStation.value,
-      destinationStation: this.state.destinationStation.value
+      departureStation: this.state.departureStation,
+      destinationStation: this.state.destinationStation
     };
     this.props.searchForTrain(
-      direction.departureStation,
-      direction.destinationStation,
+      direction.departureStation.value,
+      direction.destinationStation.value,
       direction.departureDate
     );
+    this.props.setSearchParam(direction);
   }
 
   handleDepartureChange = departureStation => {
     this.setState({ departureStation });
-    // console.log(`Option1 selected:`, departureStation);
   };
 
   handleDestinationChange = destinationStation => {
     this.setState({ destinationStation });
-    // console.log(`Option2 selected:`, destinationStation);
   };
 
   render() {
@@ -149,7 +149,8 @@ LineSearchForm.propTypes = {
   station: PropTypes.object.isRequired,
   search: PropTypes.object.isRequired,
   getStations: PropTypes.func.isRequired,
-  searchForTrain: PropTypes.func.isRequired
+  searchForTrain: PropTypes.func.isRequired,
+  setSearchParam: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
@@ -159,5 +160,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { getStations, searchForTrain }
+  { getStations, searchForTrain, setSearchParam }
 )(LineSearchForm);

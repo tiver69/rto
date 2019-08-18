@@ -1,18 +1,44 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
+import { searchForCoaches } from "../../actions/coachActions";
+import PropTypes from "prop-types";
 
 class TrainTable extends Component {
+  constructor() {
+    super();
+    this.state = {
+      departureDate: ""
+    };
+  }
+
+  onTrainSubmit = trainIdButton => {
+    trainIdButton.preventDefault();
+    this.props.searchForCoaches(
+      trainIdButton.target.value,
+      this.state.departureDate
+    );
+    this.props.history.push("/booking/coach");
+  };
+
+  async componentDidMount() {
+    if (Object.values(this.props.search.trainParam).length >= 3) {
+      this.state.departureDate = this.props.search.trainParam.departureDate;
+    }
+  }
+
   render() {
     const { train } = this.props;
 
     return (
       <tr className="row100">
         <td className="column100 column1" data-column="column1">
-          <input
-            type="submit"
+          <button
             className="btn btn-primary-o"
-            name="selectedTrainId"
+            onClick={this.onTrainSubmit.bind(train.id)}
             value={train.id}
-          />
+          >
+            {train.id}
+          </button>
         </td>
 
         <td className="column100 column2" data-column="column2">
@@ -50,4 +76,16 @@ class TrainTable extends Component {
   }
 }
 
-export default TrainTable;
+TrainTable.propTypes = {
+  searchForCoaches: PropTypes.func.isRequired,
+  search: PropTypes.object.isRequired
+};
+
+const mapStateToProps = state => ({
+  search: state.search
+});
+
+export default connect(
+  mapStateToProps,
+  { searchForCoaches }
+)(TrainTable);

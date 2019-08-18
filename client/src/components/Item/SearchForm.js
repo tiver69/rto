@@ -39,19 +39,16 @@ class SearchForm extends Component {
       direction.destinationStation.value,
       direction.departureDate
     );
-    console.log(direction);
     this.props.setSearchParam(direction);
     this.props.history.push("/booking/train");
   }
 
   handleDepartureChange = departureStation => {
     this.setState({ departureStation });
-    // console.log(`Option1 selected:`, departureStation);
   };
 
   handleDestinationChange = destinationStation => {
     this.setState({ destinationStation });
-    // console.log(`Option2 selected:`, destinationStation);
   };
   render() {
     const { stations } = this.props.station;

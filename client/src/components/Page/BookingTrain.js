@@ -5,25 +5,6 @@ import LineSearchForm from "../Item/LineSearchForm";
 import TrainTable from "../Item/TrainTable";
 
 class BookingTrain extends Component {
-  constructor() {
-    super();
-    this.state = {
-      choseTrainId: ""
-    };
-    this.onSubmit = this.onSubmit.bind(this);
-  }
-
-  onSubmit(e) {
-    e.preventDefault();
-    // this.props.searchForTrain(
-    //   this.state.choseTrainId
-    // );
-  }
-
-  componentDidMount() {
-    // console.log(this.props.train);
-  }
-
   render() {
     const { trains } = this.props.train;
 
@@ -37,61 +18,63 @@ class BookingTrain extends Component {
               <div className="col">
                 {/* <!-- train list section --> */}
                 <h2 className="mb-5 text-primary-o">Results</h2>
-                <form onSubmit={this.onSubmit}>
-                  <div className="limiter">
-                    <div className="wrap-table100">
-                      <div className="table100 ver4 m-b-110">
-                        <table data-vertable="ver4">
-                          <thead>
-                            <tr className="row100 head">
-                              <th
-                                className="column100 column1"
-                                data-column="column1"
-                              >
-                                Number
-                              </th>
-                              <th
-                                className="column100 column2"
-                                data-column="column2"
-                              >
-                                From/To
-                              </th>
-                              <th
-                                className="column100 column4"
-                                data-column="column4"
-                              >
-                                Departure
-                              </th>
-                              <th
-                                className="column100 column5"
-                                data-column="column5"
-                              >
-                                Arrival
-                              </th>
-                              <th
-                                className="column100 column6"
-                                data-column="column6"
-                              >
-                                Duration
-                              </th>
-                              <th
-                                className="column100 column7"
-                                data-column="column7"
-                              >
-                                Seats Available
-                              </th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {trains.map(train => (
-                              <TrainTable key={train.id} train={train} />
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
+                <div className="limiter">
+                  <div className="wrap-table100">
+                    <div className="table100 ver4 m-b-110">
+                      <table data-vertable="ver4">
+                        <thead>
+                          <tr className="row100 head">
+                            <th
+                              className="column100 column1"
+                              data-column="column1"
+                            >
+                              Number
+                            </th>
+                            <th
+                              className="column100 column2"
+                              data-column="column2"
+                            >
+                              From/To
+                            </th>
+                            <th
+                              className="column100 column4"
+                              data-column="column4"
+                            >
+                              Departure
+                            </th>
+                            <th
+                              className="column100 column5"
+                              data-column="column5"
+                            >
+                              Arrival
+                            </th>
+                            <th
+                              className="column100 column6"
+                              data-column="column6"
+                            >
+                              Duration
+                            </th>
+                            <th
+                              className="column100 column7"
+                              data-column="column7"
+                            >
+                              Seats Available
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {trains.map(train => (
+                            <TrainTable
+                              key={train.id}
+                              train={train}
+                              history={this.props.history}
+                            />
+                          ))}
+                        </tbody>
+                      </table>
                     </div>
                   </div>
-                </form>
+                </div>
               </div>
             </div>
           </div>

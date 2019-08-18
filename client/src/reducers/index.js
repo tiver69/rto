@@ -2,11 +2,13 @@ import { combineReducers } from "redux";
 import ticketReducer from "./ticketReducer";
 import stationReducer from "./stationReducer";
 import trainReducer from "./trainReducer";
-import searchReduser from "./searchReduser";
+import searchReducer from "./searchReducer";
+import coachReducer from "./coachReducer";
 
 export default combineReducers({
   ticket: ticketReducer,
   station: stationReducer,
   train: trainReducer,
-  search: searchReduser
+  coach: coachReducer,
+  search: searchReducer
 });
