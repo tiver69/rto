@@ -52,9 +52,8 @@ public class TrainService {
                             .getStation().getName());
             train.setDuration(DateTimeUtil.getDuration(train.getDepartureTime(), train.getArrivalTime()));
             train.setCoachTypeInfoList(
-                    coachService.findAllCoachesInfoByTrainIdAndDepartureDate(train.getId(), date));
+                    coachService.findAllCoachTypesInfoByTrainIdAndDepartureDate(train.getId(), date));
         });
-
 
         LOG.info(String.format(LOG_FORMAT, departureDate, departureStation, destinationStation) + " - found " + trainList.size());
         return trainList;
