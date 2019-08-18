@@ -1267,6 +1267,11 @@ ul.custom-pagination li {
   border-radius: 5px;
 }
 
+.pass {
+  background-color: #7971ea50;
+  cursor: default;
+}
+
 /* TABLE */
 
 .limiter {

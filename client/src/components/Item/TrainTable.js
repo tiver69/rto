@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { searchForCoaches } from "../../actions/coachActions";
+import { setTeainSearchParam } from "../../actions/searchParamActions";
 import PropTypes from "prop-types";
 
 class TrainTable extends Component {
@@ -17,12 +18,22 @@ class TrainTable extends Component {
       trainIdButton.target.value,
       this.state.departureDate
     );
+    const { train } = this.props;
+    const param = {
+      id: this.props.train.id,
+      firstStationName: train.firstStationName,
+      lastStationName: train.lastStationName,
+      departureTime: train.departureTime,
+      arrivalTime: train.arrivalTime,
+      duration: train.duration
+    };
+    this.props.setTeainSearchParam(param);
     this.props.history.push("/booking/coach");
   };
 
   async componentDidMount() {
-    if (Object.values(this.props.search.trainParam).length >= 3) {
-      this.state.departureDate = this.props.search.trainParam.departureDate;
+    if (Object.values(this.props.search.directionParam).length >= 3) {
+      this.state.departureDate = this.props.search.directionParam.departureDate;
     }
   }
 
@@ -78,6 +89,7 @@ class TrainTable extends Component {
 
 TrainTable.propTypes = {
   searchForCoaches: PropTypes.func.isRequired,
+  setTeainSearchParam: PropTypes.func.isRequired,
   search: PropTypes.object.isRequired
 };
 
@@ -87,5 +99,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { searchForCoaches }
+  { searchForCoaches, setTeainSearchParam }
 )(TrainTable);

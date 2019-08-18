@@ -3,7 +3,7 @@ import IcoMoon from "react-icomoon";
 import { connect } from "react-redux";
 import { getStations } from "../../actions/stationActions";
 import { searchForTrain } from "../../actions/trainActions";
-import { setSearchParam } from "../../actions/searchParamActions";
+import { setDirectionSearchParam } from "../../actions/searchParamActions";
 import PropTypes from "prop-types";
 import Select from "react-select";
 
@@ -28,12 +28,12 @@ class LineSearchForm extends Component {
   }
 
   async componentWillReceiveProps(nextProps) {
-    if (Object.values(nextProps.search.trainParam).length >= 3) {
+    if (Object.values(nextProps.search.directionParam).length >= 3) {
       const {
         departureDate,
         departureStation,
         destinationStation
-      } = nextProps.search.trainParam;
+      } = nextProps.search.directionParam;
       this.setState({
         departureDate,
         departureStation,
@@ -54,7 +54,7 @@ class LineSearchForm extends Component {
       direction.destinationStation.value,
       direction.departureDate
     );
-    this.props.setSearchParam(direction);
+    this.props.setDirectionSearchParam(direction);
   }
 
   handleDepartureChange = departureStation => {
@@ -150,7 +150,7 @@ LineSearchForm.propTypes = {
   search: PropTypes.object.isRequired,
   getStations: PropTypes.func.isRequired,
   searchForTrain: PropTypes.func.isRequired,
-  setSearchParam: PropTypes.func.isRequired
+  setDirectionSearchParam: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
@@ -160,5 +160,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { getStations, searchForTrain, setSearchParam }
+  { getStations, searchForTrain, setDirectionSearchParam }
 )(LineSearchForm);

@@ -12,6 +12,7 @@ export const SEARCH_FOR_COACES = "SEARCH_FOR_COACES";
 
 // Internal actions
 export const SET_TRAIN_PARAM = "SET_TRAIN_PARAM";
+export const SET_DIRECTION_PARAM = "SET_DIRECTION_PARAM";
 
 // Errors actions
 export const GET_ERRORS = "GET_ERRORS";
