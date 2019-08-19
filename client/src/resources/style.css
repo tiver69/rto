@@ -27,6 +27,10 @@ body {
 a,
 .a-button {
   color: #7971ea;
+  background: none;
+  border: none;
+  padding: 0 !important;
+  cursor: pointer;
   -webkit-transition: 0.3s all ease;
   -o-transition: 0.3s all ease;
   transition: 0.3s all ease;
@@ -35,13 +39,6 @@ a:hover,
 .a-button:hover {
   color: #7971ea;
   text-decoration: none;
-}
-
-.a-button {
-  background: none !important;
-  border: none;
-  padding: 0 !important;
-  cursor: pointer;
 }
 
 h1,
@@ -789,7 +786,8 @@ form {
 /* PAGINATION */
 
 .custom-pagination a,
-.custom-pagination span {
+.custom-pagination span,
+.custom-pagination button {
   text-align: center;
   width: 40px;
   height: 40px;

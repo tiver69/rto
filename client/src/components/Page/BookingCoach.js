@@ -1,29 +1,61 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
+import { searchForCoaches } from "../../actions/coachActions";
+import Coach from "../Item/Coach";
 
 class BookingCoach extends Component {
-  createCoachView = number => {
-    let coach = [];
-    let placePerRow = number / 4;
+  constructor() {
+    super();
+    this.state = {
+      currentCoach: 1
+    };
+  }
 
-    for (let i = 0; i < 4; i++) {
-      let coachRow = [];
-      for (let j = 0; j < placePerRow; j++) {
-        coachRow.push(
-          <div className="col place disable" title="booked">
-            {i * placePerRow + j + 1}
-          </div>
+  onCoachNumberClick = number => {
+    number.preventDefault();
+    const { trainParam } = this.props.search;
+    const { directionParam } = this.props.search;
+
+    this.setState({
+      currentCoach: parseInt(number.target.value)
+    });
+    this.props.searchForCoaches(
+      trainParam.id,
+      directionParam.departureDate,
+      number.target.value
+    );
+  };
+
+  createCoachNumbers = number => {
+    let coachNumbers = [];
+    for (let i = 0; i < number; i++) {
+      if (i + 1 === this.state.currentCoach) {
+        coachNumbers.push(
+          <li key={"coachNumber#" + i + 1}>
+            <span>{i + 1}</span>
+          </li>
+        );
+      } else {
+        coachNumbers.push(
+          <li key={"coachNumber#" + i + 1}>
+            <button
+              value={i + 1}
+              className="a-button"
+              onClick={this.onCoachNumberClick.bind(this)}
+            >
+              {i + 1}
+            </button>
+          </li>
         );
       }
-      coach.push(<div className="row">{coachRow}</div>);
     }
-    return coach;
+    return coachNumbers;
   };
 
   render() {
     const { trainParam } = this.props.search;
-    const { coaches } = this.props.coach;
+    const { coach } = this.props.coach;
     return (
       <React.Fragment>
         {/* header */}
@@ -78,47 +110,10 @@ class BookingCoach extends Component {
                 {/* coaches list section */}
                 <div className="col-lg-7 mt-5 text-center">
                   <ul className="custom-pagination">
-                    {coaches.map(coach => (
-                      <li key={coach.number}>
-                        <span>{coach.number}</span>
-                      </li>
-                    ))}
-                    <li>
-                      <button className="a-button" href="#.html">
-                        0
-                      </button>
-                    </li>
+                    {this.createCoachNumbers(trainParam.coachNumber)}
                   </ul>
                 </div>
-                <div className="col-lg-4 mt-5 text-left">
-                  {coaches.map(coach => (
-                    <li key={coach.number}>
-                      <span>
-                        {coach.name} {coach.availablePlaces}/{coach.totalPlaces}
-                      </span>
-                    </li>
-                  ))}
-                </div>
-
-                <hr />
-                {/* <!-- coache places section --> */}
-                {coaches.map(coach => (
-                  <div className="wagon-floors">
-                    <div className="floor floor-1">
-                      {/* <div className="row">
-                      <div className="col place disable" title="Booked">
-                        i
-                      </div>
-
-                       <a className="col place" href="ticketDetail?${pageContext.request.getQueryString()}&selectedPlace=${i}&selectedCoach=${trainCoach.getTrainCoach().getId()}" title="<fmt:message key='booking.train.place.free'/>"><c:out value="${i}"/></a>
-                       </div> */}
-                      {this.createCoachView(coach.totalPlaces)}
-                      {/* <div className="row">
-                        <div className="col place pass" title="Pass" />
-                      </div> */}
-                    </div>
-                  </div>
-                ))}
+                <Coach key={coach.number} coach={coach} />
               </div>
             </div>
           </div>
@@ -129,6 +124,7 @@ class BookingCoach extends Component {
 }
 
 BookingCoach.propTypes = {
+  searchForCoaches: PropTypes.func.isRequired,
   coach: PropTypes.object.isRequired,
   search: PropTypes.object.isRequired
 };
@@ -140,5 +136,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  {}
+  { searchForCoaches }
 )(BookingCoach);

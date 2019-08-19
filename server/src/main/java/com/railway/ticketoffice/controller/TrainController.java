@@ -1,8 +1,6 @@
 package com.railway.ticketoffice.controller;
 
-import com.railway.ticketoffice.dto.TrainInfoDto;
-import com.railway.ticketoffice.repository.TrainCoachRepository;
-import com.railway.ticketoffice.service.CoachService;
+import com.railway.ticketoffice.dto.request.train.TrainInfoDto;
 import com.railway.ticketoffice.service.TrainService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;

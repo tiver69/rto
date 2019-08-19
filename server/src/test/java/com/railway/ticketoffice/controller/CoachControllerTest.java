@@ -27,14 +27,14 @@ public class CoachControllerTest {
 
     @Test
     public void shouldReturnOkIfValidParameters() throws Exception {
-        mockMvc.perform(get("/api/coach/search?trainId=732&departureDate=2019-08-31"))
+        mockMvc.perform(get("/api/coach/search?trainId=732&departureDate=2019-08-31&coachNumber=1"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON_UTF8));
     }
 
     @Test
     public void shouldReturnBadRequestIfNotValidDate() throws Exception {
-        mockMvc.perform(get("/api/coach/search?trainId=732&departureDate=2019.10.18"))
+        mockMvc.perform(get("/api/coach/search?trainId=732&departureDate=2019.10.18&coachNumber=1"))
                 .andExpect(status().isBadRequest());
     }
 }

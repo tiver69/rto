@@ -28,9 +28,13 @@ public class TrainCoachRepositoryTest {
     public void findAllCoachTypesByTrainId(){
         System.out.println(trainCoachRepository.countAllCoachTypesByTrainId(72L));
     }
+    @Test
+    public void findCoachByNumberAndTrainId(){
+        System.out.println(trainCoachRepository.findCoachByNumberAndTrainId(732L, 1));
+    }
 
     @Test
-    public void findAllCoachByTrainId(){
-        System.out.println(trainCoachRepository.findAllCoachesByTrainId(732L));
+    public void findFirstNumberByTrainIdOrderByNumberDesc() {
+        System.out.println(trainCoachRepository.findFirstByTrainIdOrderByNumberDesc(732L));
     }
 }

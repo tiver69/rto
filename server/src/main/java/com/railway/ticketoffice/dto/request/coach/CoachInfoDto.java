@@ -1,12 +1,12 @@
 package com.railway.ticketoffice.dto.request.coach;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.util.List;
 
 @Data
 public class CoachInfoDto {
+    private Long typeId;
     private String name;
     private Integer number;
     private Integer availablePlaces;
@@ -18,7 +18,8 @@ public class CoachInfoDto {
         this.totalPlaces = totalPlaces;
     }
 
-    public CoachInfoDto(String name, Integer number, Integer totalPlaces) {
+    public CoachInfoDto(Long typeId, String name, Integer number, Integer totalPlaces) {
+        this.typeId = typeId;
         this.name = name;
         this.number = number;
         this.totalPlaces = totalPlaces;

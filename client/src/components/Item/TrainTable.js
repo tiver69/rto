@@ -16,11 +16,13 @@ class TrainTable extends Component {
     trainIdButton.preventDefault();
     this.props.searchForCoaches(
       trainIdButton.target.value,
-      this.state.departureDate
+      this.state.departureDate,
+      "1"
     );
     const { train } = this.props;
     const param = {
-      id: this.props.train.id,
+      id: train.id,
+      coachNumber: train.coachNumber,
       firstStationName: train.firstStationName,
       lastStationName: train.lastStationName,
       departureTime: train.departureTime,

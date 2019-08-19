@@ -1,6 +1,6 @@
 package com.railway.ticketoffice.service;
 
-import com.railway.ticketoffice.dto.CoachTypeInfoDto;
+import com.railway.ticketoffice.dto.request.train.CoachTypeInfoDto;
 import com.railway.ticketoffice.dto.request.coach.CoachInfoDto;
 import com.railway.ticketoffice.repository.TicketRepository;
 import com.railway.ticketoffice.repository.TrainCoachRepository;
@@ -10,9 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -46,20 +46,15 @@ public class CoachService {
         return coachTypeList;
     }
 
-    public List<CoachInfoDto> findAllCoachesInfoByTrainIdAndDepartureDate(Long trainId, String departureDate) {
+    public CoachInfoDto findAllCoachesInfoByTrainIdAndDepartureDate(Long trainId, String departureDate, Integer coachNumber) {
         LocalDate date = DateTimeUtil.parseString(departureDate);
-        List<CoachInfoDto> coachesInfo = trainCoachRepository.findAllCoachesByTrainId(trainId);
-        List<CoachInfoDto> coachTicketsInfo = ticketRepository.findAllBookedPlacesInCoachByTrainIdAndDepartureDate(trainId, date);
+        Optional<CoachInfoDto> coachesInfo = trainCoachRepository.findCoachByNumberAndTrainId(trainId, coachNumber);
+        List<Integer> coachBookedPlace = ticketRepository.findAllBookedPlacesByCoachNumberAndTrainIdAndDepartureDate(trainId, date, coachNumber);
 
-        Map<Integer, List<Integer>> bookedPlaceNumberMap = coachTicketsInfo.stream()
-                .collect(Collectors.groupingBy(
-                        CoachInfoDto::getNumber,
-                        Collectors.mapping(CoachInfoDto::getTotalPlaces, Collectors.toList())));
-        coachesInfo.forEach(coach -> {
+        CoachInfoDto coach = coachesInfo.orElseThrow(IllegalArgumentException::new);
             coach.setBookedPlaces(
-                    bookedPlaceNumberMap.get(coach.getNumber()) == null ? Collections.emptyList() : bookedPlaceNumberMap.get(coach.getNumber()));
+                    coachBookedPlace);
             coach.setAvailablePlaces(coach.getTotalPlaces() - coach.getBookedPlaces().size());
-        });
-        return coachesInfo;
+        return coach;
     }
 }

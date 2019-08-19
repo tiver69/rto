@@ -1,7 +1,7 @@
 import { SEARCH_FOR_COACES } from "../actions/types";
 
 const initialState = {
-  coaches: []
+  coach: []
 };
 
 export default function(state = initialState, action) {
@@ -9,7 +9,7 @@ export default function(state = initialState, action) {
     case SEARCH_FOR_COACES:
       return {
         ...state,
-        coaches: action.payload
+        coach: action.payload
       };
 
     default:

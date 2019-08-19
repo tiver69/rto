@@ -1,4 +1,4 @@
-package com.railway.ticketoffice.dto;
+package com.railway.ticketoffice.dto.request.train;
 
 import lombok.Data;
 

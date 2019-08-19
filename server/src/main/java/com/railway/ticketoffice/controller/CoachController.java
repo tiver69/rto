@@ -16,7 +16,7 @@ import java.util.List;
 @RequestMapping("/api/coach")
 public class CoachController {
 
-    private static String LOG_FORMAT = "Coaches request for train#%d at %s";
+    private static String LOG_FORMAT = "Coach#%d request for train#%d at %s";
     private static Logger LOG = Logger.getLogger(CoachController.class);
 
     @Autowired
@@ -26,17 +26,17 @@ public class CoachController {
     @GetMapping("/search")
     public ResponseEntity<?> findAllCoachesByTrainIdAndDepartureDate(
             @RequestParam("trainId") Long trainId,
-            @RequestParam("departureDate") String departureDate) {
-        LOG.info(String.format(LOG_FORMAT, trainId, departureDate));
+            @RequestParam("departureDate") String departureDate,
+            @RequestParam("coachNumber") Integer coachNumber) {
+        LOG.info(String.format(LOG_FORMAT, coachNumber, trainId, departureDate));
 
         try {
-            List<CoachInfoDto> response =
-                    coachService.findAllCoachesInfoByTrainIdAndDepartureDate(trainId, departureDate);
-
+            CoachInfoDto response =
+                    coachService.findAllCoachesInfoByTrainIdAndDepartureDate(trainId, departureDate, coachNumber);
             return new ResponseEntity<>(response, HttpStatus.OK);
 
         } catch (DateTimeParseException e) {
-            LOG.error(String.format(LOG_FORMAT, trainId, departureDate) +
+            LOG.error(String.format(LOG_FORMAT, coachNumber, trainId, departureDate) +
                     " - bad request!");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
