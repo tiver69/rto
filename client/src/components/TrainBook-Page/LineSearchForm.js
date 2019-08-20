@@ -16,6 +16,7 @@ class LineSearchForm extends Component {
       destinationStation: { value: 2, label: "Kyiv-Pasazhyrsky" }
     };
     this.onSubmit = this.onSubmit.bind(this);
+    this.onSwitchButton = this.onSwitchButton.bind(this);
     this.onChange = this.onChange.bind(this);
   }
 
@@ -25,6 +26,14 @@ class LineSearchForm extends Component {
 
   componentDidMount() {
     this.props.getStations();
+  }
+
+  onSwitchButton() {
+    var buffStation = this.state.departureStation;
+    this.setState({
+      departureStation: this.state.destinationStation,
+      destinationStation: buffStation
+    });
   }
 
   async componentWillReceiveProps(nextProps) {
@@ -93,7 +102,10 @@ class LineSearchForm extends Component {
                     </div>
 
                     <div className="p-3 no-sm-border w-4">
-                      <button className="f-right p-color a-button float-none">
+                      <button
+                        className="f-right p-color a-button float-none"
+                        onClick={this.onSwitchButton}
+                      >
                         <IcoMoon icon="tab" />
                       </button>
                     </div>

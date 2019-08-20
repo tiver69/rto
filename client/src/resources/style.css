@@ -1235,10 +1235,15 @@ ul.custom-pagination li {
   margin: 2px;
 }
 
+.pass,
 .place:hover,
 .a-button:hover {
   background: #e6e6e6;
   color: black;
+}
+
+.pass {
+  cursor: default;
 }
 
 .place.disable {
@@ -1264,11 +1269,6 @@ ul.custom-pagination li {
 .chosen-train-table-wraper::-webkit-scrollbar-thumb {
   background-color: #dee2e6;
   border-radius: 5px;
-}
-
-.pass {
-  background-color: #7971ea50;
-  cursor: default;
 }
 
 /* TABLE */

@@ -16,7 +16,16 @@ class SearchForm extends Component {
       destinationStation: { value: "2", label: "Kyiv-Pasazhyrsky" }
     };
     this.onSubmit = this.onSubmit.bind(this);
+    this.onSwitchButton = this.onSwitchButton.bind(this);
     this.onChange = this.onChange.bind(this);
+  }
+
+  onSwitchButton() {
+    var buffStation = this.state.departureStation;
+    this.setState({
+      departureStation: this.state.destinationStation,
+      destinationStation: buffStation
+    });
   }
 
   onChange(e) {
@@ -58,7 +67,10 @@ class SearchForm extends Component {
         <div className="mb-5">
           <h3 className="h5 text-black mb-3">
             Booking tickets{" "}
-            <button className="f-right p-color a-button">
+            <button
+              className="f-right p-color a-button"
+              onClick={this.onSwitchButton}
+            >
               <IcoMoon icon="tab" />
             </button>
           </h3>
