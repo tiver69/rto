@@ -1,10 +1,10 @@
 import React, { Component } from "react";
-import Ticket from "../Item/Ticket";
+import Ticket from "./Ticket";
 import { connect } from "react-redux";
 import { getPassengerTickets } from "../../actions/ticketActions";
 import PropTypes from "prop-types";
 import classnames from "classnames";
-import SearchForm from "../Item/SearchForm";
+import SearchForm from "./SearchForm";
 
 class Home extends Component {
   constructor() {

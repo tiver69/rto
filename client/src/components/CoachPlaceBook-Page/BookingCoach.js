@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { searchForTrain } from "../../actions/trainActions";
 import { connect } from "react-redux";
 import { searchForCoaches } from "../../actions/coachActions";
-import Coach from "../Item/Coach";
+import Coach from "./Coach";
 
 class BookingCoach extends Component {
   constructor() {

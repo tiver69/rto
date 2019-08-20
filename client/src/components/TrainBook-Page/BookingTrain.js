@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import LineSearchForm from "../Item/LineSearchForm";
-import TrainTable from "../Item/TrainTable";
+import LineSearchForm from "./LineSearchForm";
+import TrainTable from "./TrainTable";
 
 class BookingTrain extends Component {
   render() {
