@@ -35,8 +35,7 @@ a,
   -o-transition: 0.3s all ease;
   transition: 0.3s all ease;
 }
-a:hover,
-.a-button:hover {
+a:hover {
   color: #7971ea;
   text-decoration: none;
 }
@@ -1236,7 +1235,8 @@ ul.custom-pagination li {
   margin: 2px;
 }
 
-.place:hover {
+.place:hover,
+.a-button:hover {
   background: #e6e6e6;
   color: black;
 }
@@ -1246,6 +1246,7 @@ ul.custom-pagination li {
   background: #e6e6e6;
   cursor: default;
   color: black;
+  padding: 0px;
 }
 
 .chosen-train-table-wraper {

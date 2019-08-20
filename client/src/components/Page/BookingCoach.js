@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import { searchForTrain } from "../../actions/trainActions";
 import { connect } from "react-redux";
 import { searchForCoaches } from "../../actions/coachActions";
 import Coach from "../Item/Coach";
@@ -10,6 +11,8 @@ class BookingCoach extends Component {
     this.state = {
       currentCoach: 1
     };
+
+    this.onReturnToTrainSearch = this.onReturnToTrainSearch.bind(this);
   }
 
   onCoachNumberClick = number => {
@@ -53,6 +56,17 @@ class BookingCoach extends Component {
     return coachNumbers;
   };
 
+  onReturnToTrainSearch() {
+    const { directionParam } = this.props.search;
+    if (Object.values(directionParam).length >= 3)
+      this.props.searchForTrain(
+        directionParam.departureStation.value,
+        directionParam.destinationStation.value,
+        directionParam.departureDate
+      );
+    this.props.history.push("/booking/train");
+  }
+
   render() {
     const { trainParam } = this.props.search;
     const { coach } = this.props.coach;
@@ -93,7 +107,11 @@ class BookingCoach extends Component {
                         </tbody>
                       </table>
                     </div>
-                    <button type="button" className="btn btn-primary-o f-right">
+                    <button
+                      type="button"
+                      className="btn btn-primary-o f-right"
+                      onClick={this.onReturnToTrainSearch}
+                    >
                       Return
                     </button>
                   </div>
@@ -125,6 +143,7 @@ class BookingCoach extends Component {
 
 BookingCoach.propTypes = {
   searchForCoaches: PropTypes.func.isRequired,
+  searchForTrain: PropTypes.func.isRequired,
   coach: PropTypes.object.isRequired,
   search: PropTypes.object.isRequired
 };
@@ -136,5 +155,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { searchForCoaches }
+  { searchForCoaches, searchForTrain }
 )(BookingCoach);
