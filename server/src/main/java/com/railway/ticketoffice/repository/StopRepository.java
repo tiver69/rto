@@ -2,7 +2,7 @@ package com.railway.ticketoffice.repository;
 
 import com.railway.ticketoffice.domain.Stop;
 import com.railway.ticketoffice.domain.key.StopKey;
-import com.railway.ticketoffice.dto.TrainInfoDto;
+import com.railway.ticketoffice.dto.request.train.TrainInfoDto;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
@@ -16,7 +16,7 @@ public interface StopRepository extends CrudRepository<Stop, StopKey> {
 
     Optional<Stop> findByTrainIdAndStationId(Long trainId, Long StationId);
 
-    @Query("SELECT new com.railway.ticketoffice.dto.TrainInfoDto(departure.train.id, departure.departure, destination.arrival) " +
+    @Query("SELECT new com.railway.ticketoffice.dto.request.train.TrainInfoDto(departure.train.id, departure.station.name, destination.station.name, departure.departure, destination.arrival) " +
             "FROM Stop departure, Stop destination " +
             "WHERE departure.station.id = :departureStationId " +
             "AND destination.station.id = :destinationStationId " +

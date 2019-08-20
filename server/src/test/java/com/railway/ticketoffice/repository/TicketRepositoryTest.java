@@ -33,7 +33,11 @@ public class TicketRepositoryTest {
 
     @Test
     public void countAllBookedPlacesByDateAndTrainId() {
-        System.out.println(ticketRepository.countAllBookedPlacesByTrainIdAndDepartureDate(732L,  LocalDate.of(2019,8,31)));
+        System.out.println(ticketRepository.countBookedPlacesInCoachTypeByTrainIdAndDepartureDate(732L, LocalDate.of(2019, 8, 31)));
     }
 
+    @Test
+    public void findAllBookedPlacesInCoachByNumberAndTrainIdAndDepartureDate() {
+        System.out.println(ticketRepository.findAllBookedPlacesByCoachNumberAndTrainIdAndDepartureDate(732L, LocalDate.of(2019, 8, 31), 5));
+    }
 }

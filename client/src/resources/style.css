@@ -27,21 +27,17 @@ body {
 a,
 .a-button {
   color: #7971ea;
+  background: none;
+  border: none;
+  padding: 0 !important;
+  cursor: pointer;
   -webkit-transition: 0.3s all ease;
   -o-transition: 0.3s all ease;
   transition: 0.3s all ease;
 }
-a:hover,
-.a-button:hover {
+a:hover {
   color: #7971ea;
   text-decoration: none;
-}
-
-.a-button {
-  background: none !important;
-  border: none;
-  padding: 0 !important;
-  cursor: pointer;
 }
 
 h1,
@@ -789,7 +785,8 @@ form {
 /* PAGINATION */
 
 .custom-pagination a,
-.custom-pagination span {
+.custom-pagination span,
+.custom-pagination button {
   text-align: center;
   width: 40px;
   height: 40px;
@@ -1238,7 +1235,8 @@ ul.custom-pagination li {
   margin: 2px;
 }
 
-.place:hover {
+.place:hover,
+.a-button:hover {
   background: #e6e6e6;
   color: black;
 }
@@ -1248,6 +1246,7 @@ ul.custom-pagination li {
   background: #e6e6e6;
   cursor: default;
   color: black;
+  padding: 0px;
 }
 
 .chosen-train-table-wraper {
@@ -1265,6 +1264,11 @@ ul.custom-pagination li {
 .chosen-train-table-wraper::-webkit-scrollbar-thumb {
   background-color: #dee2e6;
   border-radius: 5px;
+}
+
+.pass {
+  background-color: #7971ea50;
+  cursor: default;
 }
 
 /* TABLE */

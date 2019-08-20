@@ -1,15 +1,15 @@
-import { SET_TRAIN_PARAM } from "../actions/types";
+import { SEARCH_FOR_COACES } from "../actions/types";
 
 const initialState = {
-  trainParam: {}
+  coach: []
 };
 
 export default function(state = initialState, action) {
   switch (action.type) {
-    case SET_TRAIN_PARAM:
+    case SEARCH_FOR_COACES:
       return {
         ...state,
-        trainParam: action.payload
+        coach: action.payload
       };
 
     default:

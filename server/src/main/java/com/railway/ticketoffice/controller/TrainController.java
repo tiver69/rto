@@ -1,7 +1,6 @@
 package com.railway.ticketoffice.controller;
 
-import com.railway.ticketoffice.dto.TicketDto;
-import com.railway.ticketoffice.dto.TrainInfoDto;
+import com.railway.ticketoffice.dto.request.train.TrainInfoDto;
 import com.railway.ticketoffice.service.TrainService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +38,6 @@ public class TrainController {
                     " - bad request!");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-
     }
-
 }
+

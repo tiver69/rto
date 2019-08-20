@@ -1,8 +1,10 @@
 package com.railway.ticketoffice.service;
 
-import com.railway.ticketoffice.dto.TrainInfoDto;
+import com.railway.ticketoffice.domain.TrainCoach;
+import com.railway.ticketoffice.dto.request.train.TrainInfoDto;
 import com.railway.ticketoffice.repository.StationRepository;
 import com.railway.ticketoffice.repository.StopRepository;
+import com.railway.ticketoffice.repository.TrainCoachRepository;
 import com.railway.ticketoffice.util.DateTimeUtil;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +27,9 @@ public class TrainService {
     private StationRepository stationRepository;
 
     @Autowired
+    private TrainCoachRepository trainCoachRepository;
+
+    @Autowired
     private StationService stationService;
 
     @Autowired
@@ -42,19 +47,13 @@ public class TrainService {
                 stopRepository.findAllTrainsByDirection(departureStation, destinationStation);
 
         trainList.forEach(train -> {
-            train.setFirstStationName(
-                    stopRepository.findByTrainIdAndOrder(train.getId(), 0)
-                            .orElseThrow(IllegalArgumentException::new)
-                            .getStation().getName());
-            train.setLastStationName(
-                    stopRepository.findFirstByTrainIdOrderByOrderDesc(train.getId())
-                            .orElseThrow(IllegalArgumentException::new)
-                            .getStation().getName());
+            train.setCoachNumber(trainCoachRepository.findFirstByTrainIdOrderByNumberDesc(train.getId())
+                    .map(TrainCoach::getNumber)
+                    .orElseThrow(IllegalAccessError::new));
             train.setDuration(DateTimeUtil.getDuration(train.getDepartureTime(), train.getArrivalTime()));
             train.setCoachTypeInfoList(
-                    coachService.findAllCoachesInfoByTrainIdAndDepartureDate(train.getId(), date));
+                    coachService.findAllCoachTypesInfoByTrainIdAndDepartureDate(train.getId(), date));
         });
-
 
         LOG.info(String.format(LOG_FORMAT, departureDate, departureStation, destinationStation) + " - found " + trainList.size());
         return trainList;

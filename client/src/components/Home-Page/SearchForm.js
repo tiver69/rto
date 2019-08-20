@@ -3,7 +3,7 @@ import IcoMoon from "react-icomoon";
 import { connect } from "react-redux";
 import { getStations } from "../../actions/stationActions";
 import { searchForTrain } from "../../actions/trainActions";
-import { setSearchParam } from "../../actions/searchParamActions";
+import { setDirectionSearchParam } from "../../actions/searchParamActions";
 import PropTypes from "prop-types";
 import Select from "react-select";
 
@@ -39,19 +39,16 @@ class SearchForm extends Component {
       direction.destinationStation.value,
       direction.departureDate
     );
-    console.log(direction);
-    this.props.setSearchParam(direction);
+    this.props.setDirectionSearchParam(direction);
     this.props.history.push("/booking/train");
   }
 
   handleDepartureChange = departureStation => {
     this.setState({ departureStation });
-    // console.log(`Option1 selected:`, departureStation);
   };
 
   handleDestinationChange = destinationStation => {
     this.setState({ destinationStation });
-    // console.log(`Option2 selected:`, destinationStation);
   };
   render() {
     const { stations } = this.props.station;
@@ -117,7 +114,7 @@ SearchForm.propTypes = {
   train: PropTypes.object.isRequired,
   getStations: PropTypes.func.isRequired,
   searchForTrain: PropTypes.func.isRequired,
-  setSearchParam: PropTypes.func.isRequired
+  setDirectionSearchParam: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
@@ -127,5 +124,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { getStations, searchForTrain, setSearchParam }
+  { getStations, searchForTrain, setDirectionSearchParam }
 )(SearchForm);
