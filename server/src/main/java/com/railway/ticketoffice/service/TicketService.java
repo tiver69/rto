@@ -74,5 +74,8 @@ public class TicketService {
         return ticketsDto;
     }
 
-
+    public Ticket save(Ticket ticket) {
+        ticket.setPrice(0);
+        return ticketRepository.save(ticket);
+    }
 }

@@ -34,7 +34,7 @@ public class StopRepositoryTest {
 
     @Test
     public void findFirstByTrainIdOrderByOrderDesc(){
-        System.out.println(stopRepository.findFirstByTrainIdOrderByOrderDesc(72L));
+        System.out.println(stopRepository.findFirstByTrainIdOrderByOrderDesc(732L));
     }
 
     @Test

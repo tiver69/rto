@@ -1,5 +1,6 @@
 package com.railway.ticketoffice.controller;
 
+import com.railway.ticketoffice.domain.Ticket;
 import com.railway.ticketoffice.dto.TicketDto;
 import com.railway.ticketoffice.service.TicketService;
 import org.apache.log4j.Logger;
@@ -28,9 +29,16 @@ public class TicketController {
             List<TicketDto> response = ticketService.findAllByPassenger(passengerId);
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (IllegalArgumentException e) {
-            LOG.error("Tickets request for passenger#" + passengerId+" - passenger not found!");
+            LOG.error("Tickets request for passenger#" + passengerId + " - passenger not found!");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+    }
 
+    @PostMapping("/save")
+    public ResponseEntity<?> saveNewTicket(@RequestBody Ticket ticket) {
+
+        LOG.info("Adding new ticket - " + ticket);
+        Ticket newTicket = ticketService.save(ticket);
+        return new ResponseEntity<Ticket>(newTicket, HttpStatus.CREATED);
     }
 }

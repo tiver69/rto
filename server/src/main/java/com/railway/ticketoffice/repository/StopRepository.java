@@ -16,7 +16,7 @@ public interface StopRepository extends CrudRepository<Stop, StopKey> {
 
     Optional<Stop> findByTrainIdAndStationId(Long trainId, Long StationId);
 
-    @Query("SELECT new com.railway.ticketoffice.dto.request.train.TrainInfoDto(departure.train.id, departure.station.name, destination.station.name, departure.departure, destination.arrival) " +
+    @Query("SELECT new com.railway.ticketoffice.dto.request.train.TrainInfoDto(departure.train.id, departure.departure, destination.arrival) " +
             "FROM Stop departure, Stop destination " +
             "WHERE departure.station.id = :departureStationId " +
             "AND destination.station.id = :destinationStationId " +

@@ -47,6 +47,8 @@ public class TrainService {
                 stopRepository.findAllTrainsByDirection(departureStation, destinationStation);
 
         trainList.forEach(train -> {
+            train.setFirstStationName(stopRepository.findByTrainIdAndOrder(train.getId(), 0).orElseThrow(IllegalArgumentException::new).getStation().getName());
+            train.setLastStationName(stopRepository.findFirstByTrainIdOrderByOrderDesc(train.getId()).orElseThrow(IllegalArgumentException::new).getStation().getName());
             train.setCoachNumber(trainCoachRepository.findFirstByTrainIdOrderByNumberDesc(train.getId())
                     .map(TrainCoach::getNumber)
                     .orElseThrow(IllegalAccessError::new));
