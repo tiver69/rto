@@ -1,6 +1,19 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import ConfirmBuyingPopup from "./ConfirmBuyingPopup";
 
 class Coach extends Component {
+  constructor() {
+    super();
+    this.state = {
+      justBoughtPlaces: [],
+      showPopup: false,
+      placeNumber: ""
+    };
+    this.togglePopup = this.togglePopup.bind(this);
+  }
+
   getRowByTypeId = typeId => {
     let rows = [];
     switch (typeId) {
@@ -32,7 +45,10 @@ class Coach extends Component {
   };
 
   getPlaceView = (placeNumber, bookedPlaces) => {
-    if (bookedPlaces.includes(placeNumber)) {
+    if (
+      bookedPlaces.includes(placeNumber) ||
+      this.state.justBoughtPlaces.includes(placeNumber)
+    ) {
       return (
         <div
           className="col place disable"
@@ -49,12 +65,27 @@ class Coach extends Component {
           title="Free"
           value={placeNumber}
           key={"place#" + placeNumber}
+          onClick={this.togglePopup}
         >
           {placeNumber}
         </button>
       );
     }
   };
+
+  togglePopup(e) {
+    e.preventDefault();
+    if (this.state.showPopup)
+      this.setState({
+        placeNumber: "",
+        showPopup: !this.state.showPopup
+      });
+    else
+      this.setState({
+        placeNumber: e.target.value,
+        showPopup: !this.state.showPopup
+      });
+  }
 
   createCoachView = (number, typeId, bookedPlaces) => {
     let coach = [];
@@ -94,6 +125,13 @@ class Coach extends Component {
     return coach;
   };
 
+  componentWillReceiveProps(nextProps) {
+    // TO_DO: handle errors
+    if (nextProps.ticket.ticket) {
+      this.state.justBoughtPlaces.push(nextProps.ticket.ticket.place);
+    }
+  }
+
   render() {
     const { coach } = this.props;
     return (
@@ -116,9 +154,28 @@ class Coach extends Component {
             )}
           </div>
         </div>
+        {this.state.showPopup ? (
+          <ConfirmBuyingPopup
+            coach={coach}
+            text={this.state.placeNumber}
+            closePopup={this.togglePopup.bind(this)}
+            history={this.props.history}
+          />
+        ) : null}
       </React.Fragment>
     );
   }
 }
 
-export default Coach;
+Coach.propTypes = {
+  ticket: PropTypes.object.isRequired
+};
+
+const mapStateToProps = state => ({
+  ticket: state.ticket
+});
+
+export default connect(
+  mapStateToProps,
+  {}
+)(Coach);

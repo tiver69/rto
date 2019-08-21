@@ -131,7 +131,11 @@ class BookingCoach extends Component {
                     {this.createCoachNumbers(trainParam.coachNumber)}
                   </ul>
                 </div>
-                <Coach key={coach.number} coach={coach} />
+                <Coach
+                  key={coach.number}
+                  coach={coach}
+                  history={this.props.history}
+                />
               </div>
             </div>
           </div>

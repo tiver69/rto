@@ -1,5 +1,6 @@
 // Ticket actions
 export const GET_PASSENGER_TICKETS = "GET_PASSENGER_TICKETS";
+export const SAVE_NEW_TICKET = "SAVE_NEW_TICKET";
 
 // Station actions
 export const GET_STATIONS = "GET_STATIONS";
