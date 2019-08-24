@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -75,7 +74,13 @@ public class TicketService {
     }
 
     public Ticket save(Ticket ticket) {
-        ticket.setPrice(0);
+//        TO_DO: proper validation
         return ticketRepository.save(ticket);
+    }
+
+    public Integer countTicketPrice(Long trainId, Long trainCoachId,
+                                    Long departureStationId, Long destinationStationId) {
+        return stopRepository.countPriceByDirectionAndTrainCoachId(trainId, trainCoachId,
+                departureStationId, destinationStationId).orElseThrow(IllegalArgumentException::new);
     }
 }

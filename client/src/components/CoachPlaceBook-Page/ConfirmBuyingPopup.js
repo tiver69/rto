@@ -1,7 +1,10 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { savePassengerTicket } from "../../actions/ticketActions";
+import {
+  savePassengerTicket,
+  countTicketPrice
+} from "../../actions/ticketActions";
 import IcoMoon from "react-icomoon";
 
 class ConfirmBuyingPopup extends React.Component {
@@ -9,6 +12,15 @@ class ConfirmBuyingPopup extends React.Component {
     super();
     this.onConfirmClick = this.onConfirmClick.bind(this);
     this.onAndContinueClick = this.onAndContinueClick.bind(this);
+  }
+
+  componentDidMount() {
+    this.props.countTicketPrice(
+      this.props.search.trainParam.id,
+      this.props.coach.id,
+      this.props.search.directionParam.departureStation.value,
+      this.props.search.directionParam.destinationStation.value
+    );
   }
 
   onAndReturnToHomeClick = placeNumber => {
@@ -45,10 +57,10 @@ class ConfirmBuyingPopup extends React.Component {
       destinationStation: destinationStation,
       departureDate: this.props.search.directionParam.departureDate,
       trainCoach: trainCoach,
-      place: placeNumber.target.value
+      place: placeNumber.target.value,
+      price: this.props.ticket.ticketPrice
     };
-    // TO_DO: create popup with confirm request for continue bying, return to main page or cansel.
-    this.props.savePassengerTicket(newTicket, null);
+    this.props.savePassengerTicket(newTicket);
   };
 
   render() {
@@ -65,7 +77,7 @@ class ConfirmBuyingPopup extends React.Component {
                   <br />
                   PLACE - {this.props.text}
                   <br />
-                  PRICE - ticket.price₴
+                  PRICE - {this.props.ticket.ticketPrice}₴
                   <br />
                 </span>
               </div>
@@ -77,18 +89,18 @@ class ConfirmBuyingPopup extends React.Component {
                 </h3>
 
                 <p>
-                  <IcoMoon className="icon" icon="road" />
-                  Train number # {this.props.search.trainParam.id}
+                  <IcoMoon className="icon" icon="road" /> Train number #{" "}
+                  {this.props.search.trainParam.id}
                 </p>
 
                 <p>
-                  <IcoMoon className="icon" icon="clock" />
-                  Departure Time - {this.props.search.trainParam.departureTime}
+                  <IcoMoon className="icon" icon="clock" /> Departure Time -{" "}
+                  {this.props.search.trainParam.departureTime}
                 </p>
 
                 <p>
-                  <IcoMoon className="icon" icon="clock" />
-                  Arrival - {this.props.search.trainParam.arrivalTime}
+                  <IcoMoon className="icon" icon="clock" /> Arrival -{" "}
+                  {this.props.search.trainParam.arrivalTime}
                 </p>
 
                 <h3>
@@ -131,14 +143,16 @@ class ConfirmBuyingPopup extends React.Component {
 
 ConfirmBuyingPopup.propTypes = {
   search: PropTypes.object.isRequired,
-  savePassengerTicket: PropTypes.func.isRequired
+  savePassengerTicket: PropTypes.func.isRequired,
+  countTicketPrice: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
+  ticket: state.ticket,
   search: state.search
 });
 
 export default connect(
   mapStateToProps,
-  { savePassengerTicket }
+  { savePassengerTicket, countTicketPrice }
 )(ConfirmBuyingPopup);

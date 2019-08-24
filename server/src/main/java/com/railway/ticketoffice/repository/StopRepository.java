@@ -25,6 +25,22 @@ public interface StopRepository extends CrudRepository<Stop, StopKey> {
     List<TrainInfoDto> findAllTrainsByDirection(@Param("departureStationId") Long departureStationId,
                                                 @Param("destinationStationId") Long destinationStationId);
 
+
+    @Query("SELECT SUM(s.price) + " +
+            "SUM(s.price) * (SELECT t.markup From Train t where t.id = :trainId) / 100 + " +
+            "SUM(s.price) * (SELECT tc.coachType.markup From TrainCoach tc where tc.id = :trainCoachId) / 100 " +
+            "FROM Stop s " +
+            "WHERE s.order > (SELECT s1.order FROM Stop s1 WHERE s1.station.id = :departureStationId AND s1.train.id = :trainId) " +
+            "AND " +
+            "s.order <= (SELECT s2.order FROM Stop s2 WHERE s2.station.id = :destinationStationId AND s2.train.id = :trainId) " +
+            "AND " +
+            "s.train.id = :trainId")
+    Optional<Integer> countPriceByDirectionAndTrainCoachId(@Param("trainId") Long trainId,
+                                                 @Param("trainCoachId") Long trainCoachId,
+                                                 @Param("departureStationId") Long departureStationId,
+                                                 @Param("destinationStationId") Long destinationStationId);
+
     Optional<Stop> findByTrainIdAndOrder(Long trainId, Integer order);
+
     Optional<Stop> findFirstByTrainIdOrderByOrderDesc(Long trainId);
 }

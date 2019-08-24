@@ -13,7 +13,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @DataJpaTest
-//@Ignore
+@Ignore
 public class StopRepositoryTest {
 
     @Autowired
@@ -38,8 +38,13 @@ public class StopRepositoryTest {
     }
 
     @Test
-    public void test() {
+    public void findAllTrainsByDirection() {
         System.out.println(stopRepository.
                 findAllTrainsByDirection( 2L, 1L));
+    }
+
+    @Test
+    public void countPriceByDirectionAndTrainId() {
+        System.out.println(stopRepository.countPriceByDirectionAndTrainCoachId(7772L, 20L, 4L, 1L));
     }
 }

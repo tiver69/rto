@@ -1,5 +1,10 @@
 import axios from "axios";
-import { GET_PASSENGER_TICKETS, GET_ERRORS, SAVE_NEW_TICKET } from "./types";
+import {
+  GET_PASSENGER_TICKETS,
+  GET_ERRORS,
+  SAVE_NEW_TICKET,
+  COUNT_TICKET_PRICE
+} from "./types";
 
 export const getPassengerTickets = passengerId => async dispatch => {
   const res = await axios.get(`/api/ticket?passengerId=${passengerId}`);
@@ -9,11 +14,25 @@ export const getPassengerTickets = passengerId => async dispatch => {
   });
 };
 
-export const savePassengerTicket = (ticket, history) => async dispatch => {
+export const countTicketPrice = (
+  trainId,
+  trainCoachId,
+  departureStationId,
+  destinationStationId
+) => async dispatch => {
+  const res = await axios.get(
+    `/api/ticket/price?trainId=${trainId}&trainCoachId=${trainCoachId}&departureStationId=${departureStationId}&destinationStationId=${destinationStationId}`
+  );
+  dispatch({
+    type: COUNT_TICKET_PRICE,
+    payload: res.data
+  });
+};
+
+export const savePassengerTicket = ticket => async dispatch => {
   if (window.confirm("Do you confirm bying this ticket?")) {
     try {
       const res = await axios.post("/api/ticket/save", ticket);
-      // history.push(`/home/1`);
       dispatch({
         type: GET_ERRORS,
         payload: {}
