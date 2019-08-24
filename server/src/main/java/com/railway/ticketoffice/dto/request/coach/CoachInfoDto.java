@@ -6,6 +6,7 @@ import java.util.List;
 
 @Data
 public class CoachInfoDto {
+    private Long id;
     private Long typeId;
     private String name;
     private Integer number;
@@ -18,7 +19,8 @@ public class CoachInfoDto {
         this.totalPlaces = totalPlaces;
     }
 
-    public CoachInfoDto(Long typeId, String name, Integer number, Integer totalPlaces) {
+    public CoachInfoDto(Long id, Long typeId, String name, Integer number, Integer totalPlaces) {
+        this.id = id;
         this.typeId = typeId;
         this.name = name;
         this.number = number;

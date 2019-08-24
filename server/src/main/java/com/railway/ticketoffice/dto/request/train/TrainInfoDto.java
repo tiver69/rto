@@ -18,10 +18,8 @@ public class TrainInfoDto {
 
     private List<CoachTypeInfoDto> coachTypeInfoList;
 
-    public TrainInfoDto(Long id, String firstStationName, String lastStationName, LocalTime departureTime, LocalTime arrivalTime) {
+    public TrainInfoDto(Long id, LocalTime departureTime, LocalTime arrivalTime) {
         this.id = id;
-        this.firstStationName = firstStationName;
-        this.lastStationName = lastStationName;
         this.departureTime = departureTime;
         this.arrivalTime = arrivalTime;
     }

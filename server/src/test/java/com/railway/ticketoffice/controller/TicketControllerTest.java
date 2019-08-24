@@ -33,4 +33,17 @@ public class TicketControllerTest {
         mockMvc.perform(get("/api/ticket?passengerId=0"))
                 .andExpect(status().isBadRequest());
     }
+
+    @Test
+    public void shouldReturnOkIfValidParam() throws Exception {
+        mockMvc.perform(get("/api/ticket/price?trainId=732&trainCoachId=20&departureStationId=2&destinationStationId=1"))
+                .andExpect(status().isOk())
+                .andExpect((content().contentType(APPLICATION_JSON_UTF8)));
+    }
+
+    @Test
+    public void shouldReturnBadRequestIfNotValidParam() throws Exception {
+        mockMvc.perform(get("/api/ticket/price?trainId=72332&trainCoachId=20&departureStationId=1&destinationStationId=2"))
+                .andExpect(status().isBadRequest());
+    }
 }

@@ -1,8 +1,13 @@
-import { GET_PASSENGER_TICKETS } from "../actions/types";
+import {
+  GET_PASSENGER_TICKETS,
+  SAVE_NEW_TICKET,
+  COUNT_TICKET_PRICE
+} from "../actions/types";
 
 const initialState = {
   tickets: [],
-  ticket: {}
+  ticket: {},
+  ticketPrice: 0
 };
 
 export default function(state = initialState, action) {
@@ -11,6 +16,16 @@ export default function(state = initialState, action) {
       return {
         ...state,
         tickets: action.payload
+      };
+    case SAVE_NEW_TICKET:
+      return {
+        ...state,
+        ticket: action.payload
+      };
+    case COUNT_TICKET_PRICE:
+      return {
+        ...state,
+        ticketPrice: action.payload
       };
 
     default:

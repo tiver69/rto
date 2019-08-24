@@ -1,5 +1,6 @@
 package com.railway.ticketoffice.controller;
 
+import com.railway.ticketoffice.domain.Ticket;
 import com.railway.ticketoffice.dto.TicketDto;
 import com.railway.ticketoffice.service.TicketService;
 import org.apache.log4j.Logger;
@@ -28,9 +29,32 @@ public class TicketController {
             List<TicketDto> response = ticketService.findAllByPassenger(passengerId);
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (IllegalArgumentException e) {
-            LOG.error("Tickets request for passenger#" + passengerId+" - passenger not found!");
+            LOG.error("Tickets request for passenger#" + passengerId + " - passenger not found!");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+    }
 
+    @PostMapping("/save")
+    public ResponseEntity<?> saveNewTicket(@RequestBody Ticket ticket) {
+        LOG.info("Adding new ticket - " + ticket);
+        Ticket newTicket = ticketService.save(ticket);
+        return new ResponseEntity<Ticket>(newTicket, HttpStatus.CREATED);
+    }
+
+    @GetMapping(value = "/price", produces = "application/json")
+    public ResponseEntity<?> countTicketPrice(@RequestParam("trainId") Long trainId,
+                                              @RequestParam("trainCoachId") Long trainCoachId,
+                                              @RequestParam("departureStationId") Long departureStationId,
+                                              @RequestParam("destinationStationId") Long destinationStationId) {
+        LOG.info(String.format("Request for ticket price for train#%d in coach#%d from station#%d - to station#%d",
+                trainId, trainCoachId, departureStationId, destinationStationId));
+        try {
+            Integer response = ticketService.countTicketPrice(trainId, trainCoachId, departureStationId, destinationStationId);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }
+        catch (IllegalArgumentException e) {
+            LOG.error("Request for ticket price - wrong arguments!");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 }
