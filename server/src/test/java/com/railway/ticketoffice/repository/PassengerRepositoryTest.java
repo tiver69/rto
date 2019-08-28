@@ -23,4 +23,9 @@ public class PassengerRepositoryTest {
     public void findAll() {
         System.out.println(passengerRepository.findAll());
     }
+
+    @Test
+    public void findAllPassengersInfo(){
+        System.out.println(passengerRepository.findAllPassengersInfo());
+    }
 }
