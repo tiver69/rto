@@ -12,6 +12,7 @@ import SignUp from "./components/Page/SignUp";
 import Home from "./components/Home-Page/Home";
 import { Provider } from "react-redux";
 import store from "./store";
+import UserList from "./components/UserManage-Page/UserList";
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
           <Route exact path="/sign-up" component={SignUp} />
           <Route exact path="/booking/train" component={BookingTrain} />
           <Route exact path="/booking/coach" component={BookingCoach} />
+          <Route exact path="/userlist" component={UserList} />
         </div>
       </Router>
     </Provider>

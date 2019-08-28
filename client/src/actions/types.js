@@ -12,6 +12,9 @@ export const SEARCH_FOR_TRAINS = "SEARCH_FOR_TRAINS";
 // Coach actions
 export const SEARCH_FOR_COACES = "SEARCH_FOR_COACES";
 
+//  Passenger actions
+export const GET_PASSENGERS = "GET_PASSENGERS";
+
 // Internal actions
 export const SET_TRAIN_PARAM = "SET_TRAIN_PARAM";
 export const SET_DIRECTION_PARAM = "SET_DIRECTION_PARAM";
