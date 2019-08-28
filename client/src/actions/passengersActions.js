@@ -1,5 +1,5 @@
 import axios from "axios";
-import { GET_PASSENGERS } from "./types";
+import { GET_PASSENGERS, GET_ERRORS } from "./types";
 
 export const getPassengers = () => async dispatch => {
   const res = await axios.get("/api/passenger");
@@ -7,4 +7,22 @@ export const getPassengers = () => async dispatch => {
     type: GET_PASSENGERS,
     payload: res.data
   });
+};
+
+export const updatePassenger = passenger => async dispatch => {
+  if (window.confirm("Do you really want to update passenger data?")) {
+    try {
+      const res = await axios.post("/api/passenger/update", passenger);
+      dispatch({
+        type: GET_ERRORS,
+        payload: {}
+      });
+      return res.data;
+    } catch (err) {
+      dispatch({
+        type: GET_ERRORS,
+        payload: err.response.data
+      });
+    }
+  }
 };

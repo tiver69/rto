@@ -12,7 +12,6 @@ public class PassengerDto {
     private String login;
     private Long totalTickets;
     private LocalDate lastActive;
-    private boolean isEditMode;
 
     public PassengerDto(Long id, String firstName, String lastName, String login, Long totalTickets, LocalDate lastActive) {
         this.id = id;
@@ -21,6 +20,5 @@ public class PassengerDto {
         this.login = login;
         this.totalTickets = totalTickets;
         this.lastActive = lastActive;
-        this.isEditMode = false;
     }
 }

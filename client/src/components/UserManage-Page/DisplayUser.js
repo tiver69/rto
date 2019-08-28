@@ -1,25 +1,52 @@
 import React, { Component } from "react";
 import IcoMoon from "react-icomoon";
 import classnames from "classnames";
+import { updatePassenger } from "../../actions/passengersActions";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
 
 class DisplayUser extends Component {
   constructor() {
     super();
+
+    // TO_DO: set property to view mode from props when errors occupied
     this.state = {
+      id: "",
       firstName: "",
       lastName: "",
       login: "",
       editMode: false
     };
     this.toEditMode = this.toEditMode.bind(this);
+    this.onChange = this.onChange.bind(this);
+    this.onUpdateSubmit = this.onUpdateSubmit.bind(this);
   }
 
   toEditMode() {
     this.setState({ editMode: !this.state.editMode });
   }
 
+  onChange(e) {
+    this.setState({ [e.target.name]: e.target.value });
+  }
+
+  onUpdateSubmit(e) {
+    e.preventDefault();
+
+    const updatePassenger = {
+      id: this.state.id,
+      firstName: this.state.firstName,
+      lastName: this.state.lastName,
+      login: this.state.login
+    };
+    this.props.updatePassenger(updatePassenger).then(status => {
+      this.setState({ editMode: !status });
+    });
+  }
+
   componentDidMount() {
     this.setState({
+      id: this.props.passenger.id,
       firstName: this.props.passenger.firstName,
       lastName: this.props.passenger.lastName,
       login: this.props.passenger.login
@@ -42,7 +69,7 @@ class DisplayUser extends Component {
             </span>
           </button>
 
-          <form onSubmit="">
+          <form onSubmit={this.onUpdateSubmit}>
             <button className="btn bookmark update user">
               <span>
                 <IcoMoon className="icon" icon="loop2" /> Update
@@ -54,12 +81,18 @@ class DisplayUser extends Component {
                 className="user-list update form h3"
                 value={this.state.firstName}
                 required="required"
+                placeholder="First name"
+                name="firstName"
+                onChange={this.onChange}
               />
               <input
                 type="text"
                 className="user-list update form h3"
                 value={this.state.lastName}
                 required="required"
+                placeholder="Last name"
+                name="lastName"
+                onChange={this.onChange}
               />
             </h3>
             <p>
@@ -69,6 +102,9 @@ class DisplayUser extends Component {
                 className="user-list update form"
                 value={this.state.login}
                 required="required"
+                placeholder="Login"
+                name="login"
+                onChange={this.onChange}
               />
             </p>
           </form>
@@ -101,11 +137,11 @@ class DisplayUser extends Component {
           </button>
 
           <h3>
-            {passenger.lastName} {passenger.firstName}
+            {this.state.firstName} {this.state.lastName}
           </h3>
 
           <p>
-            <IcoMoon className="icon" icon="user" /> {passenger.login}
+            <IcoMoon className="icon" icon="user" /> {this.state.login}
           </p>
         </React.Fragment>
       );
@@ -146,4 +182,11 @@ class DisplayUser extends Component {
   }
 }
 
-export default DisplayUser;
+DisplayUser.propTypes = {
+  updatePassenger: PropTypes.func.isRequired
+};
+
+export default connect(
+  null,
+  { updatePassenger }
+)(DisplayUser);
