@@ -1,5 +1,5 @@
 import axios from "axios";
-import { GET_PASSENGERS, GET_ERRORS } from "./types";
+import { GET_PASSENGERS, GET_ERRORS, REMOVE_PASSENGER } from "./types";
 
 export const getPassengers = () => async dispatch => {
   const res = await axios.get("/api/passenger");
@@ -24,5 +24,15 @@ export const updatePassenger = passenger => async dispatch => {
         payload: err.response.data
       });
     }
+  }
+};
+
+export const removePassenger = passengerId => async dispatch => {
+  if (window.confirm("Do you confirm removing this user?")) {
+    await axios.delete(`/api/passenger/remove/${passengerId}`);
+    dispatch({
+      type: REMOVE_PASSENGER,
+      payload: passengerId
+    });
   }
 };

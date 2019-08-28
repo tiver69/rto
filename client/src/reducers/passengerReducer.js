@@ -1,4 +1,4 @@
-import { GET_PASSENGERS } from "../actions/types";
+import { GET_PASSENGERS, REMOVE_PASSENGER } from "../actions/types";
 
 const initialState = {
   passengers: []
@@ -11,7 +11,13 @@ export default function(state = initialState, action) {
         ...state,
         passengers: action.payload
       };
-
+    case REMOVE_PASSENGER:
+      return {
+        ...state,
+        passengers: state.passengers.filter(
+          passenger => passenger.id !== action.payload
+        )
+      };
     default:
       return state;
   }

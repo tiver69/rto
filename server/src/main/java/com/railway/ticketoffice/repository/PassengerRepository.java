@@ -18,7 +18,7 @@ public interface PassengerRepository extends CrudRepository<Passenger, Long> {
 
     @Query("SELECT new com.railway.ticketoffice.dto.PassengerDto" +
             "(p.id, p.firstName, p.lastName, p.login, count(t.id), max(t.departureDate)) " +
-            "FROM Passenger p Join Ticket t On t.passenger.id = p.id " +
+            "FROM Passenger p LEFT JOIN Ticket t On t.passenger.id = p.id " +
             "Group By p")
     List<PassengerDto> findAllPassengersInfo();
 
@@ -28,4 +28,6 @@ public interface PassengerRepository extends CrudRepository<Passenger, Long> {
                    @Param("firstName") String firstName,
                    @Param("lastName") String lastName,
                    @Param("login") String login);
+
+    Integer removeById(Long passengerId);
 }

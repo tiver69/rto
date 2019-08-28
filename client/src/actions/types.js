@@ -14,6 +14,7 @@ export const SEARCH_FOR_COACES = "SEARCH_FOR_COACES";
 
 //  Passenger actions
 export const GET_PASSENGERS = "GET_PASSENGERS";
+export const REMOVE_PASSENGER = "REMOVE_PASSENGER";
 
 // Internal actions
 export const SET_TRAIN_PARAM = "SET_TRAIN_PARAM";

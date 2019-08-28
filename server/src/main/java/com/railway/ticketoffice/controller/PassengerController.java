@@ -36,4 +36,11 @@ public class PassengerController {
         Boolean response = passengerService.updatePassenger(passenger);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
-}
+
+    @DeleteMapping("/remove/{passengerId}")
+    public ResponseEntity<?> removePassenger(@PathVariable Long passengerId) {
+        LOG.info("Request for deleting passenger#" + passengerId);
+
+        Boolean response = passengerService.removePassenger(passengerId);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }}

@@ -1,7 +1,10 @@
 import React, { Component } from "react";
 import IcoMoon from "react-icomoon";
 import classnames from "classnames";
-import { updatePassenger } from "../../actions/passengersActions";
+import {
+  updatePassenger,
+  removePassenger
+} from "../../actions/passengersActions";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
@@ -19,6 +22,7 @@ class DisplayUser extends Component {
     };
     this.toEditMode = this.toEditMode.bind(this);
     this.onChange = this.onChange.bind(this);
+    this.onRemoveClick = this.onRemoveClick.bind(this);
     this.onUpdateSubmit = this.onUpdateSubmit.bind(this);
   }
 
@@ -42,6 +46,12 @@ class DisplayUser extends Component {
     this.props.updatePassenger(updatePassenger).then(status => {
       this.setState({ editMode: !status });
     });
+  }
+
+  onRemoveClick(e) {
+    e.preventDefault();
+
+    this.props.removePassenger(this.state.id);
   }
 
   componentDidMount() {
@@ -129,7 +139,10 @@ class DisplayUser extends Component {
               <IcoMoon className="icon" icon="star-full" /> Promote
             </span>
           </button>
-          <button className="bookmark user remove a-button">
+          <button
+            className="bookmark user remove a-button"
+            onClick={this.onRemoveClick}
+          >
             <span>
               <IcoMoon className="icon" icon="blocked" />
               Remove
@@ -183,10 +196,11 @@ class DisplayUser extends Component {
 }
 
 DisplayUser.propTypes = {
-  updatePassenger: PropTypes.func.isRequired
+  updatePassenger: PropTypes.func.isRequired,
+  removePassenger: PropTypes.func.isRequired
 };
 
 export default connect(
   null,
-  { updatePassenger }
+  { updatePassenger, removePassenger }
 )(DisplayUser);
