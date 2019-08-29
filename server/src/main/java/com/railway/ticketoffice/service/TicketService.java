@@ -8,6 +8,9 @@ import com.railway.ticketoffice.repository.TicketRepository;
 import com.railway.ticketoffice.util.DateTimeUtil;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -22,6 +25,7 @@ import static com.railway.ticketoffice.util.DateTimeUtil.DATE_TIME_FORMATTER;
 public class TicketService {
 
     private static Logger LOG = Logger.getLogger(TicketService.class);
+    private static Integer ITEMS_PER_PAGE = 5;
 
     @Autowired
     private TicketRepository ticketRepository;
@@ -70,6 +74,17 @@ public class TicketService {
         });
 
         LOG.info(String.format("Tickets request for passenger#%d - found %d", id, ticketsDto.size()));
+        return ticketsDto;
+    }
+
+    public List<TicketDto> findPageByPassenger(Long id, Integer page, Boolean isActive) throws IllegalArgumentException {
+        if (!passengerService.checkIfExistById(id)) throw new IllegalArgumentException();
+        Pageable pageable = PageRequest.of(page, ITEMS_PER_PAGE);
+        List<TicketDto> ticketsDto;
+
+        if (isActive) ticketsDto = ticketRepository.findActivePageByPassengerId(id, LocalDate.now(), pageable).getContent();
+        else ticketsDto = ticketRepository.findHistoryPageByPassengerId(id, LocalDate.now(), pageable).getContent();
+
         return ticketsDto;
     }
 

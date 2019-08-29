@@ -34,6 +34,19 @@ public class TicketController {
         }
     }
 
+    @GetMapping(value = "/page", produces = "application/json")
+    public ResponseEntity<?> findPageByPassenger(@RequestParam("passengerId") Long passengerId, @RequestParam("page") Integer page, @RequestParam("isActive") Boolean isActive) {
+        LOG.info("Tickets page# " + page + " request for passenger#" + passengerId);
+
+        try {
+            List<TicketDto> response = ticketService.findPageByPassenger(passengerId, page, isActive);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            LOG.error("Tickets request for passenger#" + passengerId + " - passenger not found!");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
     @PostMapping("/save")
     public ResponseEntity<?> saveNewTicket(@RequestBody Ticket ticket) {
         LOG.info("Adding new ticket - " + ticket);

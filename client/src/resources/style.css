@@ -1179,7 +1179,7 @@ ul.custom-pagination li {
 }
 
 .bookmark.user.remove {
-  bottom: 150px;
+  bottom: 30px;
   width: 100px;
 }
 
@@ -1189,7 +1189,7 @@ ul.custom-pagination li {
 }
 
 .bookmark.user.promote {
-  bottom: 30px;
+  bottom: 150px;
   width: 210px;
 }
 .bookmark.user.promote:hover {
