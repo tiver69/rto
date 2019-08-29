@@ -36,9 +36,9 @@ public interface StopRepository extends CrudRepository<Stop, StopKey> {
             "AND " +
             "s.train.id = :trainId")
     Optional<Integer> countPriceByDirectionAndTrainCoachId(@Param("trainId") Long trainId,
-                                                 @Param("trainCoachId") Long trainCoachId,
-                                                 @Param("departureStationId") Long departureStationId,
-                                                 @Param("destinationStationId") Long destinationStationId);
+                                                           @Param("trainCoachId") Long trainCoachId,
+                                                           @Param("departureStationId") Long departureStationId,
+                                                           @Param("destinationStationId") Long destinationStationId);
 
     Optional<Stop> findByTrainIdAndOrder(Long trainId, Integer order);
 

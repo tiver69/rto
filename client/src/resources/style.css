@@ -1026,6 +1026,32 @@ form {
   background-image: url("./history-background.png");
 }
 
+.user-display-background-pic {
+  background-image: url("./user-display-background.png");
+  background-position: center !important;
+}
+
+.user-update-background-pic {
+  background-image: url("./user-update-background.png");
+  background-position: center !important;
+}
+
+.display-inherit {
+  display: inherit;
+}
+
+.b-color-for-user-update-mode {
+  background: #e6e6e6;
+}
+
+.b-color-for-user-update {
+  background-color: #531aec;
+}
+
+.w-150px {
+  width: 150px;
+}
+
 .text-primary-o {
   color: #7971ea !important;
 }

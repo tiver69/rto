@@ -1,11 +1,13 @@
 package com.railway.ticketoffice.domain;
 
 import lombok.Data;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 
 @Entity
 @Data
+@DynamicUpdate
 @Table(name = "passengers")
 public class Passenger {
 

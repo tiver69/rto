@@ -13,7 +13,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @DataJpaTest
-@Ignore
+//@Ignore
 public class PassengerRepositoryTest {
 
     @Autowired
@@ -22,5 +22,10 @@ public class PassengerRepositoryTest {
     @Test
     public void findAll() {
         System.out.println(passengerRepository.findAll());
+    }
+
+    @Test
+    public void findAllPassengersInfo(){
+        System.out.println(passengerRepository.findAllPassengersInfo());
     }
 }
