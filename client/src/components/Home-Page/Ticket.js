@@ -12,9 +12,9 @@ class Ticket extends Component {
           className={classnames(
             "img d-block",
             {
-              "ticket-active-background-pic": ticket.active
+              "ticket-active-background-pic": this.props.active
             },
-            { "ticket-history-background-pic": !ticket.active }
+            { "ticket-history-background-pic": !this.props.active }
           )}
         >
           <span className="category">
@@ -48,12 +48,12 @@ class Ticket extends Component {
 
           <p>
             <IcoMoon className="icon" icon="clock" /> Departure -{" "}
-            {ticket.departureDateTime}
+            {ticket.departureDate} {ticket.departureTime}
           </p>
 
           <p>
             <IcoMoon className="icon" icon="clock" /> Arrival -{" "}
-            {ticket.arrivalDateTime}
+            {ticket.departureDate} {ticket.arrivalTime}
           </p>
         </div>
       </div>

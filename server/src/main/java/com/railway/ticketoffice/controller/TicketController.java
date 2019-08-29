@@ -21,21 +21,10 @@ public class TicketController {
     @Autowired
     private TicketService ticketService;
 
-    @GetMapping(value = "", produces = "application/json")
-    public ResponseEntity<?> findAllByPassenger(@RequestParam("passengerId") Long passengerId) {
-        LOG.info("Tickets request for passenger#" + passengerId);
-
-        try {
-            List<TicketDto> response = ticketService.findAllByPassenger(passengerId);
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        } catch (IllegalArgumentException e) {
-            LOG.error("Tickets request for passenger#" + passengerId + " - passenger not found!");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-    }
-
     @GetMapping(value = "/page", produces = "application/json")
-    public ResponseEntity<?> findPageByPassenger(@RequestParam("passengerId") Long passengerId, @RequestParam("page") Integer page, @RequestParam("isActive") Boolean isActive) {
+    public ResponseEntity<?> findPageByPassenger(@RequestParam("passengerId") Long passengerId,
+                                                 @RequestParam("page") Integer page,
+                                                 @RequestParam("isActive") Boolean isActive) {
         LOG.info("Tickets page# " + page + " request for passenger#" + passengerId);
 
         try {
@@ -43,6 +32,18 @@ public class TicketController {
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (IllegalArgumentException e) {
             LOG.error("Tickets request for passenger#" + passengerId + " - passenger not found!");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping(value = "/page/count", produces = "application/json")
+    public ResponseEntity<Integer> countPageByPassenger(@RequestParam("passengerId") Long passengerId,
+                                                 @RequestParam("isActive") Boolean isActive) {
+        try {
+            Integer response = ticketService.countPageByPassenger(passengerId,  isActive);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            LOG.error("Count pages request for passenger#" + passengerId + " - passenger not found!");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
@@ -64,8 +65,7 @@ public class TicketController {
         try {
             Integer response = ticketService.countTicketPrice(trainId, trainCoachId, departureStationId, destinationStationId);
             return new ResponseEntity<>(response, HttpStatus.OK);
-        }
-        catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             LOG.error("Request for ticket price - wrong arguments!");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }

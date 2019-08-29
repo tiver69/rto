@@ -19,10 +19,6 @@ public class TicketDto {
     private LocalDate departureDate;
     private LocalTime departureTime;
     private LocalTime arrivalTime;
-
-    private String departureDateTime;
-    private String arrivalDateTime;
-
     private Long trainId;
     private Integer coachNumber;
     private Integer place;
@@ -30,7 +26,9 @@ public class TicketDto {
 
     private boolean isActive;
 
-    public TicketDto(Long id, String departureStation, String destinationStation, LocalDate departureDate, LocalTime departureTime,  LocalTime arrivalTime, Long trainId, Integer coachNumber, Integer place, Integer price) {
+    public TicketDto(Long id, String departureStation, String destinationStation, LocalDate departureDate,
+                     LocalTime departureTime,  LocalTime arrivalTime, Long trainId, Integer coachNumber,
+                     Integer place, Integer price) {
         this.id = id;
         this.departureStation = departureStation;
         this.destinationStation = destinationStation;

@@ -1,7 +1,10 @@
 import React, { Component } from "react";
 import Ticket from "./Ticket";
 import { connect } from "react-redux";
-import { getPassengerTickets } from "../../actions/ticketActions";
+import {
+  getPassengerPageTickets,
+  countTicketsPages
+} from "../../actions/ticketActions";
 import PropTypes from "prop-types";
 import classnames from "classnames";
 import SearchForm from "./SearchForm";
@@ -10,59 +13,87 @@ class Home extends Component {
   constructor() {
     super();
     this.state = {
-      displayActive: true
+      displayActive: true,
+      totalPages: 0,
+      currentPage: 1
     };
   }
 
-  onDisplayActiveClick = e => {
+  onDisplayTypeClick = e => {
+    e.preventDefault();
+    const { passengerId } = this.props.match.params;
     this.setState({
-      displayActive: true
+      displayActive: e.target.value === "true"
     });
-  };
-
-  onDisplayHistoryClick = e => {
-    this.setState({
-      displayActive: false
-    });
+    this.props.getPassengerPageTickets(passengerId, 0, e.target.value);
+    this.props
+      .countTicketsPages(passengerId, e.target.value)
+      .then(countPages => {
+        this.setState({
+          totalPages: countPages
+        });
+      });
   };
 
   componentDidMount() {
     const { passengerId } = this.props.match.params;
-    this.props.getPassengerTickets(passengerId);
+    this.props.getPassengerPageTickets(
+      passengerId,
+      0,
+      this.state.displayActive
+    );
+    this.props
+      .countTicketsPages(passengerId, this.state.displayActive)
+      .then(countPages => {
+        this.setState({
+          totalPages: countPages
+        });
+      });
   }
+
+  createPages = () => {
+    let pages = [];
+    for (let i = 0; i < this.state.totalPages; i++) {
+      if (i + 1 === this.state.currentPage) {
+        pages.push(
+          <li key={"coachNumber#" + i + 1}>
+            <span>{i + 1}</span>
+          </li>
+        );
+      } else {
+        pages.push(
+          <li key={"coachNumber#" + i + 1}>
+            <button
+              value={i + 1}
+              className="a-button"
+              onClick={this.onPageClick.bind(this)}
+            >
+              {i + 1}
+            </button>
+          </li>
+        );
+      }
+    }
+    return pages;
+  };
+
+  onPageClick = number => {
+    number.preventDefault();
+
+    const { passengerId } = this.props.match.params;
+    this.props.getPassengerPageTickets(
+      passengerId,
+      number.target.value - 1,
+      this.state.displayActive
+    );
+
+    this.setState({
+      currentPage: parseInt(number.target.value)
+    });
+  };
 
   render() {
     const { tickets } = this.props.ticket;
-
-    const filterActiveTickets = tickets => {
-      let active = [];
-      const passengerTickets = tickets.map(ticket => (
-        <Ticket key={ticket.id} ticket={ticket} />
-      ));
-
-      for (let i = 0; i < passengerTickets.length; i++) {
-        if (passengerTickets[i].props.ticket.active.toString() === "true") {
-          active.push(passengerTickets[i]);
-        }
-      }
-
-      return <React.Fragment>{active}</React.Fragment>;
-    };
-
-    const filterHistoryTickets = tickets => {
-      let history = [];
-      const passengerTickets = tickets.map(ticket => (
-        <Ticket key={ticket.id} ticket={ticket} />
-      ));
-
-      for (let i = 0; i < passengerTickets.length; i++) {
-        if (passengerTickets[i].props.ticket.active.toString() === "false") {
-          history.push(passengerTickets[i]);
-        }
-      }
-
-      return <React.Fragment>{history}</React.Fragment>;
-    };
 
     return (
       <React.Fragment>
@@ -102,7 +133,8 @@ class Home extends Component {
                     >
                       <button
                         className="color-black-opacity-5 a-button"
-                        onClick={this.onDisplayActiveClick.bind(this)}
+                        onClick={this.onDisplayTypeClick.bind(this)}
+                        value="true"
                       >
                         Active
                       </button>
@@ -117,7 +149,8 @@ class Home extends Component {
                     >
                       <button
                         className="color-black-opacity-5 a-button"
-                        onClick={this.onDisplayHistoryClick.bind(this)}
+                        onClick={this.onDisplayTypeClick.bind(this)}
+                        value="false"
                       >
                         History
                       </button>
@@ -125,23 +158,17 @@ class Home extends Component {
                   </li>
                 </ul>
 
-                {/* {tickets.map(ticket => (
-                  <Ticket key={ticket.id} ticket={ticket} />
-                ))} */}
-
-                {this.state.displayActive && filterActiveTickets(tickets)}
-                {!this.state.displayActive && filterHistoryTickets(tickets)}
+                {tickets.map(ticket => (
+                  <Ticket
+                    key={ticket.id}
+                    ticket={ticket}
+                    active={this.state.displayActive}
+                  />
+                ))}
 
                 {/* <!-- pages --> */}
                 <div className="col-12 mt-5 text-center">
-                  <ul className="custom-pagination">
-                    <li>
-                      <span>1</span>
-                    </li>
-                    {/* <li>
-                                <a href="home?displayType=${displayType}&currentPage=${i}" className="color-black-opacity-5">${i}</a>
-                            </li> */}
-                  </ul>
+                  <ul className="custom-pagination">{this.createPages()}</ul>
                 </div>
               </div>
 
@@ -156,7 +183,8 @@ class Home extends Component {
 
 Home.propTypes = {
   ticket: PropTypes.object.isRequired,
-  getPassengerTickets: PropTypes.func.isRequired
+  getPassengerPageTickets: PropTypes.func.isRequired,
+  countTicketsPages: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
@@ -165,5 +193,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { getPassengerTickets }
+  { getPassengerPageTickets, countTicketsPages }
 )(Home);

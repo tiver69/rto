@@ -1,7 +1,7 @@
 import {
-  GET_PASSENGER_TICKETS,
   SAVE_NEW_TICKET,
-  COUNT_TICKET_PRICE
+  COUNT_TICKET_PRICE,
+  GET_PASSENGER_PAGE_TICKETS
 } from "../actions/types";
 
 const initialState = {
@@ -12,7 +12,7 @@ const initialState = {
 
 export default function(state = initialState, action) {
   switch (action.type) {
-    case GET_PASSENGER_TICKETS:
+    case GET_PASSENGER_PAGE_TICKETS:
       return {
         ...state,
         tickets: action.payload

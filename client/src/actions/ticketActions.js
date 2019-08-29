@@ -1,17 +1,30 @@
 import axios from "axios";
 import {
-  GET_PASSENGER_TICKETS,
   GET_ERRORS,
   SAVE_NEW_TICKET,
-  COUNT_TICKET_PRICE
+  COUNT_TICKET_PRICE,
+  GET_PASSENGER_PAGE_TICKETS
 } from "./types";
 
-export const getPassengerTickets = passengerId => async dispatch => {
-  const res = await axios.get(`/api/ticket?passengerId=${passengerId}`);
+export const getPassengerPageTickets = (
+  passengerId,
+  page,
+  isActive
+) => async dispatch => {
+  const res = await axios.get(
+    `/api/ticket/page?passengerId=${passengerId}&page=${page}&isActive=${isActive}`
+  );
   dispatch({
-    type: GET_PASSENGER_TICKETS,
+    type: GET_PASSENGER_PAGE_TICKETS,
     payload: res.data
   });
+};
+
+export const countTicketsPages = (passengerId, isActive) => async dispatch => {
+  const res = await axios.get(
+    `/api/ticket/page/count?passengerId=${passengerId}&isActive=${isActive}`
+  );
+  return res.data;
 };
 
 export const countTicketPrice = (
