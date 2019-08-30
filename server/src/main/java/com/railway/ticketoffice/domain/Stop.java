@@ -7,7 +7,7 @@ import javax.persistence.*;
 import java.time.LocalTime;
 
 @Entity
-@Table(name = "train_stations")
+@Table(name = "train_station")
 @Data
 public class Stop {
     @EmbeddedId

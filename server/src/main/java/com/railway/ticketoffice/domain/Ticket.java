@@ -11,7 +11,6 @@ import java.time.LocalDate;
 @Data
 @NoArgsConstructor
 @Builder
-@Table(name = "tickets")
 public class Ticket {
 
     @Id

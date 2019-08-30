@@ -1,6 +1,7 @@
 package com.railway.ticketoffice.repository;
 
 import com.railway.ticketoffice.domain.Stop;
+import com.railway.ticketoffice.domain.WeekDay;
 import com.railway.ticketoffice.domain.key.StopKey;
 import com.railway.ticketoffice.dto.request.train.TrainInfoDto;
 import org.springframework.data.jpa.repository.Query;
@@ -21,9 +22,11 @@ public interface StopRepository extends CrudRepository<Stop, StopKey> {
             "WHERE departure.station.id = :departureStationId " +
             "AND destination.station.id = :destinationStationId " +
             "AND departure.train = destination.train " +
-            "AND departure.order < destination.order")
-    List<TrainInfoDto> findAllTrainsByDirection(@Param("departureStationId") Long departureStationId,
-                                                @Param("destinationStationId") Long destinationStationId);
+            "AND departure.order < destination.order " +
+            "AND :weekDay MEMBER OF departure.train.frequency")
+    List<TrainInfoDto> findAllTrainsByDirectionAndWeekDay(@Param("departureStationId") Long departureStationId,
+                                                          @Param("destinationStationId") Long destinationStationId,
+                                                          @Param("weekDay") WeekDay weekDay);
 
 
     @Query("SELECT SUM(s.price) + " +

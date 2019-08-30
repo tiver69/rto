@@ -6,7 +6,6 @@ import javax.persistence.*;
 
 @Entity
 @Data
-@Table(name = "coach_types")
 public class CoachType {
 
     @Id

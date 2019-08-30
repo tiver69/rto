@@ -1,6 +1,7 @@
 package com.railway.ticketoffice.service;
 
 import com.railway.ticketoffice.domain.TrainCoach;
+import com.railway.ticketoffice.domain.WeekDay;
 import com.railway.ticketoffice.dto.request.train.TrainInfoDto;
 import com.railway.ticketoffice.repository.StationRepository;
 import com.railway.ticketoffice.repository.StopRepository;
@@ -12,7 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.format.TextStyle;
 import java.util.List;
+import java.util.Locale;
 
 @Service
 public class TrainService {
@@ -39,11 +42,12 @@ public class TrainService {
             Long destinationStation,
             String departureDate) throws IllegalArgumentException {
         LocalDate date = DateTimeUtil.parseString(departureDate);
-        //TO_DO: filter trains by frequency and requested date
         //TO_DO: add arrival date for cases when more than 24 hours
 
         List<TrainInfoDto> trainList =
-                stopRepository.findAllTrainsByDirection(departureStation, destinationStation);
+                stopRepository.findAllTrainsByDirectionAndWeekDay(departureStation, destinationStation,
+                        WeekDay.valueOf(date.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.ENGLISH)
+                                .toUpperCase()));
 
         trainList.forEach(train -> {
             train.setFirstStationName(stopRepository.findByTrainIdAndOrder(train.getId(), 0).orElseThrow(IllegalArgumentException::new).getStation().getName());
