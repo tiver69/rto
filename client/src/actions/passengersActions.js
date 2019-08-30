@@ -1,12 +1,17 @@
 import axios from "axios";
-import { GET_PASSENGERS, GET_ERRORS, REMOVE_PASSENGER } from "./types";
+import { GET_ERRORS, REMOVE_PASSENGER, GET_PASSENGERS_PAGE } from "./types";
 
-export const getPassengers = () => async dispatch => {
-  const res = await axios.get("/api/passenger");
+export const getPassengersPage = pageNumber => async dispatch => {
+  const res = await axios.get(`/api/passenger/page?page=${pageNumber}`);
   dispatch({
-    type: GET_PASSENGERS,
+    type: GET_PASSENGERS_PAGE,
     payload: res.data
   });
+};
+
+export const countPassengersPages = () => async dispatch => {
+  const res = await axios.get(`/api/passenger/page/count`);
+  return res.data;
 };
 
 export const updatePassenger = passenger => async dispatch => {

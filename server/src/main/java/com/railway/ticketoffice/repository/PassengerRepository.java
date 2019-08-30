@@ -2,6 +2,8 @@ package com.railway.ticketoffice.repository;
 
 import com.railway.ticketoffice.domain.Passenger;
 import com.railway.ticketoffice.dto.PassengerDto;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -20,7 +22,7 @@ public interface PassengerRepository extends CrudRepository<Passenger, Long> {
             "(p.id, p.firstName, p.lastName, p.login, count(t.id), max(t.departureDate)) " +
             "FROM Passenger p LEFT JOIN Ticket t On t.passenger.id = p.id " +
             "Group By p")
-    List<PassengerDto> findAllPassengersInfo();
+    Page<PassengerDto> findPagePassengersInfo(Pageable pageable);
 
     @Modifying(clearAutomatically = true)
     @Query("UPDATE Passenger p SET p.firstName = :firstName, p.lastName = :lastName, p.login = :login WHERE p.id = :id")

@@ -24,7 +24,7 @@ public interface TicketRepository extends CrudRepository<Ticket, Long> {
             "WHERE t.passenger.id = :passengerId AND t.departureDate >= :nowDate")
     Page<TicketDto> findActivePageByPassengerId(@Param("passengerId") Long passengerId,
                                                 @Param("nowDate") LocalDate nowDate,
-                                                @Param("pageable") Pageable pageable);
+                                                Pageable pageable);
 
     @Query("SELECT new com.railway.ticketoffice.dto.TicketDto(t.id, t.departureStation.name, t.destinationStation.name, t.departureDate, " +
             "s.departure, s1.arrival, t.trainCoach.train.id, t.trainCoach.number, t.place, t.price) " +
@@ -34,7 +34,7 @@ public interface TicketRepository extends CrudRepository<Ticket, Long> {
             "WHERE t.passenger.id = :passengerId AND t.departureDate < :nowDate")
     Page<TicketDto> findHistoryPageByPassengerId(@Param("passengerId") Long passengerId,
                                                  @Param("nowDate") LocalDate nowDate,
-                                                 @Param("pageable") Pageable pageable);
+                                                 Pageable pageable);
 
     @Query("SELECT new com.railway.ticketoffice.dto.request.train.CoachTypeInfoDto(tc.coachType.name, count(*)) " +
             "FROM Ticket t JOIN TrainCoach tc " +

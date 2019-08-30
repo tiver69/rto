@@ -38,9 +38,9 @@ public class TicketController {
 
     @GetMapping(value = "/page/count", produces = "application/json")
     public ResponseEntity<Integer> countPageByPassenger(@RequestParam("passengerId") Long passengerId,
-                                                 @RequestParam("isActive") Boolean isActive) {
+                                                        @RequestParam("isActive") Boolean isActive) {
         try {
-            Integer response = ticketService.countPageByPassenger(passengerId,  isActive);
+            Integer response = ticketService.countPageByPassenger(passengerId, isActive);
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (IllegalArgumentException e) {
             LOG.error("Count pages request for passenger#" + passengerId + " - passenger not found!");
@@ -52,7 +52,7 @@ public class TicketController {
     public ResponseEntity<?> saveNewTicket(@RequestBody Ticket ticket) {
         LOG.info("Adding new ticket - " + ticket);
         Ticket newTicket = ticketService.save(ticket);
-        return new ResponseEntity<Ticket>(newTicket, HttpStatus.CREATED);
+        return new ResponseEntity<>(newTicket, HttpStatus.CREATED);
     }
 
     @GetMapping(value = "/price", produces = "application/json")

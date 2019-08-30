@@ -64,7 +64,7 @@ class Home extends Component {
         pages.push(
           <li key={"coachNumber#" + i + 1}>
             <button
-              value={i + 1}
+              value={i}
               className="a-button"
               onClick={this.onPageClick.bind(this)}
             >
@@ -83,12 +83,12 @@ class Home extends Component {
     const { passengerId } = this.props.match.params;
     this.props.getPassengerPageTickets(
       passengerId,
-      number.target.value - 1,
+      number.target.value,
       this.state.displayActive
     );
 
     this.setState({
-      currentPage: parseInt(number.target.value)
+      currentPage: parseInt(number.target.value) + 1
     });
   };
 

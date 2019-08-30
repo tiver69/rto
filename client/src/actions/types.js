@@ -13,7 +13,7 @@ export const SEARCH_FOR_TRAINS = "SEARCH_FOR_TRAINS";
 export const SEARCH_FOR_COACES = "SEARCH_FOR_COACES";
 
 //  Passenger actions
-export const GET_PASSENGERS = "GET_PASSENGERS";
+export const GET_PASSENGERS_PAGE = "GET_PASSENGERS_PAGE";
 export const REMOVE_PASSENGER = "REMOVE_PASSENGER";
 
 // Internal actions
