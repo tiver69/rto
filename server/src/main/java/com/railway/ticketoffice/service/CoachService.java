@@ -1,13 +1,13 @@
 package com.railway.ticketoffice.service;
 
-import com.railway.ticketoffice.dto.request.train.CoachTypeInfoDto;
 import com.railway.ticketoffice.dto.request.coach.CoachInfoDto;
+import com.railway.ticketoffice.dto.request.train.CoachTypeInfoDto;
 import com.railway.ticketoffice.repository.TicketRepository;
 import com.railway.ticketoffice.repository.TrainCoachRepository;
 import com.railway.ticketoffice.util.DateTimeUtil;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 @Service
 public class CoachService {
 
-    private static Logger LOG = Logger.getLogger(CoachService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CoachService.class);
 
     @Autowired
     private TicketRepository ticketRepository;
@@ -44,18 +44,26 @@ public class CoachService {
                             bookedPlaceMap.get(coachType.getCoachTypeName());
             coachType.setAvailablePlaces(coachType.getTotalPlaces() - availablePlaces);
         });
+
+        LOGGER.info("Coach types request for train#{} at {} - found {}", trainId, departureDate, coachTypeList.size());
         return coachTypeList;
     }
 
-    public CoachInfoDto findAllCoachesInfoByTrainIdAndDepartureDate(Long trainId, String departureDate, Integer coachNumber) {
+    public CoachInfoDto findCoachInfoByTrainIdDepartureDateAndCoachNumber
+            (Long trainId, String departureDate, Integer coachNumber) {
         LocalDate date = DateTimeUtil.parseString(departureDate);
-        Optional<CoachInfoDto> coachesInfo = trainCoachRepository.findCoachByNumberAndTrainId(trainId, coachNumber);
-        List<Integer> coachBookedPlace = ticketRepository.findAllBookedPlacesByCoachNumberAndTrainIdAndDepartureDate(trainId, date, coachNumber);
+        Optional<CoachInfoDto> coachesInfo =
+                trainCoachRepository.findCoachByNumberAndTrainId(trainId, coachNumber);
+        List<Integer> coachBookedPlace =
+                ticketRepository.findAllBookedPlacesByCoachNumberAndTrainIdAndDepartureDate(trainId, date, coachNumber);
 
         CoachInfoDto coach = coachesInfo.orElseThrow(IllegalArgumentException::new);
-            coach.setBookedPlaces(
-                    coachBookedPlace);
-            coach.setAvailablePlaces(coach.getTotalPlaces() - coach.getBookedPlaces().size());
+        coach.setBookedPlaces(
+                coachBookedPlace);
+        coach.setAvailablePlaces(coach.getTotalPlaces() - coach.getBookedPlaces().size());
+
+        LOGGER.info("Coach#{} request for train#{} at {} - found {} available places",
+                coachNumber, trainId, departureDate, coach.getAvailablePlaces());
         return coach;
     }
 }

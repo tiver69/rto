@@ -6,19 +6,18 @@ import com.railway.ticketoffice.repository.StationRepository;
 import com.railway.ticketoffice.repository.StopRepository;
 import com.railway.ticketoffice.repository.TrainCoachRepository;
 import com.railway.ticketoffice.util.DateTimeUtil;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
 
-import static com.railway.ticketoffice.controller.TrainController.LOG_FORMAT;
-
 @Service
 public class TrainService {
 
-    private static Logger LOG = Logger.getLogger(TrainService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TrainService.class);
 
     @Autowired
     private StopRepository stopRepository;
@@ -57,7 +56,8 @@ public class TrainService {
                     coachService.findAllCoachTypesInfoByTrainIdAndDepartureDate(train.getId(), date));
         });
 
-        LOG.info(String.format(LOG_FORMAT, departureDate, departureStation, destinationStation) + " - found " + trainList.size());
+        LOGGER.info("Train request for {}, departureStation#{} - arrivalStation#{} - found {}",
+                departureDate, departureStation, destinationStation, trainList.size());
         return trainList;
     }
 

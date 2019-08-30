@@ -1,10 +1,10 @@
 package com.railway.ticketoffice.service;
 
-import com.railway.ticketoffice.controller.PassengerController;
 import com.railway.ticketoffice.domain.Passenger;
 import com.railway.ticketoffice.dto.PassengerDto;
 import com.railway.ticketoffice.repository.PassengerRepository;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -16,8 +16,8 @@ import java.util.List;
 @Service
 public class PassengerService {
 
-    private static Logger LOG = Logger.getLogger(PassengerService.class);
-    private static Integer ITEMS_PER_PAGE = 5;
+    private static final Logger LOGGER = LoggerFactory.getLogger(PassengerService.class);
+    private static final Integer ITEMS_PER_PAGE = 5;
 
     @Autowired
     private PassengerRepository passengerRepository;
@@ -30,7 +30,7 @@ public class PassengerService {
         Pageable pageable = PageRequest.of(page, ITEMS_PER_PAGE);
         List<PassengerDto> result = passengerRepository.findPagePassengersInfo(pageable).getContent();
 
-        LOG.info("Passengers request for manage page - found " + result.size());
+        LOGGER.info("Passengers request for manage page#{} - found {}", page, result.size());
         return result;
     }
 
@@ -42,13 +42,17 @@ public class PassengerService {
     @Transactional
     public Boolean updatePassenger(Passenger passenger) {
 //        TO_DO: validation
-        return
-                passengerRepository.update(passenger.getId(), passenger.getFirstName(), passenger.getLastName(), passenger.getLogin())
-                        .equals(1);
+        Boolean result = passengerRepository.update(passenger.getId(), passenger.getFirstName(), passenger.getLastName(), passenger.getLogin())
+                .equals(1);
+        LOGGER.info("Request for update passenger#{} - success {}", passenger.getId(), result);
+        return result;
+
     }
 
     @Transactional
     public Boolean removePassenger(Long passengerId) {
-        return passengerRepository.removeById(passengerId).equals(1);
+        Boolean result = passengerRepository.removeById(passengerId).equals(1);
+        LOGGER.info("Request for deleting passenger#{}- success {}", passengerId, result);
+        return result;
     }
 }
