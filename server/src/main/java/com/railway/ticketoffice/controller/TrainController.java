@@ -2,7 +2,8 @@ package com.railway.ticketoffice.controller;
 
 import com.railway.ticketoffice.dto.request.train.TrainInfoDto;
 import com.railway.ticketoffice.service.TrainService;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,8 +17,7 @@ import java.util.List;
 @RequestMapping("/api/train")
 public class TrainController {
 
-    public static String LOG_FORMAT = "Train request for %s, departureStation#%d - arrivalStation#%d";
-    private static Logger LOG = Logger.getLogger(TrainController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TrainController.class);
 
     @Autowired
     private TrainService trainService;
@@ -27,15 +27,15 @@ public class TrainController {
             @RequestParam("departureStation") Long departureStation,
             @RequestParam("destinationStation") Long destinationStation,
             @RequestParam("departureDate") String departureDate) {
-        LOG.info(String.format(LOG_FORMAT, departureDate, departureStation, destinationStation));
+        LOGGER.debug("Train request for {}, departureStation#{} - arrivalStation#{}", departureDate, departureStation, destinationStation);
 
         try {
             List<TrainInfoDto> response =
                     trainService.findAllTrainsInDirectionAtDate(departureStation, destinationStation, departureDate);
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (IllegalArgumentException | DateTimeParseException e) {
-            LOG.error(String.format(LOG_FORMAT, departureDate, departureStation, destinationStation) +
-                    " - bad request!");
+            LOGGER.error("Train request for {}, departureStation#{} - arrivalStation#{} - bad request!",
+                    departureDate, departureStation, destinationStation);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }

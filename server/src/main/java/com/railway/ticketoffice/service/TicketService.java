@@ -4,7 +4,9 @@ import com.railway.ticketoffice.domain.Ticket;
 import com.railway.ticketoffice.dto.TicketDto;
 import com.railway.ticketoffice.repository.StopRepository;
 import com.railway.ticketoffice.repository.TicketRepository;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -16,8 +18,8 @@ import java.util.List;
 @Service
 public class TicketService {
 
-    private static Logger LOG = Logger.getLogger(TicketService.class);
-    private static Integer ITEMS_PER_PAGE = 5;
+    private static final Logger LOGGER = LoggerFactory.getLogger(TicketService.class);
+    private static final Integer ITEMS_PER_PAGE = 5;
 
     @Autowired
     private TicketRepository ticketRepository;
@@ -29,29 +31,31 @@ public class TicketService {
     private StopRepository stopRepository;
 
 
-
-    public List<TicketDto> findPageByPassenger(Long id, Integer page, Boolean isActive) throws IllegalArgumentException {
-        if (!passengerService.checkIfExistById(id)) throw new IllegalArgumentException();
+    public List<TicketDto> findPageByPassenger(Long passengerId, Integer page, Boolean isActive) throws IllegalArgumentException {
+        if (!passengerService.checkIfExistById(passengerId)) throw new IllegalArgumentException();
         Pageable pageable = PageRequest.of(page, ITEMS_PER_PAGE);
         List<TicketDto> ticketsDto;
 
         if (isActive)
-            ticketsDto = ticketRepository.findActivePageByPassengerId(id, LocalDate.now(), pageable).getContent();
-        else ticketsDto = ticketRepository.findHistoryPageByPassengerId(id, LocalDate.now(), pageable).getContent();
+            ticketsDto = ticketRepository.findActivePageByPassengerId(passengerId, LocalDate.now(), pageable).getContent();
+        else
+            ticketsDto = ticketRepository.findHistoryPageByPassengerId(passengerId, LocalDate.now(), pageable).getContent();
 
-        LOG.info(String.format("Tickets page#%d request for passenger#%d - found %d", page, id, ticketsDto.size()));
+        MDC.put("passengerId", passengerId.toString());
+        LOGGER.info("Tickets page#{} request - found {}", page, ticketsDto.size());
         return ticketsDto;
     }
 
-    public Integer countPageByPassenger(Long id, Boolean isActive) throws IllegalArgumentException {
-        if (!passengerService.checkIfExistById(id)) throw new IllegalArgumentException();
+    public Integer countPageByPassenger(Long passengerId, Boolean isActive) throws IllegalArgumentException {
+        if (!passengerService.checkIfExistById(passengerId)) throw new IllegalArgumentException();
         Pageable pageable = PageRequest.of(0, ITEMS_PER_PAGE);
 
         if (isActive)
-            return ticketRepository.findActivePageByPassengerId(id, LocalDate.now(), pageable)
+            return ticketRepository.findActivePageByPassengerId(passengerId, LocalDate.now(), pageable)
                     .getTotalPages();
 
-        return ticketRepository.findHistoryPageByPassengerId(id, LocalDate.now(), pageable).getTotalPages();
+        return ticketRepository.findHistoryPageByPassengerId(passengerId, LocalDate.now(), pageable)
+                .getTotalPages();
     }
 
     public Ticket save(Ticket ticket) {
@@ -61,7 +65,10 @@ public class TicketService {
 
     public Integer countTicketPrice(Long trainId, Long trainCoachId,
                                     Long departureStationId, Long destinationStationId) {
-        return stopRepository.countPriceByDirectionAndTrainCoachId(trainId, trainCoachId,
+        Integer result = stopRepository.countPriceByDirectionAndTrainCoachId(trainId, trainCoachId,
                 departureStationId, destinationStationId).orElseThrow(IllegalArgumentException::new);
+        LOGGER.info("Request for ticket price for train#{} in coach#{} from station#{} - to station#{} - price is {}",
+                trainId, trainCoachId, departureStationId, destinationStationId, result);
+        return result;
     }
 }

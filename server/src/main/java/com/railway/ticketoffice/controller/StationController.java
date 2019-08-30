@@ -2,7 +2,8 @@ package com.railway.ticketoffice.controller;
 
 import com.railway.ticketoffice.dto.StationSelectDto;
 import com.railway.ticketoffice.service.StationService;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +19,7 @@ import java.util.List;
 @RequestMapping("/api/station")
 public class StationController {
 
-    private static Logger LOG = Logger.getLogger(StationController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(StationController.class);
 
     @Autowired
     private StationService stationService;
@@ -26,7 +27,7 @@ public class StationController {
 
     @GetMapping(value = "/select", produces = "application/json")
     public ResponseEntity<?> findAllStationForSelect(){
-        LOG.info("Stations request for select");
+        LOGGER.debug("Stations request for select");
 
         List<StationSelectDto> response = stationService.findAllForSelect();
         return new ResponseEntity<>(response, HttpStatus.OK);
