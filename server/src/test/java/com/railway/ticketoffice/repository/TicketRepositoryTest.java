@@ -6,6 +6,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -27,8 +28,9 @@ public class TicketRepositoryTest {
     }
 
     @Test
-    public void findAllByPassengerId() {
-        System.out.println(ticketRepository.findAllByPassengerId(1L));
+    public void findActivePageByPassengerId() {
+        System.out.println(ticketRepository.findActivePageByPassengerId(1L, LocalDate.now(), PageRequest.of(0, 5))
+                .getContent());
     }
 
     @Test

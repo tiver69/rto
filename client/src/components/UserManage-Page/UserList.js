@@ -1,13 +1,64 @@
 import React, { Component } from "react";
 import DisplayUser from "./DisplayUser";
-import { getPassengers } from "../../actions/passengersActions";
+import {
+  getPassengersPage,
+  countPassengersPages
+} from "../../actions/passengersActions";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
 class UserList extends Component {
-  componentDidMount() {
-    this.props.getPassengers();
+  constructor() {
+    super();
+    this.state = {
+      totalPages: 0,
+      currentPage: 1
+    };
   }
+
+  componentDidMount() {
+    // this.props.getPassengers();
+    this.props.getPassengersPage(0);
+    this.props.countPassengersPages().then(countPages => {
+      this.setState({
+        totalPages: countPages
+      });
+    });
+  }
+
+  createPages = () => {
+    let pages = [];
+    for (let i = 0; i < this.state.totalPages; i++) {
+      if (i + 1 === this.state.currentPage) {
+        pages.push(
+          <li key={"coachNumber#" + i + 1}>
+            <span>{i + 1}</span>
+          </li>
+        );
+      } else {
+        pages.push(
+          <li key={"coachNumber#" + i + 1}>
+            <button
+              value={i}
+              className="a-button"
+              onClick={this.onPageClick.bind(this)}
+            >
+              {i + 1}
+            </button>
+          </li>
+        );
+      }
+    }
+    return pages;
+  };
+
+  onPageClick = number => {
+    number.preventDefault();
+    this.props.getPassengersPage(number.target.value);
+    this.setState({
+      currentPage: parseInt(number.target.value) + 1
+    });
+  };
 
   render() {
     const { passengers } = this.props.passenger;
@@ -43,24 +94,9 @@ class UserList extends Component {
                 ))}
 
                 {/* <!-- pages --> */}
-                {/* <div className="col-12 mt-5 text-center">
-              <ul className="custom-pagination">
-                <c:forEach begin="1" end="${pages}" var="i">
-                    <c:choose>
-                        <c:when test="${currentPage eq i}">
-                            <li>
-                                <span>${i}</span>
-                            </li>
-                        </c:when>
-                        <c:otherwise>
-                            <li>
-                                <a href="users?currentPage=${i}" className="color-black-opacity-5">${i}</a>
-                            </li>
-                        </c:otherwise>
-                    </c:choose>
-                </c:forEach>
-              </ul>
-            </div> */}
+                <div className="col-12 mt-5 text-center">
+                  <ul className="custom-pagination">{this.createPages()}</ul>
+                </div>
               </div>
             </div>
           </div>
@@ -72,7 +108,8 @@ class UserList extends Component {
 
 UserList.propTypes = {
   passenger: PropTypes.object.isRequired,
-  getPassengers: PropTypes.func.isRequired
+  getPassengersPage: PropTypes.func.isRequired,
+  countPassengersPages: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
@@ -81,5 +118,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { getPassengers }
+  { getPassengersPage, countPassengersPages }
 )(UserList);

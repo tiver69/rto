@@ -6,6 +6,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -13,7 +14,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @DataJpaTest
-//@Ignore
+@Ignore
 public class PassengerRepositoryTest {
 
     @Autowired
@@ -25,7 +26,7 @@ public class PassengerRepositoryTest {
     }
 
     @Test
-    public void findAllPassengersInfo(){
-        System.out.println(passengerRepository.findAllPassengersInfo());
+    public void findPagePassengersInfo(){
+        System.out.println(passengerRepository.findPagePassengersInfo(PageRequest.of(0, 5)));
     }
 }

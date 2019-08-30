@@ -1,5 +1,5 @@
 // Ticket actions
-export const GET_PASSENGER_TICKETS = "GET_PASSENGER_TICKETS";
+export const GET_PASSENGER_PAGE_TICKETS = "GET_PASSENGER_ACTIVE_TICKETS";
 export const SAVE_NEW_TICKET = "SAVE_NEW_TICKET";
 export const COUNT_TICKET_PRICE = "COUNT_TICKET_PRICE";
 
@@ -13,7 +13,7 @@ export const SEARCH_FOR_TRAINS = "SEARCH_FOR_TRAINS";
 export const SEARCH_FOR_COACES = "SEARCH_FOR_COACES";
 
 //  Passenger actions
-export const GET_PASSENGERS = "GET_PASSENGERS";
+export const GET_PASSENGERS_PAGE = "GET_PASSENGERS_PAGE";
 export const REMOVE_PASSENGER = "REMOVE_PASSENGER";
 
 // Internal actions

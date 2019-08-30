@@ -6,6 +6,8 @@ import com.railway.ticketoffice.dto.PassengerDto;
 import com.railway.ticketoffice.repository.PassengerRepository;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,6 +17,7 @@ import java.util.List;
 public class PassengerService {
 
     private static Logger LOG = Logger.getLogger(PassengerService.class);
+    private static Integer ITEMS_PER_PAGE = 5;
 
     @Autowired
     private PassengerRepository passengerRepository;
@@ -23,11 +26,17 @@ public class PassengerService {
         return passengerRepository.findById(id).isPresent();
     }
 
-    public List<PassengerDto> findAllForManaging() {
-        List<PassengerDto> result = passengerRepository.findAllPassengersInfo();
+    public List<PassengerDto> findPageForManaging(Integer page) {
+        Pageable pageable = PageRequest.of(page, ITEMS_PER_PAGE);
+        List<PassengerDto> result = passengerRepository.findPagePassengersInfo(pageable).getContent();
 
         LOG.info("Passengers request for manage page - found " + result.size());
         return result;
+    }
+
+    public Integer countPageForManaging() {
+        Pageable pageable = PageRequest.of(0, ITEMS_PER_PAGE);
+        return passengerRepository.findPagePassengersInfo(pageable).getTotalPages();
     }
 
     @Transactional

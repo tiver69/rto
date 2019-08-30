@@ -21,17 +21,23 @@ public class PassengerController {
     @Autowired
     private PassengerService passengerService;
 
-    @GetMapping(value = "", produces = "application/json")
-    public ResponseEntity<?> findAllPassengersForManaging(){
-        LOG.info("Passengers request for manage page");
+    @GetMapping(value = "/page", produces = "application/json")
+    public ResponseEntity<?> findPagePassengersForManaging(@RequestParam("page") Integer page) {
+        LOG.info("Passengers page#" + page + " request for manage page");
 
-        List<PassengerDto> response = passengerService.findAllForManaging();
+        List<PassengerDto> response = passengerService.findPageForManaging(page);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @PostMapping(value="/update", produces = "application/json")
-    public ResponseEntity<?> updatePassenger(@RequestBody Passenger passenger){
-        LOG.info("Request for update passenger#"+ passenger.getId());
+    @GetMapping(value = "/page/count", produces = "application/json")
+    public ResponseEntity<Integer> countPagePassengersForManaging() {
+        Integer response = passengerService.countPageForManaging();
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/update", produces = "application/json")
+    public ResponseEntity<?> updatePassenger(@RequestBody Passenger passenger) {
+        LOG.info("Request for update passenger#" + passenger.getId());
 
         Boolean response = passengerService.updatePassenger(passenger);
         return new ResponseEntity<>(response, HttpStatus.OK);
@@ -43,4 +49,5 @@ public class PassengerController {
 
         Boolean response = passengerService.removePassenger(passengerId);
         return new ResponseEntity<>(response, HttpStatus.OK);
-    }}
+    }
+}

@@ -1,4 +1,4 @@
-import { GET_PASSENGERS, REMOVE_PASSENGER } from "../actions/types";
+import { REMOVE_PASSENGER, GET_PASSENGERS_PAGE } from "../actions/types";
 
 const initialState = {
   passengers: []
@@ -6,7 +6,7 @@ const initialState = {
 
 export default function(state = initialState, action) {
   switch (action.type) {
-    case GET_PASSENGERS:
+    case GET_PASSENGERS_PAGE:
       return {
         ...state,
         passengers: action.payload
