@@ -20,8 +20,8 @@ public class StationRepositoryTest {
     private StationRepository stationRepository;
 
     @Test
-    public void findAll() {
-        System.out.println(stationRepository.findAll());
+    public void findAllStationSelect() {
+        System.out.println(stationRepository.findAllStationSelect());
     }
 
     @Test

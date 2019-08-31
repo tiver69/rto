@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -27,6 +28,7 @@ public class CoachService {
     @Autowired
     private TrainCoachRepository trainCoachRepository;
 
+    @Transactional
     public List<CoachTypeInfoDto> findAllCoachTypesInfoByTrainIdAndDepartureDate(Long trainId, LocalDate departureDate) {
         List<CoachTypeInfoDto> coachTypeList = trainCoachRepository.countAllCoachTypesByTrainId(trainId);
         List<CoachTypeInfoDto> bookedPlacesList =
@@ -49,6 +51,7 @@ public class CoachService {
         return coachTypeList;
     }
 
+    @Transactional
     public CoachInfoDto findCoachInfoByTrainIdDepartureDateAndCoachNumber
             (Long trainId, String departureDate, Integer coachNumber) {
         LocalDate date = DateTimeUtil.parseString(departureDate);
@@ -58,8 +61,7 @@ public class CoachService {
                 ticketRepository.findAllBookedPlacesByCoachNumberAndTrainIdAndDepartureDate(trainId, date, coachNumber);
 
         CoachInfoDto coach = coachesInfo.orElseThrow(IllegalArgumentException::new);
-        coach.setBookedPlaces(
-                coachBookedPlace);
+        coach.setBookedPlaces(coachBookedPlace);
         coach.setAvailablePlaces(coach.getTotalPlaces() - coach.getBookedPlaces().size());
 
         LOGGER.info("Coach#{} request for train#{} at {} - found {} available places",

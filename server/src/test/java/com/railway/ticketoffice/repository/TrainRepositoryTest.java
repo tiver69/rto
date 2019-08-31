@@ -20,7 +20,6 @@ public class TrainRepositoryTest {
     private TrainRepository trainRepository;
 
     @Test
-
     public void findAll() {
         System.out.println(trainRepository.findAll());
     }

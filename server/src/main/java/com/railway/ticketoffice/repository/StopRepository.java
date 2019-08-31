@@ -17,7 +17,12 @@ public interface StopRepository extends CrudRepository<Stop, StopKey> {
 
     Optional<Stop> findByTrainIdAndStationId(Long trainId, Long StationId);
 
-    @Query("SELECT new com.railway.ticketoffice.dto.request.train.TrainInfoDto(departure.train.id, departure.departure, destination.arrival) " +
+    @Query("SELECT new com.railway.ticketoffice.dto.request.train.TrainInfoDto(" +
+            "departure.train.id, " +
+            "(SELECT MAX(tc.number) FROM TrainCoach tc WHERE tc.train.id = departure.train.id), " +
+            "(SELECT s.station.name FROM Stop s WHERE s.train.id = departure.train.id AND s.order = 0), " +
+            "(SELECT s1.station.name FROM Stop s1 WHERE s1.train.id = departure.train.id AND s1.order = (SELECT MAX(s2.order) FROM Stop s2 WHERE s2.train.id = departure.train.id)), " +
+            "departure.departure, destination.arrival) " +
             "FROM Stop departure, Stop destination " +
             "WHERE departure.station.id = :departureStationId " +
             "AND destination.station.id = :destinationStationId " +
@@ -27,7 +32,6 @@ public interface StopRepository extends CrudRepository<Stop, StopKey> {
     List<TrainInfoDto> findAllTrainsByDirectionAndWeekDay(@Param("departureStationId") Long departureStationId,
                                                           @Param("destinationStationId") Long destinationStationId,
                                                           @Param("weekDay") WeekDay weekDay);
-
 
     @Query("SELECT SUM(s.price) + " +
             "SUM(s.price) * (SELECT t.markup From Train t where t.id = :trainId) / 100 + " +
@@ -42,8 +46,4 @@ public interface StopRepository extends CrudRepository<Stop, StopKey> {
                                                            @Param("trainCoachId") Long trainCoachId,
                                                            @Param("departureStationId") Long departureStationId,
                                                            @Param("destinationStationId") Long destinationStationId);
-
-    Optional<Stop> findByTrainIdAndOrder(Long trainId, Integer order);
-
-    Optional<Stop> findFirstByTrainIdOrderByOrderDesc(Long trainId);
 }

@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.format.TextStyle;
@@ -37,6 +38,7 @@ public class TrainService {
     @Autowired
     private CoachService coachService;
 
+    @Transactional
     public List<TrainInfoDto> findAllTrainsInDirectionAtDate(
             Long departureStation,
             Long destinationStation,
@@ -50,11 +52,6 @@ public class TrainService {
                                 .toUpperCase()));
 
         trainList.forEach(train -> {
-            train.setFirstStationName(stopRepository.findByTrainIdAndOrder(train.getId(), 0).orElseThrow(IllegalArgumentException::new).getStation().getName());
-            train.setLastStationName(stopRepository.findFirstByTrainIdOrderByOrderDesc(train.getId()).orElseThrow(IllegalArgumentException::new).getStation().getName());
-            train.setCoachNumber(trainCoachRepository.findFirstByTrainIdOrderByNumberDesc(train.getId())
-                    .map(TrainCoach::getNumber)
-                    .orElseThrow(IllegalAccessError::new));
             train.setDuration(DateTimeUtil.getDuration(train.getDepartureTime(), train.getArrivalTime()));
             train.setCoachTypeInfoList(
                     coachService.findAllCoachTypesInfoByTrainIdAndDepartureDate(train.getId(), date));
@@ -64,5 +61,4 @@ public class TrainService {
                 departureDate, departureStation, destinationStation, trainList.size());
         return trainList;
     }
-
 }

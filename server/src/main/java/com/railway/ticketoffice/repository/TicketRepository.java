@@ -36,19 +36,19 @@ public interface TicketRepository extends CrudRepository<Ticket, Long> {
                                                  @Param("nowDate") LocalDate nowDate,
                                                  Pageable pageable);
 
-    @Query("SELECT new com.railway.ticketoffice.dto.request.train.CoachTypeInfoDto(tc.coachType.name, count(*)) " +
-            "FROM Ticket t JOIN TrainCoach tc " +
-            "ON t.trainCoach.id = tc.id " +
+    @Query("SELECT new com.railway.ticketoffice.dto.request.train.CoachTypeInfoDto(t.trainCoach.coachType.name, count(*)) " +
+            "FROM Ticket t " +
             "WHERE t.departureDate = :departureDate " +
-            "AND tc.train.id = :trainId " +
-            "group by tc.coachType ")
+            "AND t.trainCoach.train.id = :trainId " +
+            "group by t.trainCoach.coachType ")
     List<CoachTypeInfoDto> countBookedPlacesInCoachTypeByTrainIdAndDepartureDate(@Param("trainId") Long trainId,
                                                                                  @Param("departureDate") LocalDate departureDate);
 
     @Query("SELECT t.place " +
-            "FROM TrainCoach tc JOIN Ticket t " +
-            "ON tc.id=t.trainCoach.id " +
-            "WHERE tc.train.id = :trainId AND t.departureDate = :departureDate AND tc.number = :coachNumber")
+            "FROM Ticket t " +
+            "WHERE t.trainCoach.train.id = :trainId " +
+            "AND t.departureDate = :departureDate " +
+            "AND t.trainCoach.number = :coachNumber")
     List<Integer> findAllBookedPlacesByCoachNumberAndTrainIdAndDepartureDate(@Param("trainId") Long trainId,
                                                                              @Param("departureDate") LocalDate departureDate,
                                                                              @Param("coachNumber") Integer coachNumber);
