@@ -48,12 +48,12 @@ class Ticket extends Component {
 
           <p>
             <IcoMoon className="icon" icon="clock" /> Departure -{" "}
-            {ticket.departureDate} {ticket.departureTime}
+            {ticket.departureDateTime}
           </p>
 
           <p>
             <IcoMoon className="icon" icon="clock" /> Arrival -{" "}
-            {ticket.departureDate} {ticket.arrivalTime}
+            {ticket.arrivalDateTime}
           </p>
         </div>
       </div>

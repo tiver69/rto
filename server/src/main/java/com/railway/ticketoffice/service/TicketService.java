@@ -28,6 +28,9 @@ public class TicketService {
     private PassengerService passengerService;
 
     @Autowired
+    private StopService stopService;
+
+    @Autowired
     private StopRepository stopRepository;
 
 
@@ -42,7 +45,7 @@ public class TicketService {
             ticketsDto = ticketRepository.findHistoryPageByPassengerId(passengerId, LocalDate.now(), pageable).getContent();
 
         MDC.put("passengerId", passengerId.toString());
-        LOGGER.info("Tickets page#{} request - found {}", page, ticketsDto.size());
+        LOGGER.info("Tickets active({}) page#{} request - found {}",isActive, page, ticketsDto.size());
         return ticketsDto;
     }
 
@@ -60,6 +63,12 @@ public class TicketService {
 
     public Ticket save(Ticket ticket) {
 //        TO_DO: proper validation
+        LocalDate arrivalDate = stopService.countArrivalDateFromRootDuration(ticket.getDepartureDate(),
+                ticket.getTrainCoach().getTrain().getId(),
+                ticket.getDepartureStation().getId(),
+                ticket.getDestinationStation().getId());
+
+        ticket.setArrivalDate(arrivalDate);
         return ticketRepository.save(ticket);
     }
 

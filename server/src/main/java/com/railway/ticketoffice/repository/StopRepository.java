@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,6 +33,14 @@ public interface StopRepository extends CrudRepository<Stop, StopKey> {
     List<TrainInfoDto> findAllTrainsByDirectionAndWeekDay(@Param("departureStationId") Long departureStationId,
                                                           @Param("destinationStationId") Long destinationStationId,
                                                           @Param("weekDay") WeekDay weekDay);
+
+    @Query("SELECT s FROM Stop s WHERE s.train.id = :trainId " +
+            "AND s.order >= (SELECT s1.order FROM Stop s1  WHERE s1.station.id = :departureStationId AND s1.train.id = :trainId) " +
+            "AND s.order <= (SELECT s2.order FROM Stop s2  WHERE s2.station.id = :destinationStationId AND s2.train.id = :trainId) " +
+            "ORDER BY s.order")
+    List<Stop> getAllStopsInDirectionAndTrainId(@Param("departureStationId") Long departureStationId,
+                                                @Param("destinationStationId") Long destinationStationId,
+                                                @Param("trainId") Long trainId);
 
     @Query("SELECT SUM(s.price) + " +
             "SUM(s.price) * (SELECT t.markup From Train t where t.id = :trainId) / 100 + " +

@@ -1,6 +1,5 @@
 package com.railway.ticketoffice.service;
 
-import com.railway.ticketoffice.domain.TrainCoach;
 import com.railway.ticketoffice.domain.WeekDay;
 import com.railway.ticketoffice.dto.request.train.TrainInfoDto;
 import com.railway.ticketoffice.repository.StationRepository;
@@ -27,13 +26,7 @@ public class TrainService {
     private StopRepository stopRepository;
 
     @Autowired
-    private StationRepository stationRepository;
-
-    @Autowired
-    private TrainCoachRepository trainCoachRepository;
-
-    @Autowired
-    private StationService stationService;
+    private StopService stopService;
 
     @Autowired
     private CoachService coachService;
@@ -44,7 +37,6 @@ public class TrainService {
             Long destinationStation,
             String departureDate) throws IllegalArgumentException {
         LocalDate date = DateTimeUtil.parseString(departureDate);
-        //TO_DO: add arrival date for cases when more than 24 hours
 
         List<TrainInfoDto> trainList =
                 stopRepository.findAllTrainsByDirectionAndWeekDay(departureStation, destinationStation,
@@ -52,7 +44,9 @@ public class TrainService {
                                 .toUpperCase()));
 
         trainList.forEach(train -> {
-            train.setDuration(DateTimeUtil.getDuration(train.getDepartureTime(), train.getArrivalTime()));
+            train.setDuration(
+                    DateTimeUtil.formatDuration(
+                            stopService.countTrainDirectionDurationInMinutes(train.getId(), departureStation, destinationStation)));
             train.setCoachTypeInfoList(
                     coachService.findAllCoachTypesInfoByTrainIdAndDepartureDate(train.getId(), date));
         });

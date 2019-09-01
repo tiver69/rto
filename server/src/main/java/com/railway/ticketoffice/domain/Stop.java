@@ -24,10 +24,7 @@ public class Stop {
     private Station station;
 
     private Integer order;
-
-    @Column(name = "prise")     //TO_DO: fix for "price" in db
     private Integer price;
     private LocalTime arrival;
     private LocalTime departure;
-
 }

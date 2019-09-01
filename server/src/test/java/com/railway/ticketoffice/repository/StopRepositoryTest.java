@@ -1,7 +1,6 @@
 package com.railway.ticketoffice.repository;
 
 import com.railway.ticketoffice.domain.WeekDay;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +35,13 @@ public class StopRepositoryTest {
     @Test
     public void findAllTrainsByDirection() {
         System.out.println(stopRepository.
-                findAllTrainsByDirectionAndWeekDay( 2L, 1L, WeekDay.SUN));
+                findAllTrainsByDirectionAndWeekDay(2L, 1L, WeekDay.SUN));
+    }
+
+    @Test
+    public void getAllStopsInDirectionAndTrain() {
+        System.out.println(stopRepository.
+                getAllStopsInDirectionAndTrainId(1L, 2L, 73L));
     }
 
     @Test

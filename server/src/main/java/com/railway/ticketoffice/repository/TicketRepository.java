@@ -17,7 +17,7 @@ public interface TicketRepository extends CrudRepository<Ticket, Long> {
     List<Ticket> findAll();
 
     @Query("SELECT new com.railway.ticketoffice.dto.TicketDto(t.id, t.departureStation.name, t.destinationStation.name, t.departureDate, " +
-            "s.departure, s1.arrival, t.trainCoach.train.id, t.trainCoach.number, t.place, t.price) " +
+            "s.departure, t.arrivalDate, s1.arrival, t.trainCoach.train.id, t.trainCoach.number, t.place, t.price) " +
             "FROM Ticket t " +
             "JOIN Stop s ON t.trainCoach.train.id = s.train.id AND t.departureStation.id = s.station.id " +
             "JOIN Stop s1 ON t.trainCoach.train.id = s1.train.id AND t.destinationStation.id = s1.station.id " +
@@ -27,7 +27,7 @@ public interface TicketRepository extends CrudRepository<Ticket, Long> {
                                                 Pageable pageable);
 
     @Query("SELECT new com.railway.ticketoffice.dto.TicketDto(t.id, t.departureStation.name, t.destinationStation.name, t.departureDate, " +
-            "s.departure, s1.arrival, t.trainCoach.train.id, t.trainCoach.number, t.place, t.price) " +
+            "s.departure, t.arrivalDate, s1.arrival, t.trainCoach.train.id, t.trainCoach.number, t.place, t.price) " +
             "FROM Ticket t " +
             "JOIN Stop s ON t.trainCoach.train.id = s.train.id AND t.departureStation.id = s.station.id " +
             "JOIN Stop s1 ON t.trainCoach.train.id = s1.train.id AND t.destinationStation.id = s1.station.id " +

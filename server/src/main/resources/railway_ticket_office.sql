@@ -136,6 +136,7 @@ CREATE TABLE `ticket` (
   `departure_station_id` int(11) NOT NULL,
   `destination_station_id` int(11) NOT NULL,
   `departure_date` date NOT NULL,
+  `arrival_date` varchar(45) NOT NULL,
   `coach_id` int(11) NOT NULL,
   `place` int(11) NOT NULL,
   `price` int(11) NOT NULL,
@@ -148,7 +149,7 @@ CREATE TABLE `ticket` (
   CONSTRAINT `fk_tickets_stations1` FOREIGN KEY (`departure_station_id`) REFERENCES `station` (`id`),
   CONSTRAINT `fk_tickets_stations2` FOREIGN KEY (`destination_station_id`) REFERENCES `station` (`id`),
   CONSTRAINT `fk_tickets_trains_has_coaches1` FOREIGN KEY (`coach_id`) REFERENCES `train_coach` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1717 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1721 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -157,7 +158,7 @@ CREATE TABLE `ticket` (
 
 LOCK TABLES `ticket` WRITE;
 /*!40000 ALTER TABLE `ticket` DISABLE KEYS */;
-INSERT INTO `ticket` VALUES (4,1,2,1,'2019-05-31',20,17,472),(5,2,2,1,'2019-05-31',20,18,472),(6,1,2,3,'2019-05-31',20,19,67),(18,4,10,12,'2019-06-20',35,33,140),(24,1,1,3,'2019-05-15',45,4,164),(25,1,2,12,'2019-06-06',35,10,280),(26,1,2,1,'2019-06-12',20,16,472),(27,1,1,2,'2019-06-12',45,18,220),(28,1,1,2,'2019-06-12',45,20,220),(30,1,2,1,'2019-06-12',20,19,472),(31,1,2,8,'2019-06-12',20,9,405),(32,1,2,12,'2019-06-13',28,15,260),(33,1,13,2,'2019-06-19',48,25,115),(1704,1,2,1,'2019-06-11',38,13,210),(1705,1,2,1,'2019-06-11',38,9,210),(1708,1705,2,1,'2019-06-30',42,27,220),(1709,1705,1,2,'2019-08-31',50,24,220),(1710,1705,2,12,'2019-06-12',32,67,230),(1711,1,2,1,'2019-06-15',20,21,437),(1712,1,2,1,'2019-06-15',20,7,437),(1713,1,1,17,'2019-07-07',67,8,57),(1714,1,1,16,'2019-06-30',67,9,28),(1715,1,12,1,'2019-06-26',67,3,115),(1716,1707,2,1,'2019-06-14',37,12,210);
+INSERT INTO `ticket` VALUES (4,1,2,1,'2019-08-31','2019-08-31',20,17,472),(5,2,2,1,'2019-08-31','2019-08-31',20,18,472),(6,1,2,3,'2019-08-31','2019-08-31',20,19,67),(18,4,10,12,'2019-08-31','2019-08-31',35,33,140),(24,1,1,3,'2019-05-15','2019-05-16',45,4,164),(25,1,2,12,'2019-06-06','2019-06-06',35,10,280),(26,1,2,1,'2019-06-12','2019-06-12',20,16,472),(27,1,1,2,'2019-06-12','2019-06-13',45,18,220),(28,1,1,2,'2019-06-12','2019-06-13',45,20,220),(1708,1705,2,1,'2019-06-30','2019-06-30',42,27,220),(1709,1705,1,2,'2019-08-31','2019-08-31',50,24,220),(1710,1705,2,12,'2019-06-12','2019-06-12',32,67,230),(1716,1707,2,1,'2019-06-14','2019-06-14',37,12,210),(1720,1,1,2,'2019-11-16','2019-11-17',48,21,230);
 /*!40000 ALTER TABLE `ticket` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -253,7 +254,7 @@ CREATE TABLE `train_station` (
   `station_id` int(11) NOT NULL AUTO_INCREMENT,
   `train_id` int(11) NOT NULL,
   `order` int(11) NOT NULL,
-  `prise` int(11) NOT NULL,
+  `price` int(11) NOT NULL,
   `arrival` time DEFAULT NULL,
   `departure` time DEFAULT NULL,
   PRIMARY KEY (`station_id`,`train_id`),
@@ -283,4 +284,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-08-30 23:02:37
+-- Dump completed on 2019-09-01 15:47:26

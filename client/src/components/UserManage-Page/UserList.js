@@ -31,13 +31,13 @@ class UserList extends Component {
     for (let i = 0; i < this.state.totalPages; i++) {
       if (i + 1 === this.state.currentPage) {
         pages.push(
-          <li key={"coachNumber#" + i + 1}>
+          <li key={"pageNumber#" + i + 1}>
             <span>{i + 1}</span>
           </li>
         );
       } else {
         pages.push(
-          <li key={"coachNumber#" + i + 1}>
+          <li key={"pageNumber#" + i + 1}>
             <button
               value={i}
               className="a-button"
