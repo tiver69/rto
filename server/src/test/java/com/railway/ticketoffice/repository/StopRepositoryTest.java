@@ -1,6 +1,6 @@
 package com.railway.ticketoffice.repository;
 
-import org.junit.Ignore;
+import com.railway.ticketoffice.domain.WeekDay;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +13,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @DataJpaTest
-@Ignore
+//@Ignore
 public class StopRepositoryTest {
 
     @Autowired
@@ -33,14 +33,15 @@ public class StopRepositoryTest {
     }
 
     @Test
-    public void findFirstByTrainIdOrderByOrderDesc(){
-        System.out.println(stopRepository.findFirstByTrainIdOrderByOrderDesc(732L));
+    public void findAllTrainsByDirection() {
+        System.out.println(stopRepository.
+                findAllTrainsByDirectionAndWeekDay(2L, 1L, WeekDay.SUN));
     }
 
     @Test
-    public void findAllTrainsByDirection() {
+    public void getAllStopsInDirectionAndTrain() {
         System.out.println(stopRepository.
-                findAllTrainsByDirection( 2L, 1L));
+                getAllStopsInDirectionAndTrainId(1L, 2L, 73L));
     }
 
     @Test

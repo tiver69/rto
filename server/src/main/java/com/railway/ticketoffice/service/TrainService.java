@@ -1,6 +1,6 @@
 package com.railway.ticketoffice.service;
 
-import com.railway.ticketoffice.domain.TrainCoach;
+import com.railway.ticketoffice.domain.WeekDay;
 import com.railway.ticketoffice.dto.request.train.TrainInfoDto;
 import com.railway.ticketoffice.repository.StationRepository;
 import com.railway.ticketoffice.repository.StopRepository;
@@ -10,9 +10,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.format.TextStyle;
 import java.util.List;
+import java.util.Locale;
 
 @Service
 public class TrainService {
@@ -23,35 +26,27 @@ public class TrainService {
     private StopRepository stopRepository;
 
     @Autowired
-    private StationRepository stationRepository;
-
-    @Autowired
-    private TrainCoachRepository trainCoachRepository;
-
-    @Autowired
-    private StationService stationService;
+    private StopService stopService;
 
     @Autowired
     private CoachService coachService;
 
+    @Transactional
     public List<TrainInfoDto> findAllTrainsInDirectionAtDate(
             Long departureStation,
             Long destinationStation,
             String departureDate) throws IllegalArgumentException {
         LocalDate date = DateTimeUtil.parseString(departureDate);
-        //TO_DO: filter trains by frequency and requested date
-        //TO_DO: add arrival date for cases when more than 24 hours
 
         List<TrainInfoDto> trainList =
-                stopRepository.findAllTrainsByDirection(departureStation, destinationStation);
+                stopRepository.findAllTrainsByDirectionAndWeekDay(departureStation, destinationStation,
+                        WeekDay.valueOf(date.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.ENGLISH)
+                                .toUpperCase()));
 
         trainList.forEach(train -> {
-            train.setFirstStationName(stopRepository.findByTrainIdAndOrder(train.getId(), 0).orElseThrow(IllegalArgumentException::new).getStation().getName());
-            train.setLastStationName(stopRepository.findFirstByTrainIdOrderByOrderDesc(train.getId()).orElseThrow(IllegalArgumentException::new).getStation().getName());
-            train.setCoachNumber(trainCoachRepository.findFirstByTrainIdOrderByNumberDesc(train.getId())
-                    .map(TrainCoach::getNumber)
-                    .orElseThrow(IllegalAccessError::new));
-            train.setDuration(DateTimeUtil.getDuration(train.getDepartureTime(), train.getArrivalTime()));
+            train.setDuration(
+                    DateTimeUtil.formatDuration(
+                            stopService.countTrainDirectionDurationInMinutes(train.getId(), departureStation, destinationStation)));
             train.setCoachTypeInfoList(
                     coachService.findAllCoachTypesInfoByTrainIdAndDepartureDate(train.getId(), date));
         });
@@ -60,5 +55,4 @@ public class TrainService {
                 departureDate, departureStation, destinationStation, trainList.size());
         return trainList;
     }
-
 }

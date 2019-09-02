@@ -7,7 +7,7 @@ import javax.persistence.*;
 import java.time.LocalTime;
 
 @Entity
-@Table(name = "train_stations")
+@Table(name = "train_station")
 @Data
 public class Stop {
     @EmbeddedId
@@ -24,10 +24,7 @@ public class Stop {
     private Station station;
 
     private Integer order;
-
-    @Column(name = "prise")     //TO_DO: fix for "price" in db
     private Integer price;
     private LocalTime arrival;
     private LocalTime departure;
-
 }

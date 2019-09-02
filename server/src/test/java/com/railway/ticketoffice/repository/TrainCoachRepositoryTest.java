@@ -9,6 +9,8 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.time.LocalDate;
+
 @TestPropertySource(locations = "classpath:application-test.properties")
 @RunWith(SpringRunner.class)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -25,16 +27,12 @@ public class TrainCoachRepositoryTest {
     }
 
     @Test
-    public void findAllCoachTypesByTrainId(){
+    public void findAllCoachTypesByTrainId() {
         System.out.println(trainCoachRepository.countAllCoachTypesByTrainId(72L));
-    }
-    @Test
-    public void findCoachByNumberAndTrainId(){
-        System.out.println(trainCoachRepository.findCoachByNumberAndTrainId(732L, 1));
     }
 
     @Test
-    public void findFirstNumberByTrainIdOrderByNumberDesc() {
-        System.out.println(trainCoachRepository.findFirstByTrainIdOrderByNumberDesc(732L));
+    public void findCoachByNumberAndTrainId(){
+        System.out.println(trainCoachRepository.findCoachByNumberAndTrainId(732L, 1));
     }
 }

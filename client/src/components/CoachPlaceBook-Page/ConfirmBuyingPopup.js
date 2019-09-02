@@ -42,8 +42,12 @@ class ConfirmBuyingPopup extends React.Component {
       id: 1
       // TO_DO: setup passenger id from security session
     };
+    const train = {
+      id: this.props.search.trainParam.id
+    };
     const trainCoach = {
-      id: this.props.coach.id
+      id: this.props.coach.id,
+      train: train
     };
     const departureStation = {
       id: this.props.search.directionParam.departureStation.value

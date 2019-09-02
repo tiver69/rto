@@ -8,7 +8,6 @@ import javax.persistence.*;
 @Entity
 @Data
 @DynamicUpdate
-@Table(name = "passengers")
 public class Passenger {
 
     @Id

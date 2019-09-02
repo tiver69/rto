@@ -9,6 +9,7 @@ import java.time.format.DateTimeParseException;
 
 public class DateTimeUtil {
 
+    public final static String DURATION_FORMATTER = "%02d:%02d";
     public final static DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     public final static DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
@@ -26,13 +27,20 @@ public class DateTimeUtil {
         return LocalDate.parse(stringDate, DATE_FORMATTER);
     }
 
-    public static LocalTime getDuration(LocalTime departure, LocalTime arrival) {
-        LocalDateTime departureDateTime = LocalDate.now().atTime(departure);
-        LocalDateTime arrivalDateTime = LocalDate.now().atTime(arrival);
-        if (departure.isAfter(arrival)) {
-            arrivalDateTime = arrivalDateTime.plusDays(1);
+    public static String localDateTimeToString(LocalDateTime date) throws DateTimeParseException {
+        return date.format(DATE_TIME_FORMATTER);
+    }
+
+    public static long getDurationInMinutes(LocalTime lesserTime, LocalTime biggerTime) {
+        LocalDateTime lesserDateTime = LocalDate.now().atTime(lesserTime);
+        LocalDateTime biggerDateTime = LocalDate.now().atTime(biggerTime);
+        if (lesserTime.isAfter(biggerTime)) {
+            biggerDateTime = biggerDateTime.plusDays(1);
         }
-        long durationInSeconds = Duration.between(departureDateTime, arrivalDateTime).toSeconds();
-        return LocalTime.ofSecondOfDay(durationInSeconds);
+        return Duration.between(lesserDateTime, biggerDateTime).toMinutes();
+    }
+
+    public static String formatDuration(long durationInMinutes) {
+        return String.format(DURATION_FORMATTER, durationInMinutes / 60, durationInMinutes % 60);
     }
 }

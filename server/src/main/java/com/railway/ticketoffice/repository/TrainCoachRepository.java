@@ -1,8 +1,8 @@
 package com.railway.ticketoffice.repository;
 
 import com.railway.ticketoffice.domain.TrainCoach;
-import com.railway.ticketoffice.dto.request.train.CoachTypeInfoDto;
 import com.railway.ticketoffice.dto.request.coach.CoachInfoDto;
+import com.railway.ticketoffice.dto.request.train.CoachTypeInfoDto;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;

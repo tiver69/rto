@@ -11,7 +11,6 @@ import java.time.LocalDate;
 @Data
 @NoArgsConstructor
 @Builder
-@Table(name = "tickets")
 public class Ticket {
 
     @Id
@@ -27,35 +26,22 @@ public class Ticket {
     @JoinColumn(name = "destination_station_id", referencedColumnName = "id", nullable = false)
     private Station destinationStation;
     private LocalDate departureDate;
+    private LocalDate arrivalDate;
     @ManyToOne
     @JoinColumn(name = "coach_id", referencedColumnName = "id", nullable = false)
     private TrainCoach trainCoach;
     private Integer place;
     private Integer price;
 
-
-    public Ticket(Long id, Passenger passenger, Station departureStation, Station destinationStation, LocalDate departureDate, TrainCoach trainCoach, Integer place, Integer price) {
+    public Ticket(Long id, Passenger passenger, Station departureStation, Station destinationStation, LocalDate departureDate, LocalDate arrivalDate, TrainCoach trainCoach, Integer place, Integer price) {
         this.id = id;
         this.passenger = passenger;
         this.departureStation = departureStation;
         this.destinationStation = destinationStation;
         this.departureDate = departureDate;
+        this.arrivalDate = arrivalDate;
         this.trainCoach = trainCoach;
         this.place = place;
         this.price = price;
-    }
-
-    @Override
-    public String toString() {
-        return "Ticket{" +
-                "id=" + id +
-                ", passenger=" + passenger +
-                ", departureStation=" + departureStation +
-                ", destinationStation=" + destinationStation +
-                ", departureDate=" + departureDate +
-                ", trainCoach=" + trainCoach +
-                ", place=" + place +
-                ", price=" + price +
-                "}\n";
     }
 }

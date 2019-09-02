@@ -2,6 +2,7 @@ package com.railway.ticketoffice.dto.request.train;
 
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -14,12 +15,16 @@ public class TrainInfoDto {
 
     private LocalTime departureTime;
     private LocalTime arrivalTime;
-    private LocalTime duration;
+    private String duration;
 
     private List<CoachTypeInfoDto> coachTypeInfoList;
 
-    public TrainInfoDto(Long id, LocalTime departureTime, LocalTime arrivalTime) {
+    public TrainInfoDto(Long id, Integer coachNumber, String firstStationName, String lastStationName,
+                        LocalTime departureTime, LocalTime arrivalTime) {
         this.id = id;
+        this.coachNumber = coachNumber;
+        this.firstStationName = firstStationName;
+        this.lastStationName = lastStationName;
         this.departureTime = departureTime;
         this.arrivalTime = arrivalTime;
     }

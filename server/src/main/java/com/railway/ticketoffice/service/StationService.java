@@ -26,15 +26,7 @@ public class StationService {
     }
 
     public List<StationSelectDto> findAllForSelect() {
-        List<Station> stations = stationRepository.findAll();
-        List<StationSelectDto> stationDtoList = new ArrayList<>();
-        stations.forEach(station -> {
-            stationDtoList.add(StationSelectDto.builder()
-                    .value(station.getId())
-                    .label(station.getName())
-                    .build());
-        });
-
+        List<StationSelectDto> stationDtoList = stationRepository.findAllStationSelect();
         LOGGER.info("Stations request for select - found {}", stationDtoList.size());
         return stationDtoList;
     }
