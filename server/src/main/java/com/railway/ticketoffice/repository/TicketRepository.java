@@ -21,20 +21,14 @@ public interface TicketRepository extends CrudRepository<Ticket, Long> {
             "FROM Ticket t " +
             "JOIN Stop s ON t.trainCoach.train.id = s.train.id AND t.departureStation.id = s.station.id " +
             "JOIN Stop s1 ON t.trainCoach.train.id = s1.train.id AND t.destinationStation.id = s1.station.id " +
-            "WHERE t.passenger.id = :passengerId AND t.departureDate >= :nowDate")
-    Page<TicketDto> findActivePageByPassengerId(@Param("passengerId") Long passengerId,
-                                                @Param("nowDate") LocalDate nowDate,
-                                                Pageable pageable);
-
-    @Query("SELECT new com.railway.ticketoffice.dto.TicketDto(t.id, t.departureStation.name, t.destinationStation.name, t.departureDate, " +
-            "s.departure, t.arrivalDate, s1.arrival, t.trainCoach.train.id, t.trainCoach.number, t.place, t.price) " +
-            "FROM Ticket t " +
-            "JOIN Stop s ON t.trainCoach.train.id = s.train.id AND t.departureStation.id = s.station.id " +
-            "JOIN Stop s1 ON t.trainCoach.train.id = s1.train.id AND t.destinationStation.id = s1.station.id " +
-            "WHERE t.passenger.id = :passengerId AND t.departureDate < :nowDate")
-    Page<TicketDto> findHistoryPageByPassengerId(@Param("passengerId") Long passengerId,
-                                                 @Param("nowDate") LocalDate nowDate,
-                                                 Pageable pageable);
+            "WHERE t.passenger.id = :passengerId AND " +
+            "((t.departureDate >= :nowDate AND :isActive is true) " +
+            "OR " +
+            "(t.departureDate < :nowDate AND :isActive IS NOT true))")
+    Page<TicketDto> findPageByPassengerIdAndActiveStatus(@Param("passengerId") Long passengerId,
+                                                         @Param("nowDate") LocalDate nowDate,
+                                                         @Param("isActive") Boolean isActive,
+                                                         Pageable pageable);
 
     @Query("SELECT new com.railway.ticketoffice.dto.request.train.CoachTypeInfoDto(t.trainCoach.coachType.name, count(*)) " +
             "FROM Ticket t " +

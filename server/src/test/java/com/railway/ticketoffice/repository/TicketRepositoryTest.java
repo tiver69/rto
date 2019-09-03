@@ -29,7 +29,7 @@ public class TicketRepositoryTest {
 
     @Test
     public void findActivePageByPassengerId() {
-        System.out.println(ticketRepository.findActivePageByPassengerId(1L, LocalDate.now(), PageRequest.of(0, 5))
+        System.out.println(ticketRepository.findPageByPassengerIdAndActiveStatus(1L, LocalDate.now(), true, PageRequest.of(0, 5))
                 .getContent());
     }
 

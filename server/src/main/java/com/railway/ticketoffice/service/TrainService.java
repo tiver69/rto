@@ -35,7 +35,7 @@ public class TrainService {
     public List<TrainInfoDto> findAllTrainsInDirectionAtDate(
             Long departureStation,
             Long destinationStation,
-            String departureDate) throws IllegalArgumentException {
+            String departureDate) {
         LocalDate date = DateTimeUtil.parseString(departureDate);
 
         List<TrainInfoDto> trainList =

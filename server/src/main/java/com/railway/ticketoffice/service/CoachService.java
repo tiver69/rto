@@ -2,6 +2,7 @@ package com.railway.ticketoffice.service;
 
 import com.railway.ticketoffice.dto.request.coach.CoachInfoDto;
 import com.railway.ticketoffice.dto.request.train.CoachTypeInfoDto;
+import com.railway.ticketoffice.exception.type.DataNotFoundException;
 import com.railway.ticketoffice.repository.TicketRepository;
 import com.railway.ticketoffice.repository.TrainCoachRepository;
 import com.railway.ticketoffice.util.DateTimeUtil;
@@ -14,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -53,14 +53,15 @@ public class CoachService {
 
     @Transactional
     public CoachInfoDto findCoachInfoByTrainIdDepartureDateAndCoachNumber
-            (Long trainId, String departureDate, Integer coachNumber) {
+            (Long trainId, String departureDate, Integer coachNumber) throws DataNotFoundException {
         LocalDate date = DateTimeUtil.parseString(departureDate);
-        Optional<CoachInfoDto> coachesInfo =
-                trainCoachRepository.findCoachByNumberAndTrainId(trainId, coachNumber);
+        CoachInfoDto coach =
+                trainCoachRepository.findCoachByNumberAndTrainId(trainId, coachNumber)
+                        .orElseThrow(() -> new DataNotFoundException(
+                                String.format("Requested coach#%d doesn't exist in train#%d", coachNumber, trainId)));
         List<Integer> coachBookedPlace =
                 ticketRepository.findAllBookedPlacesByCoachNumberAndTrainIdAndDepartureDate(trainId, date, coachNumber);
 
-        CoachInfoDto coach = coachesInfo.orElseThrow(IllegalArgumentException::new);
         coach.setBookedPlaces(coachBookedPlace);
         coach.setAvailablePlaces(coach.getTotalPlaces() - coach.getBookedPlaces().size());
 

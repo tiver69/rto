@@ -2,11 +2,13 @@ package com.railway.ticketoffice.service;
 
 import com.railway.ticketoffice.domain.Passenger;
 import com.railway.ticketoffice.dto.PassengerDto;
+import com.railway.ticketoffice.exception.type.DataNotFoundException;
 import com.railway.ticketoffice.repository.PassengerRepository;
+import com.railway.ticketoffice.util.PageUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,20 +24,22 @@ public class PassengerService {
     @Autowired
     private PassengerRepository passengerRepository;
 
-    public boolean checkIfExistById(Long id) {
-        return passengerRepository.findById(id).isPresent();
+    public void checkIfExistById(Long id) throws DataNotFoundException {
+        passengerRepository.findById(id).orElseThrow(
+                () -> new DataNotFoundException("Passenger with id#" + id + " doesn't exist"));
     }
 
     public List<PassengerDto> findPageForManaging(Integer page) {
-        Pageable pageable = PageRequest.of(page, ITEMS_PER_PAGE);
-        List<PassengerDto> result = passengerRepository.findPagePassengersInfo(pageable).getContent();
+        Page<PassengerDto> result = passengerRepository.findPagePassengersInfo(
+                PageUtil.getPageableFromPageNumber(page));
+        PageUtil.checkPageBounds(page, result);
 
-        LOGGER.info("Passengers request for manage page#{} - found {}", page, result.size());
-        return result;
+        LOGGER.info("Passengers request for manage page#{} - found {}", page, result.getContent().size());
+        return result.getContent();
     }
 
     public Integer countPageForManaging() {
-        Pageable pageable = PageRequest.of(0, ITEMS_PER_PAGE);
+        Pageable pageable = PageUtil.getPageableFromPageNumber(0);
         return passengerRepository.findPagePassengersInfo(pageable).getTotalPages();
     }
 

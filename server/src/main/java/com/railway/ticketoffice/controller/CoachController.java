@@ -9,8 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.format.DateTimeParseException;
-
 @RestController
 @CrossOrigin
 @RequestMapping("/api/coach")
@@ -28,14 +26,8 @@ public class CoachController {
             @RequestParam("coachNumber") Integer coachNumber) {
         LOGGER.debug("Coach#{} request for train#{} at {}", coachNumber, trainId, departureDate);
 
-        try {
-            CoachInfoDto response =
-                    coachService.findCoachInfoByTrainIdDepartureDateAndCoachNumber(trainId, departureDate, coachNumber);
-            return new ResponseEntity<>(response, HttpStatus.OK);
-
-        } catch (DateTimeParseException e) {
-            LOGGER.error("Coach#{} request for train#{} at {} - bad request!", coachNumber, trainId, departureDate);
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+        CoachInfoDto response =
+                coachService.findCoachInfoByTrainIdDepartureDateAndCoachNumber(trainId, departureDate, coachNumber);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

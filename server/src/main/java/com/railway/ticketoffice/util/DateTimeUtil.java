@@ -13,21 +13,15 @@ public class DateTimeUtil {
     public final static DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     public final static DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
-    public static LocalDate getArrivalDate(LocalDate departureDate, LocalTime departureTime, LocalTime arrivalTime) {
-        if (arrivalTime.isBefore(departureTime))
-            return departureDate.plusDays(1L);
-        return departureDate;
+    public static LocalDate parseString(String stringDate) throws IllegalArgumentException {
+        try {
+            return LocalDate.parse(stringDate, DATE_FORMATTER);
+        } catch (DateTimeParseException ex) {
+            throw new IllegalArgumentException("Requested date has wrong format");
+        }
     }
 
-    public static boolean isFuture(LocalDateTime dateTime) {
-        return dateTime.isAfter(LocalDateTime.now());
-    }
-
-    public static LocalDate parseString(String stringDate) throws DateTimeParseException {
-        return LocalDate.parse(stringDate, DATE_FORMATTER);
-    }
-
-    public static String localDateTimeToString(LocalDateTime date) throws DateTimeParseException {
+    public static String localDateTimeToString(LocalDateTime date) {
         return date.format(DATE_TIME_FORMATTER);
     }
 
