@@ -25,6 +25,8 @@ class TrainTable extends Component {
       coachNumber: train.coachNumber,
       firstStationName: train.firstStationName,
       lastStationName: train.lastStationName,
+      departureDate: train.departureDate,
+      arrivalDate: train.arrivalDate,
       departureTime: train.departureTime,
       arrivalTime: train.arrivalTime,
       duration: train.duration

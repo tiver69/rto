@@ -15,4 +15,9 @@ public class DataValidationException extends RuntimeException {
     public DataValidationException(String message) {
         this.message = message;
     }
+    public DataValidationException(String message, HashMap<String, String> causeObject) {
+        this.message = message;
+        this.causeObject = causeObject;
+    }
+
 }

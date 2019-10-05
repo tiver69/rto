@@ -2,6 +2,7 @@ package com.railway.ticketoffice.exception.handler;
 
 import com.railway.ticketoffice.exception.type.DataNotFoundException;
 import com.railway.ticketoffice.exception.type.DataValidationException;
+import com.railway.ticketoffice.exception.type.UnexpectedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -31,6 +32,12 @@ public class MainExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<Object> handleIllegalArgumentException(IllegalArgumentException ex) {
         logError(ex);
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(UnexpectedException.class)
+    public ResponseEntity<Object> handleUnexpectedException(UnexpectedException ex) {
+        logError(ex);
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     private void logError(Exception ex) {

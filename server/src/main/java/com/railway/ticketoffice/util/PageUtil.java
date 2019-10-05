@@ -17,8 +17,8 @@ public class PageUtil {
         }
     }
 
-    public static void checkPageBounds(int requestedPage, Page foundPage){
-        if (requestedPage >= foundPage.getTotalPages())
-            throw new DataNotFoundException(String.format("Requested page#%d doesn't exist", requestedPage));
+    public static void checkPageBounds(int requestedPage, Page foundPage) {
+        if (foundPage.getTotalPages() != 0 && requestedPage >= foundPage.getTotalPages())
+        throw new DataNotFoundException(String.format("Requested page#%d doesn't exist", requestedPage));
     }
 }

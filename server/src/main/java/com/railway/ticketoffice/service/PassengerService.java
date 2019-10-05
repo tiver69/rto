@@ -2,7 +2,6 @@ package com.railway.ticketoffice.service;
 
 import com.railway.ticketoffice.domain.Passenger;
 import com.railway.ticketoffice.dto.PassengerDto;
-import com.railway.ticketoffice.exception.type.DataNotFoundException;
 import com.railway.ticketoffice.repository.PassengerRepository;
 import com.railway.ticketoffice.util.PageUtil;
 import org.slf4j.Logger;
@@ -19,15 +18,9 @@ import java.util.List;
 public class PassengerService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PassengerService.class);
-    private static final Integer ITEMS_PER_PAGE = 5;
 
     @Autowired
     private PassengerRepository passengerRepository;
-
-    public void checkIfExistById(Long id) throws DataNotFoundException {
-        passengerRepository.findById(id).orElseThrow(
-                () -> new DataNotFoundException("Passenger with id#" + id + " doesn't exist"));
-    }
 
     public List<PassengerDto> findPageForManaging(Integer page) {
         Page<PassengerDto> result = passengerRepository.findPagePassengersInfo(

@@ -14,6 +14,10 @@ public interface TrainCoachRepository extends CrudRepository<TrainCoach, Long> {
 
     List<TrainCoach> findAll();
 
+    Optional<TrainCoach> findById(Long id);
+
+    Optional<TrainCoach> findByIdAndTrainId(Long trainCoachId, Long trainId);
+
     @Query("SELECT new com.railway.ticketoffice.dto.request.train.CoachTypeInfoDto(tc.coachType.name, count(*), sum(tc.coachType.places)) " +
             "FROM TrainCoach tc " +
             "WHERE tc.train.id = :trainId " +

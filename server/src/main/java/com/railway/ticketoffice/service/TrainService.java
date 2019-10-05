@@ -2,9 +2,7 @@ package com.railway.ticketoffice.service;
 
 import com.railway.ticketoffice.domain.WeekDay;
 import com.railway.ticketoffice.dto.request.train.TrainInfoDto;
-import com.railway.ticketoffice.repository.StationRepository;
 import com.railway.ticketoffice.repository.StopRepository;
-import com.railway.ticketoffice.repository.TrainCoachRepository;
 import com.railway.ticketoffice.util.DateTimeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,9 +42,13 @@ public class TrainService {
                                 .toUpperCase()));
 
         trainList.forEach(train -> {
+            long duration = stopService.countTrainDirectionDurationInMinutes(
+                    train.getId(), departureStation, destinationStation);
             train.setDuration(
-                    DateTimeUtil.formatDuration(
-                            stopService.countTrainDirectionDurationInMinutes(train.getId(), departureStation, destinationStation)));
+                    DateTimeUtil.formatDuration(duration));
+            train.setDepartureDate(DateTimeUtil.parseString(departureDate));
+            train.setArrivalDate(DateTimeUtil.parseString(departureDate)
+                    .atTime(train.getDepartureTime()).plusMinutes(duration).toLocalDate());
             train.setCoachTypeInfoList(
                     coachService.findAllCoachTypesInfoByTrainIdAndDepartureDate(train.getId(), date));
         });

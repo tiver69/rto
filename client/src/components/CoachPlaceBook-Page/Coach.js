@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
+import { cleanErrors } from "../../actions/errorActions";
 import ConfirmBuyingPopup from "./ConfirmBuyingPopup";
 
 class Coach extends Component {
@@ -75,12 +76,13 @@ class Coach extends Component {
 
   togglePopup(e) {
     e.preventDefault();
-    if (this.state.showPopup)
+    if (this.state.showPopup) {
       this.setState({
         placeNumber: "",
         showPopup: !this.state.showPopup
       });
-    else
+      this.props.cleanErrors();
+    } else
       this.setState({
         placeNumber: e.target.value,
         showPopup: !this.state.showPopup
@@ -168,7 +170,8 @@ class Coach extends Component {
 }
 
 Coach.propTypes = {
-  ticket: PropTypes.object.isRequired
+  ticket: PropTypes.object.isRequired,
+  cleanErrors: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
@@ -177,5 +180,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  {}
+  { cleanErrors }
 )(Coach);

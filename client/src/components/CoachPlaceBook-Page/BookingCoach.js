@@ -69,6 +69,7 @@ class BookingCoach extends Component {
 
   render() {
     const { trainParam } = this.props.search;
+    const { directionParam } = this.props.search;
     const { coach } = this.props.coach;
     return (
       <React.Fragment>
@@ -99,8 +100,16 @@ class BookingCoach extends Component {
                               {trainParam.lastStationName}
                             </td>
 
-                            <td>{trainParam.departureTime}</td>
-                            <td>{trainParam.arrivalTime}</td>
+                            <td>
+                              {directionParam.departureDate}
+                              {" - "}
+                              {trainParam.departureTime}
+                            </td>
+                            <td>
+                              {trainParam.arrivalDate}
+                              {" - "}
+                              {trainParam.arrivalTime}
+                            </td>
 
                             <td>{trainParam.duration}</td>
                           </tr>

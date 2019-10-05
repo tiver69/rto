@@ -21,4 +21,5 @@ export const SET_TRAIN_PARAM = "SET_TRAIN_PARAM";
 export const SET_DIRECTION_PARAM = "SET_DIRECTION_PARAM";
 
 // Errors actions
-export const GET_ERRORS = "GET_ERRORS";
+export const GET_STRING_ERROR = "GET_STRING_ERROR";
+export const GET_MAPPED_ERRORS = "GET_MAPPED_ERRORS";
