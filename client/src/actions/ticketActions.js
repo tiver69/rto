@@ -60,7 +60,7 @@ export const savePassengerTicket = ticket => async dispatch => {
       const res = await axios.post("/api/ticket/save", ticket);
       dispatch({
         type: GET_MAPPED_ERRORS,
-        payload: null
+        payload: {}
       });
       dispatch({
         type: SAVE_NEW_TICKET,

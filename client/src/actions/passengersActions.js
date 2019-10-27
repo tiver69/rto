@@ -26,6 +26,10 @@ export const updatePassenger = passenger => async dispatch => {
         type: GET_MAPPED_ERRORS,
         payload: {}
       });
+      dispatch({
+        type: GET_MAPPED_ERRORS,
+        payload: {}
+      });
       return res.data;
     } catch (err) {
       dispatch({

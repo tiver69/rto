@@ -18,7 +18,8 @@ class DisplayUser extends Component {
       firstName: "",
       lastName: "",
       login: "",
-      editMode: false
+      editMode: false,
+      mappedErrors: {}
     };
     this.toEditMode = this.toEditMode.bind(this);
     this.onChange = this.onChange.bind(this);
@@ -54,6 +55,12 @@ class DisplayUser extends Component {
     this.props.removePassenger(this.state.id);
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.error) {
+      this.setState({ mappedErrors: nextProps.error.mappedErrors });
+    }
+  }
+
   componentDidMount() {
     this.setState({
       id: this.props.passenger.id,
@@ -65,6 +72,7 @@ class DisplayUser extends Component {
 
   render() {
     const { passenger } = this.props;
+    const { mappedErrors } = this.state;
 
     const editMode = () => {
       return (
@@ -79,6 +87,12 @@ class DisplayUser extends Component {
             </span>
           </button>
 
+          {mappedErrors.passenger && (
+            <div className="alert alert-danger" role="alert">
+              UNEXPECTED ERROR: {mappedErrors.passenger}. Try to reload page.
+            </div>
+          )}
+
           <form onSubmit={this.onUpdateSubmit}>
             <button className="btn bookmark update user">
               <span>
@@ -86,37 +100,76 @@ class DisplayUser extends Component {
               </span>
             </button>
             <h3>
-              <input
-                type="text"
-                className="user-list update form h3"
-                value={this.state.firstName}
-                required="required"
-                placeholder="First name"
-                name="firstName"
-                onChange={this.onChange}
-              />
-              <input
-                type="text"
-                className="user-list update form h3"
-                value={this.state.lastName}
-                required="required"
-                placeholder="Last name"
-                name="lastName"
-                onChange={this.onChange}
-              />
+              <div className="row">
+                <div className="w-50">
+                  <input
+                    type="text"
+                    className={classnames(
+                      "user-list update text-center form h3",
+                      {
+                        "is-invalid": mappedErrors.firstName
+                      }
+                    )}
+                    value={this.state.firstName}
+                    required="required"
+                    placeholder="First name"
+                    name="firstName"
+                    onChange={this.onChange}
+                  />
+                  {mappedErrors.firstName && (
+                    <span className="invalid-feedback">
+                      {mappedErrors.firstName}
+                    </span>
+                  )}
+                </div>
+
+                <div className="w-50">
+                  <input
+                    type="text"
+                    className={classnames(
+                      "user-list update text-center form h3",
+                      {
+                        "is-invalid": mappedErrors.lastName
+                      }
+                    )}
+                    value={this.state.lastName}
+                    required="required"
+                    placeholder="Last name"
+                    name="lastName"
+                    onChange={this.onChange}
+                  />
+                  {mappedErrors.lastName && (
+                    <span className="invalid-feedback">
+                      {mappedErrors.lastName}
+                    </span>
+                  )}
+                </div>
+              </div>
             </h3>
-            <p>
-              <span className="icon-user" />
-              <input
-                type="text"
-                className="user-list update form"
-                value={this.state.login}
-                required="required"
-                placeholder="Login"
-                name="login"
-                onChange={this.onChange}
-              />
-            </p>
+
+            <h4>
+              <div className="row justify-content-center">
+                <div className="w-50">
+                  <span className="icon-user" />
+                  <input
+                    type="text"
+                    className={classnames("user-list update text-center form", {
+                      "is-invalid": mappedErrors.login
+                    })}
+                    value={this.state.login}
+                    required="required"
+                    placeholder="Login"
+                    name="login"
+                    onChange={this.onChange}
+                  />
+                  {mappedErrors.login && (
+                    <span className="invalid-feedback">
+                      {mappedErrors.login}
+                    </span>
+                  )}
+                </div>
+              </div>
+            </h4>
           </form>
         </React.Fragment>
       );
@@ -197,10 +250,15 @@ class DisplayUser extends Component {
 
 DisplayUser.propTypes = {
   updatePassenger: PropTypes.func.isRequired,
-  removePassenger: PropTypes.func.isRequired
+  removePassenger: PropTypes.func.isRequired,
+  error: PropTypes.object.isRequired
 };
 
+const mapStateToProps = state => ({
+  error: state.error
+});
+
 export default connect(
-  null,
+  mapStateToProps,
   { updatePassenger, removePassenger }
 )(DisplayUser);

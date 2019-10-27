@@ -18,6 +18,8 @@ public interface PassengerRepository extends CrudRepository<Passenger, Long> {
 
     Optional<Passenger> findById(Long id);
 
+    Optional<Passenger> findByLogin(String login);
+
     @Query("SELECT new com.railway.ticketoffice.dto.PassengerDto" +
             "(p.id, p.firstName, p.lastName, p.login, count(t.id), max(t.departureDate)) " +
             "FROM Passenger p LEFT JOIN Ticket t On t.passenger.id = p.id " +

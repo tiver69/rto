@@ -46,8 +46,8 @@ public class TicketValidator {
         });
 
         executeCheck(causeObject, () -> {
-            trainCoachValidator.validateExistenceCoachInTrain(ticket.getTrainCoach().getId(), ticket.getTrainCoach().getTrain().getId());
-
+            trainCoachValidator.validateExistenceCoachInTrain(ticket.getTrainCoach().getId(),
+                    ticket.getTrainCoach().getTrain().getId());
         });
 
         Optional<TrainCoach> trainCoach = trainCoachRepository.findById(ticket.getTrainCoach().getId());

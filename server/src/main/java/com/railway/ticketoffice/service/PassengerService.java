@@ -4,6 +4,8 @@ import com.railway.ticketoffice.domain.Passenger;
 import com.railway.ticketoffice.dto.PassengerDto;
 import com.railway.ticketoffice.repository.PassengerRepository;
 import com.railway.ticketoffice.util.PageUtil;
+import com.railway.ticketoffice.validator.PassengerValidator;
+import com.railway.ticketoffice.validator.TicketValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,9 @@ import java.util.List;
 public class PassengerService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PassengerService.class);
+
+    @Autowired
+    private PassengerValidator passengerValidator;
 
     @Autowired
     private PassengerRepository passengerRepository;
@@ -38,12 +43,11 @@ public class PassengerService {
 
     @Transactional
     public Boolean updatePassenger(Passenger passenger) {
-//        TO_DO: validation
+        passengerValidator.validate(passenger);
         Boolean result = passengerRepository.update(passenger.getId(), passenger.getFirstName(), passenger.getLastName(), passenger.getLogin())
                 .equals(1);
         LOGGER.info("Request for update passenger#{} - success {}", passenger.getId(), result);
         return result;
-
     }
 
     @Transactional

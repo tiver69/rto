@@ -1213,6 +1213,20 @@ ul.custom-pagination li {
   text-indent: 10px;
   border-radius: 10px;
   padding: 5px;
+  margin-left: 5px;
+  margin-bottom: 0px;
+}
+
+.user-list.update.form.is-invalid {
+  border: solid 1px #721c24;
+}
+
+.invalid-feedback {
+  color: #721c24;
+  font-size: 12px;
+  display: inherit;
+  margin-bottom: 0.25rem;
+  float: left;
 }
 
 /* COACH*/

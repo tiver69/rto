@@ -10,6 +10,9 @@ import IcoMoon from "react-icomoon";
 class ConfirmBuyingPopup extends React.Component {
   constructor() {
     super();
+    this.state = {
+      mappedErrors: {}
+    };
     this.onConfirmClick = this.onConfirmClick.bind(this);
     this.onAndContinueClick = this.onAndContinueClick.bind(this);
   }
@@ -23,30 +26,35 @@ class ConfirmBuyingPopup extends React.Component {
     );
   }
 
-  onAndReturnToHomeClick = placeNumber => {
-    placeNumber.preventDefault();
-    this.onConfirmClick(placeNumber);
-    const { mappedErrors } = this.props.error;
-    if (!mappedErrors) this.props.history.push("/home/1");
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.error) {
+      this.setState({ mappedErrors: nextProps.error.mappedErrors });
+    }
+  }
+
+  onAndReturnToHomeClick = async placeNumber => {
+    placeNumber.persist();
+    await this.onConfirmClick(placeNumber);
+    if (Object.keys(this.state.mappedErrors).length === 0)
+      this.props.history.push("/home/1");
     // TO_DO: add id of current user
   };
 
-  onAndContinueClick = placeNumber => {
-    placeNumber.preventDefault();
-    this.onConfirmClick(placeNumber);
-
-    const { mappedErrors } = this.props.error;
-    if (!mappedErrors) this.props.closePopup(placeNumber);
+  onAndContinueClick = async placeNumber => {
+    placeNumber.persist();
+    await this.onConfirmClick(placeNumber);
+    if (Object.keys(this.state.mappedErrors).length === 0)
+      this.props.closePopup(placeNumber);
   };
 
-  onConfirmClick = placeNumber => {
-    placeNumber.preventDefault();
+  onConfirmClick = async placeNumber => {
+    placeNumber.persist();
     const passenger = {
       id: 1
       // TO_DO: setup passenger id from security session
     };
     const train = {
-      id: 1234
+      id: this.props.search.trainParam.id
     };
     const trainCoach = {
       id: this.props.coach.id,
@@ -67,14 +75,16 @@ class ConfirmBuyingPopup extends React.Component {
       trainCoach: trainCoach,
       place: placeNumber.target.value
     };
-    this.props.savePassengerTicket(newTicket);
+    await this.props.savePassengerTicket(newTicket);
   };
 
   errorMapIterate = mappedErrors => {
     let errorsMessage = [];
     if (Object.keys(mappedErrors).length !== 0) {
       for (var i = 0; i < Object.keys(mappedErrors).length; i++) {
-        errorsMessage.push(<p>{mappedErrors[Object.keys(mappedErrors)[i]]}</p>);
+        errorsMessage.push(
+          <p key={i}>{mappedErrors[Object.keys(mappedErrors)[i]]}</p>
+        );
       }
       return (
         <div className="alert alert-danger" role="alert" key={i}>
@@ -86,7 +96,7 @@ class ConfirmBuyingPopup extends React.Component {
 
   render() {
     const { stringError } = this.props.error;
-    const { mappedErrors } = this.props.error;
+    const { mappedErrors } = this.state;
     return (
       <div className="popup">
         <div className="popup_inner">
