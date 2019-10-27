@@ -19,7 +19,8 @@ class DisplayUser extends Component {
       lastName: "",
       login: "",
       editMode: false,
-      mappedErrors: {}
+      mappedErrors: {},
+      lastRemoved: ""
     };
     this.toEditMode = this.toEditMode.bind(this);
     this.onChange = this.onChange.bind(this);
@@ -53,6 +54,7 @@ class DisplayUser extends Component {
     e.preventDefault();
 
     this.props.removePassenger(this.state.id);
+    this.setState({ lastRemoved: this.state.id });
   }
 
   componentWillReceiveProps(nextProps) {
@@ -73,6 +75,7 @@ class DisplayUser extends Component {
   render() {
     const { passenger } = this.props;
     const { mappedErrors } = this.state;
+    const { stringError } = this.props.error;
 
     const editMode = () => {
       return (
@@ -175,7 +178,7 @@ class DisplayUser extends Component {
       );
     };
 
-    const viewMove = () => {
+    const viewMode = () => {
       return (
         <React.Fragment>
           <button
@@ -205,7 +208,6 @@ class DisplayUser extends Component {
           <h3>
             {this.state.firstName} {this.state.lastName}
           </h3>
-
           <p>
             <IcoMoon className="icon" icon="user" /> {this.state.login}
           </p>
@@ -219,6 +221,11 @@ class DisplayUser extends Component {
           "b-color-for-user-update-mode": this.state.editMode
         })}
       >
+        {stringError && this.state.lastRemoved === this.state.id && (
+          <div className="alert alert-danger" role="alert">
+            {stringError}. Try to reload page.
+          </div>
+        )}
         <div className="d-block d-md-flex listing-horizontal">
           <div
             className={classnames("img d-block user-display-background-pic", {
@@ -230,7 +237,7 @@ class DisplayUser extends Component {
           </div>
 
           <div className="lh-content">
-            {!this.state.editMode && viewMove()}
+            {!this.state.editMode && viewMode()}
             {this.state.editMode && editMode()}
             <p>
               <IcoMoon className="icon" icon="calculator" /> Total tickets -{" "}

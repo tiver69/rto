@@ -2,6 +2,7 @@ package com.railway.ticketoffice.service;
 
 import com.railway.ticketoffice.domain.Passenger;
 import com.railway.ticketoffice.dto.PassengerDto;
+import com.railway.ticketoffice.exception.type.UnexpectedException;
 import com.railway.ticketoffice.repository.PassengerRepository;
 import com.railway.ticketoffice.util.PageUtil;
 import com.railway.ticketoffice.validator.PassengerValidator;
@@ -52,8 +53,11 @@ public class PassengerService {
 
     @Transactional
     public Boolean removePassenger(Long passengerId) {
-        Boolean result = passengerRepository.removeById(passengerId).equals(1);
-        LOGGER.info("Request for deleting passenger#{}- success {}", passengerId, result);
-        return result;
+        passengerValidator.validateExistence(passengerId);
+        boolean result = passengerRepository.removeById(passengerId).equals(1);
+        if (!result) throw new UnexpectedException("Unexpected error while removing passenger");
+
+        LOGGER.info("Request for deleting passenger#{} - success", passengerId);
+        return true;
     }
 }

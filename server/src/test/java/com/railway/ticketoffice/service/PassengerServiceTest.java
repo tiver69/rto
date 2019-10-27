@@ -56,7 +56,7 @@ public class PassengerServiceTest {
 
     @Test(expected = DataValidationException.class)
     @Rollback
-    public void shouldReturnExceptionWithNotValidParams() {
+    public void shouldReturnExceptionWithNotValidPassengerUpdateData() {
         passenger.setFirstName(NOT_VALID_FIRST_NAME);
         passenger.setLastName(NOT_VALID_LAST_NAME);
         passenger.setLogin(NOT_VALID_LOGIN);
@@ -77,7 +77,7 @@ public class PassengerServiceTest {
 
     @Test(expected = DataValidationException.class)
     @Rollback
-    public void shouldReturnExceptionWithExistingLogin() {
+    public void shouldReturnExceptionWithExistingPassengerUpdateLogin() {
         passenger.setLogin(EXISTING_LOGIN);
 
         HashMap<String, String> expectedCauseObject = new HashMap<>();
@@ -94,7 +94,7 @@ public class PassengerServiceTest {
 
     @Test(expected = DataValidationException.class)
     @Rollback
-    public void shouldReturnExceptionWithNotExistingId() {
+    public void shouldReturnExceptionWithNotExistingPassengerUpdateId() {
         passenger.setId(NOT_EXISTING_ID);
 
         HashMap<String, String> expectedCauseObject = new HashMap<>();
@@ -103,9 +103,22 @@ public class PassengerServiceTest {
         try {
             passengerService.updatePassenger(passenger);
         } catch (DataValidationException ex) {
-            String message = ex.getMessage();
             Assert.assertEquals(expectedCauseObject, ex.getCauseObject());
             throw ex;
         }
     }
+
+    @Test(expected = DataNotFoundException.class)
+    @Rollback
+    public void shouldReturnExceptionWithNotExistingPassengerRemoveId() {
+        try {
+            passengerService.removePassenger(NOT_EXISTING_ID);
+        } catch (DataNotFoundException ex) {
+            String message = ex.getMessage();
+            Assert.assertEquals(String.format(PassengerValidator.EXIST_MESSAGE_FORMAT, NOT_EXISTING_ID),
+                    message);
+            throw ex;
+        }
+    }
+
 }

@@ -1,6 +1,7 @@
 import axios from "axios";
 import {
   GET_MAPPED_ERRORS,
+  GET_STRING_ERROR,
   REMOVE_PASSENGER,
   GET_PASSENGERS_PAGE
 } from "./types";
@@ -42,10 +43,17 @@ export const updatePassenger = passenger => async dispatch => {
 
 export const removePassenger = passengerId => async dispatch => {
   if (window.confirm("Do you confirm removing this user?")) {
-    await axios.delete(`/api/passenger/remove/${passengerId}`);
-    dispatch({
-      type: REMOVE_PASSENGER,
-      payload: passengerId
-    });
+    try {
+      await axios.delete(`/api/passenger/remove/${passengerId}`);
+      dispatch({
+        type: REMOVE_PASSENGER,
+        payload: passengerId
+      });
+    } catch (err) {
+      dispatch({
+        type: GET_STRING_ERROR,
+        payload: err.response.data
+      });
+    }
   }
 };
