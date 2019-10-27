@@ -1,8 +1,10 @@
 import React, { Component } from "react";
 import IcoMoon from "react-icomoon";
 import { connect } from "react-redux";
+import classnames from "classnames";
 import { getStations } from "../../actions/stationActions";
 import { searchForTrain } from "../../actions/trainActions";
+import { currentDate } from "../../util/functions";
 import { setDirectionSearchParam } from "../../actions/searchParamActions";
 import PropTypes from "prop-types";
 import Select from "react-select";
@@ -11,9 +13,10 @@ class SearchForm extends Component {
   constructor() {
     super();
     this.state = {
-      departureDate: "2019-08-31",
+      departureDate: currentDate(),
       departureStation: { value: "1", label: "Zaporizhzhya 1" },
-      destinationStation: { value: "2", label: "Kyiv-Pasazhyrsky" }
+      destinationStation: { value: "2", label: "Kyiv-Pasazhyrsky" },
+      mappedErrors: {}
     };
     this.onSubmit = this.onSubmit.bind(this);
     this.onSwitchButton = this.onSwitchButton.bind(this);
@@ -36,7 +39,13 @@ class SearchForm extends Component {
     this.props.getStations();
   }
 
-  onSubmit(e) {
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.error) {
+      this.setState({ mappedErrors: nextProps.error.mappedErrors });
+    }
+  }
+
+  async onSubmit(e) {
     e.preventDefault();
     const direction = {
       departureDate: this.state.departureDate,
@@ -49,7 +58,9 @@ class SearchForm extends Component {
       direction.departureDate
     );
     this.props.setDirectionSearchParam(direction);
-    this.props.history.push("/booking/train");
+    if (Object.keys(this.state.mappedErrors).length === 0) {
+      this.props.history.push("/booking/train");
+    }
   }
 
   handleDepartureChange = departureStation => {
@@ -59,8 +70,10 @@ class SearchForm extends Component {
   handleDestinationChange = destinationStation => {
     this.setState({ destinationStation });
   };
+
   render() {
     const { stations } = this.props.station;
+    const { mappedErrors } = this.state;
 
     return (
       <div className="col-lg-3 ml-auto">
@@ -78,8 +91,16 @@ class SearchForm extends Component {
           <form onSubmit={this.onSubmit}>
             <IcoMoon icon="location" /> Departure station
             <div className="form-group">
+              {mappedErrors.departureStation && (
+                <div className="alert alert-danger alert-search" role="alert">
+                  {mappedErrors.departureStation}
+                </div>
+              )}
               <div className="select-wrap">
                 <Select
+                  className={classnames("", {
+                    "alert-select-border": mappedErrors.destinationStation
+                  })}
                   value={this.state.departureStation}
                   onChange={this.handleDepartureChange}
                   options={stations}
@@ -88,8 +109,16 @@ class SearchForm extends Component {
             </div>
             <IcoMoon icon="location" /> Destination station
             <div className="form-group">
+              {mappedErrors.destinationStation && (
+                <div className="alert alert-danger alert-search" role="alert">
+                  {mappedErrors.destinationStation}
+                </div>
+              )}
               <div className="select-wrap">
                 <Select
+                  className={classnames("", {
+                    "alert-select-border": mappedErrors.destinationStation
+                  })}
                   value={this.state.destinationStation}
                   onChange={this.handleDestinationChange}
                   options={stations}
@@ -98,11 +127,19 @@ class SearchForm extends Component {
             </div>
             <div className="form-group">
               <IcoMoon icon="calendar" /> Date:{" "}
+              {mappedErrors.departureDate && (
+                <div className="alert alert-danger alert-search" role="alert">
+                  {mappedErrors.departureDate}
+                </div>
+              )}
               <input
                 type="date"
                 name="departureDate"
+                min={currentDate()}
                 required="required"
-                className="form-control"
+                className={classnames("form-control", {
+                  "alert-select-border": mappedErrors.destinationStation
+                })}
                 value={this.state.departureDate}
                 onChange={this.onChange}
               />
@@ -126,12 +163,14 @@ SearchForm.propTypes = {
   train: PropTypes.object.isRequired,
   getStations: PropTypes.func.isRequired,
   searchForTrain: PropTypes.func.isRequired,
-  setDirectionSearchParam: PropTypes.func.isRequired
+  setDirectionSearchParam: PropTypes.func.isRequired,
+  error: PropTypes.object.isRequired
 };
 
 const mapStateToProps = state => ({
   station: state.station,
-  train: state.train
+  train: state.train,
+  error: state.error
 });
 
 export default connect(

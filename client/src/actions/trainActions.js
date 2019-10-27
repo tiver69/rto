@@ -1,16 +1,27 @@
 import axios from "axios";
-import { SEARCH_FOR_TRAINS } from "./types";
+import { GET_MAPPED_ERRORS, SEARCH_FOR_TRAINS } from "./types";
 
 export const searchForTrain = (
   departureStation,
   destinationStation,
   departureDate
 ) => async dispatch => {
-  const res = await axios.get(
-    `/api/train/search?departureStation=${departureStation}&destinationStation=${destinationStation}&departureDate=${departureDate}`
-  );
-  dispatch({
-    type: SEARCH_FOR_TRAINS,
-    payload: res.data
-  });
+  try {
+    const res = await axios.get(
+      `/api/train/search?departureStation=${departureStation}&destinationStation=${destinationStation}&departureDate=${departureDate}`
+    );
+    dispatch({
+      type: GET_MAPPED_ERRORS,
+      payload: {}
+    });
+    dispatch({
+      type: SEARCH_FOR_TRAINS,
+      payload: res.data
+    });
+  } catch (err) {
+    dispatch({
+      type: GET_MAPPED_ERRORS,
+      payload: err.response.data
+    });
+  }
 };

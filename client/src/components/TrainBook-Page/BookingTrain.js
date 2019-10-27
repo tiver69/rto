@@ -18,63 +18,71 @@ class BookingTrain extends Component {
               <div className="col">
                 {/* <!-- train list section --> */}
                 <h2 className="mb-5 text-primary-o">Results</h2>
-                <div className="limiter">
-                  <div className="wrap-table100">
-                    <div className="table100 ver4 m-b-110">
-                      <table data-vertable="ver4">
-                        <thead>
-                          <tr className="row100 head">
-                            <th
-                              className="column100 column1"
-                              data-column="column1"
-                            >
-                              Number
-                            </th>
-                            <th
-                              className="column100 column2"
-                              data-column="column2"
-                            >
-                              From/To
-                            </th>
-                            <th
-                              className="column100 column4"
-                              data-column="column4"
-                            >
-                              Departure
-                            </th>
-                            <th
-                              className="column100 column5"
-                              data-column="column5"
-                            >
-                              Arrival
-                            </th>
-                            <th
-                              className="column100 column6"
-                              data-column="column6"
-                            >
-                              Duration
-                            </th>
-                            <th
-                              className="column100 column7"
-                              data-column="column7"
-                            >
-                              Seats Available
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {trains.map(train => (
-                            <TrainTable
-                              key={train.id}
-                              train={train}
-                              history={this.props.history}
-                            />
-                          ))}
-                        </tbody>
-                      </table>
+                {trains.length === 0 && (
+                  <div className="alert alert-secondary" role="alert">
+                    There is no train for this direction at specified date
+                  </div>
+                )}
+
+                {trains.length !== 0 && (
+                  <div className="limiter">
+                    <div className="wrap-table100">
+                      <div className="table100 ver4 m-b-110">
+                        <table data-vertable="ver4">
+                          <thead>
+                            <tr className="row100 head">
+                              <th
+                                className="column100 column1"
+                                data-column="column1"
+                              >
+                                Number
+                              </th>
+                              <th
+                                className="column100 column2"
+                                data-column="column2"
+                              >
+                                From/To
+                              </th>
+                              <th
+                                className="column100 column4"
+                                data-column="column4"
+                              >
+                                Departure
+                              </th>
+                              <th
+                                className="column100 column5"
+                                data-column="column5"
+                              >
+                                Arrival
+                              </th>
+                              <th
+                                className="column100 column6"
+                                data-column="column6"
+                              >
+                                Duration
+                              </th>
+                              <th
+                                className="column100 column7"
+                                data-column="column7"
+                              >
+                                Seats Available
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {trains.map(train => (
+                              <TrainTable
+                                key={train.id}
+                                train={train}
+                                history={this.props.history}
+                              />
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
                     </div>
                   </div>
-                </div>
+                )}
               </div>
             </div>
           </div>

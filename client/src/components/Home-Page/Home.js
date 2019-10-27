@@ -158,6 +158,11 @@ class Home extends Component {
                   </li>
                 </ul>
 
+                {tickets.length === 0 && (
+                  <div className="alert alert-secondary" role="alert">
+                    Seems that you have not tickets here
+                  </div>
+                )}
                 {tickets.map(ticket => (
                   <Ticket
                     key={ticket.id}

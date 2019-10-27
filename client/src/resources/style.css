@@ -1132,6 +1132,22 @@ ul.ticket-menu li {
   font-size: x-large;
 }
 
+.alert-secondary {
+  background-color: #7971ea;
+  color: white;
+  border-radius: 15px;
+  margin-top: 30px;
+}
+
+.alert-search {
+  padding: 0px;
+}
+
+.alert-select-border {
+  border: solid 2px #721c24 !important;
+  border-radius: 10px;
+}
+
 .col-ticket {
   width: 100%;
   background: #4d4d4d52;

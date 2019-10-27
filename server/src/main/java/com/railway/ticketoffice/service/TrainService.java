@@ -4,6 +4,7 @@ import com.railway.ticketoffice.domain.WeekDay;
 import com.railway.ticketoffice.dto.request.train.TrainInfoDto;
 import com.railway.ticketoffice.repository.StopRepository;
 import com.railway.ticketoffice.util.DateTimeUtil;
+import com.railway.ticketoffice.validator.RequestValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,9 @@ public class TrainService {
     private static final Logger LOGGER = LoggerFactory.getLogger(TrainService.class);
 
     @Autowired
+    private RequestValidator requestValidator;
+
+    @Autowired
     private StopRepository stopRepository;
 
     @Autowired
@@ -34,6 +38,7 @@ public class TrainService {
             Long departureStation,
             Long destinationStation,
             String departureDate) {
+        requestValidator.validateTrainRequest(departureStation, destinationStation, departureDate);
         LocalDate date = DateTimeUtil.parseString(departureDate);
 
         List<TrainInfoDto> trainList =

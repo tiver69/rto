@@ -13,11 +13,13 @@ public class DateTimeUtil {
     public final static DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     public final static DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
+    public final static String VALIDATE_DATE_FORMAT_MESSAGE = "Requested date has wrong format";
+
     public static LocalDate parseString(String stringDate) throws IllegalArgumentException {
         try {
             return LocalDate.parse(stringDate, DATE_FORMATTER);
         } catch (DateTimeParseException ex) {
-            throw new IllegalArgumentException("Requested date has wrong format");
+            throw new IllegalArgumentException(VALIDATE_DATE_FORMAT_MESSAGE);
         }
     }
 
