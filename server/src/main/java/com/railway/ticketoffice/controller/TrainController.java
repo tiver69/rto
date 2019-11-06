@@ -9,7 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.format.DateTimeParseException;
 import java.util.List;
 
 @RestController
@@ -29,15 +28,9 @@ public class TrainController {
             @RequestParam("departureDate") String departureDate) {
         LOGGER.debug("Train request for {}, departureStation#{} - arrivalStation#{}", departureDate, departureStation, destinationStation);
 
-        try {
-            List<TrainInfoDto> response =
-                    trainService.findAllTrainsInDirectionAtDate(departureStation, destinationStation, departureDate);
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        } catch (IllegalArgumentException | DateTimeParseException e) {
-            LOGGER.error("Train request for {}, departureStation#{} - arrivalStation#{} - bad request!",
-                    departureDate, departureStation, destinationStation);
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+        List<TrainInfoDto> response =
+                trainService.findAllTrainsInDirectionAtDate(departureStation, destinationStation, departureDate);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }
 

@@ -1,4 +1,4 @@
-import { SEARCH_FOR_COACES } from "../actions/types";
+import { SEARCH_FOR_COACH } from "../actions/types";
 
 const initialState = {
   coach: []
@@ -6,7 +6,7 @@ const initialState = {
 
 export default function(state = initialState, action) {
   switch (action.type) {
-    case SEARCH_FOR_COACES:
+    case SEARCH_FOR_COACH:
       return {
         ...state,
         coach: action.payload

@@ -1132,6 +1132,22 @@ ul.ticket-menu li {
   font-size: x-large;
 }
 
+.alert-secondary {
+  background-color: #7971ea;
+  color: white;
+  border-radius: 15px;
+  margin-top: 30px;
+}
+
+.alert-search {
+  padding: 0px;
+}
+
+.alert-select-border {
+  border: solid 2px #721c24 !important;
+  border-radius: 10px;
+}
+
 .col-ticket {
   width: 100%;
   background: #4d4d4d52;
@@ -1213,6 +1229,20 @@ ul.custom-pagination li {
   text-indent: 10px;
   border-radius: 10px;
   padding: 5px;
+  margin-left: 5px;
+  margin-bottom: 0px;
+}
+
+.user-list.update.form.is-invalid {
+  border: solid 1px #721c24;
+}
+
+.invalid-feedback {
+  color: #721c24;
+  font-size: 12px;
+  display: inherit;
+  margin-bottom: 0.25rem;
+  float: left;
 }
 
 /* COACH*/

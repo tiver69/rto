@@ -10,6 +10,9 @@ import IcoMoon from "react-icomoon";
 class ConfirmBuyingPopup extends React.Component {
   constructor() {
     super();
+    this.state = {
+      mappedErrors: {}
+    };
     this.onConfirmClick = this.onConfirmClick.bind(this);
     this.onAndContinueClick = this.onAndContinueClick.bind(this);
   }
@@ -23,21 +26,29 @@ class ConfirmBuyingPopup extends React.Component {
     );
   }
 
-  onAndReturnToHomeClick = placeNumber => {
-    placeNumber.preventDefault();
-    this.onConfirmClick(placeNumber);
-    this.props.history.push("/home/1");
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.error) {
+      this.setState({ mappedErrors: nextProps.error.mappedErrors });
+    }
+  }
+
+  onAndReturnToHomeClick = async placeNumber => {
+    placeNumber.persist();
+    await this.onConfirmClick(placeNumber);
+    if (Object.keys(this.state.mappedErrors).length === 0)
+      this.props.history.push("/home/1");
     // TO_DO: add id of current user
   };
 
-  onAndContinueClick = placeNumber => {
-    placeNumber.preventDefault();
-    this.onConfirmClick(placeNumber);
-    this.props.closePopup(placeNumber);
+  onAndContinueClick = async placeNumber => {
+    placeNumber.persist();
+    await this.onConfirmClick(placeNumber);
+    if (Object.keys(this.state.mappedErrors).length === 0)
+      this.props.closePopup(placeNumber);
   };
 
-  onConfirmClick = placeNumber => {
-    placeNumber.preventDefault();
+  onConfirmClick = async placeNumber => {
+    placeNumber.persist();
     const passenger = {
       id: 1
       // TO_DO: setup passenger id from security session
@@ -60,85 +71,128 @@ class ConfirmBuyingPopup extends React.Component {
       departureStation: departureStation,
       destinationStation: destinationStation,
       departureDate: this.props.search.directionParam.departureDate,
+      arrivalDate: this.props.search.trainParam.arrivalDate,
       trainCoach: trainCoach,
-      place: placeNumber.target.value,
-      price: this.props.ticket.ticketPrice
+      place: placeNumber.target.value
     };
-    this.props.savePassengerTicket(newTicket);
+    await this.props.savePassengerTicket(newTicket);
+  };
+
+  errorMapIterate = mappedErrors => {
+    let errorsMessage = [];
+    if (Object.keys(mappedErrors).length !== 0) {
+      for (var i = 0; i < Object.keys(mappedErrors).length; i++) {
+        errorsMessage.push(
+          <p key={i}>{mappedErrors[Object.keys(mappedErrors)[i]]}</p>
+        );
+      }
+      return (
+        <div className="alert alert-danger" role="alert" key={i}>
+          {errorsMessage}
+        </div>
+      );
+    } else return errorsMessage;
   };
 
   render() {
+    const { stringError } = this.props.error;
+    const { mappedErrors } = this.state;
     return (
       <div className="popup">
         <div className="popup_inner">
-          <h1>Your ticket</h1>
+          {stringError && (
+            <React.Fragment>
+              <h1>{stringError}</h1>
+              <div className="popup-row">
+                <button
+                  className="col btn btn-primary-o"
+                  onClick={this.props.closePopup}
+                >
+                  Cansel
+                </button>
+              </div>
+            </React.Fragment>
+          )}
+          {!stringError && (
+            <React.Fragment>
+              <h1>Your ticket</h1>
+              {this.errorMapIterate(mappedErrors)}
+              <div className="col-ticket">
+                <div className="listing-horizontal d-block d-md-flex form-search-wrap ticket">
+                  <div className="img d-block ticket-active-background-pic">
+                    <span className="category">
+                      COACH - {this.props.coach.number}
+                      <br />
+                      PLACE - {this.props.text}
+                      <br />
+                      PRICE - {this.props.ticket.ticketPrice}₴
+                      <br />
+                    </span>
+                  </div>
 
-          <div className="col-ticket">
-            <div className="listing-horizontal d-block d-md-flex form-search-wrap ticket">
-              <div className="img d-block ticket-active-background-pic">
-                <span className="category">
-                  COACH - {this.props.coach.number}
-                  <br />
-                  PLACE - {this.props.text}
-                  <br />
-                  PRICE - {this.props.ticket.ticketPrice}₴
-                  <br />
-                </span>
+                  <div className="lh-content t-align-left">
+                    <h3>
+                      {this.props.search.directionParam.departureStation.label}{" "}
+                      -
+                      {
+                        this.props.search.directionParam.destinationStation
+                          .label
+                      }
+                    </h3>
+
+                    <p>
+                      <IcoMoon className="icon" icon="road" /> Train number #{" "}
+                      {this.props.search.trainParam.id}
+                    </p>
+
+                    <p>
+                      <IcoMoon className="icon" icon="clock" /> Departure:{" "}
+                      {this.props.search.trainParam.departureDate}
+                      {" - "}
+                      {this.props.search.trainParam.departureTime}
+                    </p>
+
+                    <p>
+                      <IcoMoon className="icon" icon="clock" /> Arrival:{" "}
+                      {this.props.search.trainParam.arrivalDate}
+                      {" - "}
+                      {this.props.search.trainParam.arrivalTime}
+                    </p>
+
+                    <h3>
+                      LAST_NAME FIRST_NAME
+                      {/* TO_DO: get names from security */}
+                    </h3>
+                  </div>
+                </div>
               </div>
 
-              <div className="lh-content t-align-left">
-                <h3>
-                  {this.props.search.directionParam.departureStation.label} -
-                  {this.props.search.directionParam.destinationStation.label}
-                </h3>
+              <div className="popup-row">
+                <button
+                  className="col btn btn-primary-o"
+                  value={this.props.text}
+                  onClick={this.onAndContinueClick}
+                >
+                  Confirm and CONTINUE buying
+                </button>
 
-                <p>
-                  <IcoMoon className="icon" icon="road" /> Train number #{" "}
-                  {this.props.search.trainParam.id}
-                </p>
+                <button
+                  className="col btn btn-primary-o"
+                  value={this.props.text}
+                  onClick={this.onAndReturnToHomeClick}
+                >
+                  Confirm and RETURN to home page
+                </button>
 
-                <p>
-                  <IcoMoon className="icon" icon="clock" /> Departure Time -{" "}
-                  {this.props.search.trainParam.departureTime}
-                </p>
-
-                <p>
-                  <IcoMoon className="icon" icon="clock" /> Arrival -{" "}
-                  {this.props.search.trainParam.arrivalTime}
-                </p>
-
-                <h3>
-                  LAST_NAME FIRST_NAME
-                  {/* TO_DO: get names from security */}
-                </h3>
+                <button
+                  className="col btn btn-primary-o"
+                  onClick={this.props.closePopup}
+                >
+                  Cansel
+                </button>
               </div>
-            </div>
-          </div>
-
-          <div className="popup-row">
-            <button
-              className="col btn btn-primary-o"
-              value={this.props.text}
-              onClick={this.onAndContinueClick}
-            >
-              Confirm and CONTINUE buying
-            </button>
-
-            <button
-              className="col btn btn-primary-o"
-              value={this.props.text}
-              onClick={this.onAndReturnToHomeClick}
-            >
-              Confirm and RETURN to home page
-            </button>
-
-            <button
-              className="col btn btn-primary-o"
-              onClick={this.props.closePopup}
-            >
-              Cansel
-            </button>
-          </div>
+            </React.Fragment>
+          )}
         </div>
       </div>
     );
@@ -147,13 +201,15 @@ class ConfirmBuyingPopup extends React.Component {
 
 ConfirmBuyingPopup.propTypes = {
   search: PropTypes.object.isRequired,
+  error: PropTypes.object.isRequired,
   savePassengerTicket: PropTypes.func.isRequired,
   countTicketPrice: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
   ticket: state.ticket,
-  search: state.search
+  search: state.search,
+  error: state.error
 });
 
 export default connect(

@@ -13,6 +13,8 @@ public class TrainInfoDto {
     private String firstStationName;
     private String lastStationName;
 
+    private LocalDate departureDate;
+    private LocalDate arrivalDate;
     private LocalTime departureTime;
     private LocalTime arrivalTime;
     private String duration;

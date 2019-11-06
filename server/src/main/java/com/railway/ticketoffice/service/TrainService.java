@@ -2,10 +2,9 @@ package com.railway.ticketoffice.service;
 
 import com.railway.ticketoffice.domain.WeekDay;
 import com.railway.ticketoffice.dto.request.train.TrainInfoDto;
-import com.railway.ticketoffice.repository.StationRepository;
 import com.railway.ticketoffice.repository.StopRepository;
-import com.railway.ticketoffice.repository.TrainCoachRepository;
 import com.railway.ticketoffice.util.DateTimeUtil;
+import com.railway.ticketoffice.validator.RequestValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +22,9 @@ public class TrainService {
     private static final Logger LOGGER = LoggerFactory.getLogger(TrainService.class);
 
     @Autowired
+    private RequestValidator requestValidator;
+
+    @Autowired
     private StopRepository stopRepository;
 
     @Autowired
@@ -35,7 +37,8 @@ public class TrainService {
     public List<TrainInfoDto> findAllTrainsInDirectionAtDate(
             Long departureStation,
             Long destinationStation,
-            String departureDate) throws IllegalArgumentException {
+            String departureDate) {
+        requestValidator.validateTrainRequest(departureStation, destinationStation, departureDate);
         LocalDate date = DateTimeUtil.parseString(departureDate);
 
         List<TrainInfoDto> trainList =
@@ -44,9 +47,13 @@ public class TrainService {
                                 .toUpperCase()));
 
         trainList.forEach(train -> {
+            long duration = stopService.countTrainDirectionDurationInMinutes(
+                    train.getId(), departureStation, destinationStation);
             train.setDuration(
-                    DateTimeUtil.formatDuration(
-                            stopService.countTrainDirectionDurationInMinutes(train.getId(), departureStation, destinationStation)));
+                    DateTimeUtil.formatDuration(duration));
+            train.setDepartureDate(DateTimeUtil.parseString(departureDate));
+            train.setArrivalDate(DateTimeUtil.parseString(departureDate)
+                    .atTime(train.getDepartureTime()).plusMinutes(duration).toLocalDate());
             train.setCoachTypeInfoList(
                     coachService.findAllCoachTypesInfoByTrainIdAndDepartureDate(train.getId(), date));
         });

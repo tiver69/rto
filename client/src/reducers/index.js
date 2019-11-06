@@ -5,6 +5,7 @@ import trainReducer from "./trainReducer";
 import searchReducer from "./searchReducer";
 import coachReducer from "./coachReducer";
 import passengerReducer from "./passengerReducer";
+import errorReducer from "./errorReducer";
 
 export default combineReducers({
   ticket: ticketReducer,
@@ -12,5 +13,6 @@ export default combineReducers({
   train: trainReducer,
   coach: coachReducer,
   passenger: passengerReducer,
-  search: searchReducer
+  search: searchReducer,
+  error: errorReducer
 });

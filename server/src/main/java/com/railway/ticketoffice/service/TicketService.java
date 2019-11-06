@@ -2,14 +2,19 @@ package com.railway.ticketoffice.service;
 
 import com.railway.ticketoffice.domain.Ticket;
 import com.railway.ticketoffice.dto.TicketDto;
+import com.railway.ticketoffice.exception.type.DataValidationException;
+import com.railway.ticketoffice.exception.type.UnexpectedException;
 import com.railway.ticketoffice.repository.StopRepository;
 import com.railway.ticketoffice.repository.TicketRepository;
+import com.railway.ticketoffice.util.PageUtil;
+import com.railway.ticketoffice.validator.PassengerValidator;
+import com.railway.ticketoffice.validator.TicketValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -19,63 +24,65 @@ import java.util.List;
 public class TicketService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TicketService.class);
-    private static final Integer ITEMS_PER_PAGE = 5;
+
+    @Autowired
+    private TicketValidator ticketValidator;
+
+    @Autowired
+    private PassengerValidator passengerValidator;
 
     @Autowired
     private TicketRepository ticketRepository;
 
     @Autowired
-    private PassengerService passengerService;
-
-    @Autowired
-    private StopService stopService;
-
-    @Autowired
     private StopRepository stopRepository;
 
 
-    public List<TicketDto> findPageByPassenger(Long passengerId, Integer page, Boolean isActive) throws IllegalArgumentException {
-        if (!passengerService.checkIfExistById(passengerId)) throw new IllegalArgumentException();
-        Pageable pageable = PageRequest.of(page, ITEMS_PER_PAGE);
-        List<TicketDto> ticketsDto;
+    public List<TicketDto> findPageByPassenger(Long passengerId, Integer page, Boolean isActive) {
+        passengerValidator.validateExistence(passengerId);
 
-        if (isActive)
-            ticketsDto = ticketRepository.findActivePageByPassengerId(passengerId, LocalDate.now(), pageable).getContent();
-        else
-            ticketsDto = ticketRepository.findHistoryPageByPassengerId(passengerId, LocalDate.now(), pageable).getContent();
+        Page<TicketDto> ticketsDtoPage = ticketRepository.findPageByPassengerIdAndActiveStatus(
+                passengerId, LocalDate.now(), isActive, PageUtil.getPageableFromPageNumber(page));
+        PageUtil.checkPageBounds(page, ticketsDtoPage);
 
         MDC.put("passengerId", passengerId.toString());
-        LOGGER.info("Tickets active({}) page#{} request - found {}",isActive, page, ticketsDto.size());
-        return ticketsDto;
+        LOGGER.info("Tickets active({}) page#{} request - found {}", isActive, page, ticketsDtoPage.getContent().size());
+        return ticketsDtoPage.getContent();
     }
 
-    public Integer countPageByPassenger(Long passengerId, Boolean isActive) throws IllegalArgumentException {
-        if (!passengerService.checkIfExistById(passengerId)) throw new IllegalArgumentException();
-        Pageable pageable = PageRequest.of(0, ITEMS_PER_PAGE);
-
-        if (isActive)
-            return ticketRepository.findActivePageByPassengerId(passengerId, LocalDate.now(), pageable)
-                    .getTotalPages();
-
-        return ticketRepository.findHistoryPageByPassengerId(passengerId, LocalDate.now(), pageable)
+    public Integer countPageByPassenger(Long passengerId, Boolean isActive) {
+        passengerValidator.validateExistence(passengerId);
+        return ticketRepository.findPageByPassengerIdAndActiveStatus(
+                passengerId, LocalDate.now(), isActive, PageUtil.getPageableFromPageNumber(0))
                 .getTotalPages();
     }
 
     public Ticket save(Ticket ticket) {
-//        TO_DO: proper validation
-        LocalDate arrivalDate = stopService.countArrivalDateFromRootDuration(ticket.getDepartureDate(),
+        ticketValidator.validate(ticket);
+        ticket.setPrice(countTicketPrice(
                 ticket.getTrainCoach().getTrain().getId(),
+                ticket.getTrainCoach().getId(),
                 ticket.getDepartureStation().getId(),
-                ticket.getDestinationStation().getId());
+                ticket.getDestinationStation().getId()));
 
-        ticket.setArrivalDate(arrivalDate);
-        return ticketRepository.save(ticket);
+        Ticket result;
+        try {
+            result = ticketRepository.save(ticket);
+        } catch (DataIntegrityViolationException exception) {
+            throw new UnexpectedException("Unexpected error while saving ticket");
+        }
+
+        MDC.put("passengerId", ticket.getPassenger().getId().toString());
+        LOGGER.info("Request for saving ticket for place#{} at coach#{} - {}", ticket.getPlace(),
+                ticket.getTrainCoach().getId(), result.getId() != 0);
+        return result;
     }
 
     public Integer countTicketPrice(Long trainId, Long trainCoachId,
-                                    Long departureStationId, Long destinationStationId) {
+                                    Long departureStationId, Long destinationStationId) throws IllegalArgumentException {
         Integer result = stopRepository.countPriceByDirectionAndTrainCoachId(trainId, trainCoachId,
-                departureStationId, destinationStationId).orElseThrow(IllegalArgumentException::new);
+                departureStationId, destinationStationId)
+                .orElseThrow(() -> new IllegalArgumentException("Unexpected error while counting ticket price"));
         LOGGER.info("Request for ticket price for train#{} in coach#{} from station#{} - to station#{} - price is {}",
                 trainId, trainCoachId, departureStationId, destinationStationId, result);
         return result;

@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
+import { cleanErrors } from "../../actions/errorActions";
 import ConfirmBuyingPopup from "./ConfirmBuyingPopup";
 
 class Coach extends Component {
@@ -75,12 +76,13 @@ class Coach extends Component {
 
   togglePopup(e) {
     e.preventDefault();
-    if (this.state.showPopup)
+    if (this.state.showPopup) {
       this.setState({
         placeNumber: "",
         showPopup: !this.state.showPopup
       });
-    else
+      this.props.cleanErrors();
+    } else
       this.setState({
         placeNumber: e.target.value,
         showPopup: !this.state.showPopup
@@ -134,26 +136,44 @@ class Coach extends Component {
 
   render() {
     const { coach } = this.props;
+    const { stringError } = this.props;
     return (
       <React.Fragment>
-        <div className="col-lg-4 mt-5 text-left">
-          <li key={coach.number}>
-            <span>
-              {coach.name} {coach.availablePlaces}/{coach.totalPlaces}
-            </span>
-          </li>
-        </div>
-        <hr />
-        {/* <!-- coache places section --> */}
-        <div className="wagon-floors">
-          <div className="floor floor-1">
-            {this.createCoachView(
-              coach.totalPlaces,
-              coach.typeId,
-              coach.bookedPlaces
-            )}
-          </div>
-        </div>
+        {stringError && (
+          <React.Fragment>
+            <div className="col-lg-4 mt-5 text-left">
+              <li>
+                <span>0/0</span>
+              </li>
+            </div>
+            <hr />
+            <div className="alert alert-danger w-100" role="alert">
+              {stringError}
+            </div>
+          </React.Fragment>
+        )}
+        {!stringError && (
+          <React.Fragment>
+            <div className="col-lg-4 mt-5 text-left">
+              <li key={coach.number}>
+                <span>
+                  {coach.name} {coach.availablePlaces}/{coach.totalPlaces}
+                </span>
+              </li>
+            </div>
+            <hr />
+            {/* <!-- coache places section --> */}
+            <div className="wagon-floors">
+              <div className="floor floor-1">
+                {this.createCoachView(
+                  coach.totalPlaces,
+                  coach.typeId,
+                  coach.bookedPlaces
+                )}
+              </div>
+            </div>
+          </React.Fragment>
+        )}
         {this.state.showPopup ? (
           <ConfirmBuyingPopup
             coach={coach}
@@ -168,7 +188,8 @@ class Coach extends Component {
 }
 
 Coach.propTypes = {
-  ticket: PropTypes.object.isRequired
+  ticket: PropTypes.object.isRequired,
+  cleanErrors: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
@@ -177,5 +198,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  {}
+  { cleanErrors }
 )(Coach);
