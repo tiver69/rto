@@ -58,7 +58,7 @@ public class CoachService {
         CoachInfoDto coach =
                 trainCoachRepository.findCoachByNumberAndTrainId(trainId, coachNumber)
                         .orElseThrow(() -> new DataNotFoundException(
-                                String.format("Requested coach#%d doesn't exist in train#%d", coachNumber, trainId)));
+                                String.format("Coach #%d doesn't exist in this train!", coachNumber)));
         List<Integer> coachBookedPlace =
                 ticketRepository.findAllBookedPlacesByCoachNumberAndTrainIdAndDepartureDate(trainId, date, coachNumber);
 

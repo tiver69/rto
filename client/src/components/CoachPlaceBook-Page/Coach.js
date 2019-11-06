@@ -136,26 +136,44 @@ class Coach extends Component {
 
   render() {
     const { coach } = this.props;
+    const { stringError } = this.props;
     return (
       <React.Fragment>
-        <div className="col-lg-4 mt-5 text-left">
-          <li key={coach.number}>
-            <span>
-              {coach.name} {coach.availablePlaces}/{coach.totalPlaces}
-            </span>
-          </li>
-        </div>
-        <hr />
-        {/* <!-- coache places section --> */}
-        <div className="wagon-floors">
-          <div className="floor floor-1">
-            {this.createCoachView(
-              coach.totalPlaces,
-              coach.typeId,
-              coach.bookedPlaces
-            )}
-          </div>
-        </div>
+        {stringError && (
+          <React.Fragment>
+            <div className="col-lg-4 mt-5 text-left">
+              <li>
+                <span>0/0</span>
+              </li>
+            </div>
+            <hr />
+            <div className="alert alert-danger w-100" role="alert">
+              {stringError}
+            </div>
+          </React.Fragment>
+        )}
+        {!stringError && (
+          <React.Fragment>
+            <div className="col-lg-4 mt-5 text-left">
+              <li key={coach.number}>
+                <span>
+                  {coach.name} {coach.availablePlaces}/{coach.totalPlaces}
+                </span>
+              </li>
+            </div>
+            <hr />
+            {/* <!-- coache places section --> */}
+            <div className="wagon-floors">
+              <div className="floor floor-1">
+                {this.createCoachView(
+                  coach.totalPlaces,
+                  coach.typeId,
+                  coach.bookedPlaces
+                )}
+              </div>
+            </div>
+          </React.Fragment>
+        )}
         {this.state.showPopup ? (
           <ConfirmBuyingPopup
             coach={coach}

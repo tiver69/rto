@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { searchForCoaches } from "../../actions/coachActions";
+import { searchForCoach } from "../../actions/coachActions";
 import { setTeainSearchParam } from "../../actions/searchParamActions";
 import PropTypes from "prop-types";
 
@@ -14,7 +14,7 @@ class TrainTable extends Component {
 
   onTrainSubmit = trainIdButton => {
     trainIdButton.preventDefault();
-    this.props.searchForCoaches(
+    this.props.searchForCoach(
       trainIdButton.target.value,
       this.state.departureDate,
       "1"
@@ -92,7 +92,7 @@ class TrainTable extends Component {
 }
 
 TrainTable.propTypes = {
-  searchForCoaches: PropTypes.func.isRequired,
+  searchForCoach: PropTypes.func.isRequired,
   setTeainSearchParam: PropTypes.func.isRequired,
   search: PropTypes.object.isRequired
 };
@@ -103,5 +103,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { searchForCoaches, setTeainSearchParam }
+  { searchForCoach, setTeainSearchParam }
 )(TrainTable);

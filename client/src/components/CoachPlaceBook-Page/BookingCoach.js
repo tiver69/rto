@@ -2,17 +2,24 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { searchForTrain } from "../../actions/trainActions";
 import { connect } from "react-redux";
-import { searchForCoaches } from "../../actions/coachActions";
+import { searchForCoach } from "../../actions/coachActions";
 import Coach from "./Coach";
 
 class BookingCoach extends Component {
   constructor() {
     super();
     this.state = {
-      currentCoach: 1
+      currentCoach: 1,
+      stringError: ""
     };
 
     this.onReturnToTrainSearch = this.onReturnToTrainSearch.bind(this);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.error) {
+      this.setState({ stringError: nextProps.error.stringError });
+    }
   }
 
   onCoachNumberClick = number => {
@@ -23,7 +30,7 @@ class BookingCoach extends Component {
     this.setState({
       currentCoach: parseInt(number.target.value)
     });
-    this.props.searchForCoaches(
+    this.props.searchForCoach(
       trainParam.id,
       directionParam.departureDate,
       number.target.value
@@ -71,6 +78,7 @@ class BookingCoach extends Component {
     const { trainParam } = this.props.search;
     const { directionParam } = this.props.search;
     const { coach } = this.props.coach;
+    const { stringError } = this.state;
     return (
       <React.Fragment>
         {/* header */}
@@ -143,6 +151,7 @@ class BookingCoach extends Component {
                 <Coach
                   key={coach.number}
                   coach={coach}
+                  stringError={stringError}
                   history={this.props.history}
                 />
               </div>
@@ -155,18 +164,20 @@ class BookingCoach extends Component {
 }
 
 BookingCoach.propTypes = {
-  searchForCoaches: PropTypes.func.isRequired,
+  searchForCoach: PropTypes.func.isRequired,
   searchForTrain: PropTypes.func.isRequired,
   coach: PropTypes.object.isRequired,
-  search: PropTypes.object.isRequired
+  search: PropTypes.object.isRequired,
+  error: PropTypes.object.isRequired
 };
 
 const mapStateToProps = state => ({
   coach: state.coach,
-  search: state.search
+  search: state.search,
+  error: state.error
 });
 
 export default connect(
   mapStateToProps,
-  { searchForCoaches, searchForTrain }
+  { searchForCoach, searchForTrain }
 )(BookingCoach);

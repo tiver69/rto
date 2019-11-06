@@ -10,7 +10,7 @@ export const GET_STATIONS = "GET_STATIONS";
 export const SEARCH_FOR_TRAINS = "SEARCH_FOR_TRAINS";
 
 // Coach actions
-export const SEARCH_FOR_COACES = "SEARCH_FOR_COACES";
+export const SEARCH_FOR_COACH = "SEARCH_FOR_COACH";
 
 //  Passenger actions
 export const GET_PASSENGERS_PAGE = "GET_PASSENGERS_PAGE";
