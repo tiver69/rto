@@ -1,26 +1,24 @@
 package com.railway.ticketoffice.repository;
 
-import org.junit.Ignore;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
-@TestPropertySource(locations = "classpath:application-test.properties")
 @RunWith(SpringRunner.class)
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @DataJpaTest
-@Ignore
 public class TrainRepositoryTest {
 
     @Autowired
     private TrainRepository trainRepository;
 
     @Test
-    public void findAll() {
-        System.out.println(trainRepository.findAll());
+    public void shouldReturnExpectedCountOfTrains() {
+        int expected = 6;
+
+        int result = trainRepository.findAll().size();
+        Assert.assertEquals(expected, result);
     }
 }

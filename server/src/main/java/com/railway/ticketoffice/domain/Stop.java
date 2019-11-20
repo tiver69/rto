@@ -23,7 +23,7 @@ public class Stop {
     @JoinColumn(name = "station_id", referencedColumnName = "id", nullable = false)
     private Station station;
 
-    private Integer order;
+    private Integer stopOrder;
     private Integer price;
     private LocalTime arrival;
     private LocalTime departure;
