@@ -4,14 +4,11 @@ import com.railway.ticketoffice.exception.type.DataValidationException;
 import com.railway.ticketoffice.service.TrainService;
 import com.railway.ticketoffice.util.DateTimeUtil;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,8 +16,6 @@ import java.util.HashMap;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@TestPropertySource(locations = "classpath:application-test.properties")
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Transactional
 public class RequestValidatorTest {
 
@@ -38,7 +33,6 @@ public class RequestValidatorTest {
 
     @Test
     @Rollback
-    @Ignore //TO_DO: unignore with testing db
     public void shouldReturnTrueWithValidPassengerUpdateData() {
         int resultSize = trainService.findAllTrainsInDirectionAtDate(VALID_DEPARTURE_STATION_ID,
                 VALID_DESTINATION_STATION_ID, VALID_DATE).size();
@@ -49,7 +43,6 @@ public class RequestValidatorTest {
 
     @Test(expected = DataValidationException.class)
     @Rollback
-//    @Ignore //TO_DO: unignore with testing db
     public void shouldReturnExceptionWithNotValidRequestData() {
 
         HashMap<String, String> expectedCauseObject = new HashMap<>();
