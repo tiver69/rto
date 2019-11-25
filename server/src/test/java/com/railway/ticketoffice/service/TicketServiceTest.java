@@ -2,91 +2,102 @@ package com.railway.ticketoffice.service;
 
 import com.railway.ticketoffice.domain.*;
 import com.railway.ticketoffice.exception.type.DataValidationException;
+import com.railway.ticketoffice.repository.StopRepository;
+import com.railway.ticketoffice.repository.TicketRepository;
 import com.railway.ticketoffice.validator.PassengerValidator;
-import com.railway.ticketoffice.validator.StationValidator;
-import com.railway.ticketoffice.validator.TrainCoachValidator;
+import com.railway.ticketoffice.validator.TicketValidator;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Rollback;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.transaction.annotation.Transactional;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.Optional;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
-@TestPropertySource(locations = "classpath:application-test.properties")
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@Transactional
+import static org.mockito.Mockito.*;
+
+@RunWith(MockitoJUnitRunner.class)
 public class TicketServiceTest {
 
-    @Autowired
+    @Mock
+    private TicketValidator ticketValidator;
+
+    @Mock
+    private PassengerValidator passengerValidator;
+
+    @Mock
+    private TicketRepository ticketRepository;
+
+    @Mock
+    private StopRepository stopRepository;
+
+    @InjectMocks
     private TicketService ticketService;
 
     private Ticket ticket;
 
-    private static long NOT_EXISTING_COACH_ID = 31L;
-    private static long NOT_EXISTING_PASSENGER_ID = 12345L;
-    private static long NOT_EXISTING_STATION_ID = 0L;
-
-    private static int EXPECTED_PRICE = 472;
-
     @Before
     public void beforeEach() {
         ticket = Ticket.builder()
+                .id(1L)
                 .passenger(Passenger.builder().id(1L).build())
                 .departureStation(Station.builder().id(2L).build())
                 .destinationStation(Station.builder().id(1L).build())
                 .departureDate(LocalDate.now().plusDays(1))
                 .arrivalDate(LocalDate.now().plusDays(2))
-                .trainCoach(TrainCoach.builder().id(20L).train(Train.builder().id(732L).build()).build())
+                .trainCoach(TrainCoach.builder().id(2L).train(Train.builder().id(732L).build()).build())
                 .place(11)
+                .price(100)
                 .build();
     }
 
     @Test
-    @Ignore //TO_DO: unignore with test db
     public void shouldCountCorrectPrice() {
-        int actualPrice = ticketService.countTicketPrice(ticket.getTrainCoach().getTrain().getId(), ticket.getTrainCoach().getId(),
-                ticket.getDepartureStation().getId(), ticket.getDestinationStation().getId());
-        Assert.assertEquals(actualPrice, EXPECTED_PRICE);
+        int expected = 1000;
+        when(stopRepository.countPriceByDirectionAndTrainCoachId(
+                ticket.getTrainCoach().getTrain().getId(), ticket.getTrainCoach().getId(),
+                ticket.getDepartureStation().getId(), ticket.getDestinationStation().getId()))
+                .thenReturn(Optional.of(expected));
+
+        int result = ticketService.countTicketPrice(ticket.getTrainCoach().getTrain().getId(),
+                ticket.getTrainCoach().getId(), ticket.getDepartureStation().getId(),
+                ticket.getDestinationStation().getId());
+        Assert.assertEquals(expected, result);
     }
 
     @Test
-    @Rollback
     public void shouldReturnNotEmptyTicketWithValidParam() {
+        int returnPrice = 1000;
+        ticket.setPrice(returnPrice);
+        doNothing().when(ticketValidator).validate(ticket);
+        when(ticketRepository.save(ticket)).thenReturn(ticket);
+        when(stopRepository.countPriceByDirectionAndTrainCoachId(
+                ticket.getTrainCoach().getTrain().getId(), ticket.getTrainCoach().getId(),
+                ticket.getDepartureStation().getId(), ticket.getDestinationStation().getId()))
+                .thenReturn(Optional.of(returnPrice));
+
         Ticket resultTicket = ticketService.save(ticket);
-        Assert.assertTrue(resultTicket.getId() != 0);
+        verify(ticketRepository).save(ticket);
+        Assert.assertEquals(resultTicket, ticket);
     }
 
     @Test(expected = DataValidationException.class)
-    @Rollback
     public void shouldReturnExceptionWithNotValidParam() {
-        ticket.setTrainCoach(TrainCoach.builder().id(NOT_EXISTING_COACH_ID).train(Train.builder().id(732L).build()).build());
-        ticket.setPassenger(Passenger.builder().id(NOT_EXISTING_PASSENGER_ID).build());
-        ticket.setDepartureStation(Station.builder().id(NOT_EXISTING_STATION_ID).build());
-
-        HashMap<String, String> expectedCauseObject = new HashMap<>();
-        expectedCauseObject.put(TrainCoachValidator.KEY,
-                String.format(TrainCoachValidator.EXIST_COACH_IN_TRAIN_MESSAGE_FORMAT, NOT_EXISTING_COACH_ID, 732L));
-        expectedCauseObject.put(PassengerValidator.KEY,
-                String.format(PassengerValidator.EXIST_MESSAGE_FORMAT, NOT_EXISTING_PASSENGER_ID));
-        expectedCauseObject.put(StationValidator.KEY,
-                String.format(StationValidator.EXIST_MESSAGE_FORMAT, NOT_EXISTING_STATION_ID));
+        String expectedMessage = "Message";
+        doThrow(new DataValidationException(expectedMessage, new HashMap<>()))
+                .when(ticketValidator).validate(ticket);
 
         try {
             ticketService.save(ticket);
         } catch (DataValidationException ex) {
-            HashMap<String, String> causeObject = ex.getCauseObject();
-            Assert.assertEquals(expectedCauseObject, causeObject);
+            String resultMessage = ex.getMessage();
+            Assert.assertEquals(expectedMessage, resultMessage);
+            verify(ticketValidator).validate(ticket);
+            verify(ticketRepository, never()).save(ticket);
             throw ex;
         }
     }

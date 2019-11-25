@@ -1,7 +1,10 @@
 package com.railway.ticketoffice.domain;
 
 import com.railway.ticketoffice.domain.key.StopKey;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalTime;
@@ -9,6 +12,9 @@ import java.time.LocalTime;
 @Entity
 @Table(name = "train_station")
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Stop {
     @EmbeddedId
     private StopKey id;

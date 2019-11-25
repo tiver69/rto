@@ -6,6 +6,7 @@ import com.railway.ticketoffice.exception.type.DataNotFoundException;
 import com.railway.ticketoffice.repository.TicketRepository;
 import com.railway.ticketoffice.repository.TrainCoachRepository;
 import com.railway.ticketoffice.util.DateTimeUtil;
+import com.railway.ticketoffice.validator.TrainCoachValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,8 +58,9 @@ public class CoachService {
         LocalDate date = DateTimeUtil.parseString(departureDate);
         CoachInfoDto coach =
                 trainCoachRepository.findCoachByNumberAndTrainId(trainId, coachNumber)
-                        .orElseThrow(() -> new DataNotFoundException(
-                                String.format("Coach #%d doesn't exist in this train!", coachNumber)));
+                        .orElseThrow(() -> new DataNotFoundException(TrainCoachValidator.KEY,
+                                String.format(TrainCoachValidator.EXIST_COACH_IN_TRAIN_MESSAGE_FORMAT,
+                                        coachNumber, trainId)));
         List<Integer> coachBookedPlace =
                 ticketRepository.findAllBookedPlacesByCoachNumberAndTrainIdAndDepartureDate(trainId, date, coachNumber);
 
