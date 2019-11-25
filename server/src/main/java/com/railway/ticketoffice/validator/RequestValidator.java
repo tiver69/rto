@@ -18,7 +18,6 @@ public class RequestValidator {
     public static String DEPARTURE_STATION_KEY = "departureStation";
     public static String DESTINATION_STATION_KEY = "destinationStation";
 
-
     public void validateTrainRequest(Long departureStationId, Long destinationStationId, String departureDate) {
         HashMap<String, String> causeObject = new HashMap<>();
 

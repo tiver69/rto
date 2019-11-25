@@ -27,8 +27,8 @@ public class TicketValidator {
     @Autowired
     private StationValidator stationValidator;
 
-    private static String PLACE_KEY = "place";
-    private static String PLACE_MESSAGE = "Place#%d doesn't exist in coach#%d";
+    public static String PLACE_KEY = "place";
+    public static String PLACE_MESSAGE = "Place#%d doesn't exist in coach#%d";
 
     public void validate(Ticket ticket) throws DataValidationException {
         HashMap<String, String> causeObject = new HashMap<>();
@@ -54,11 +54,10 @@ public class TicketValidator {
         if (ticket.getPlace() <= 0 || (
                 trainCoach.isPresent() &&
                         trainCoach.get().getCoachType().getPlaces() < ticket.getPlace()))
-            causeObject.put(PLACE_KEY, String.format(PLACE_MESSAGE, ticket.getTrainCoach().getId(), ticket.getTrainCoach().getId()));
+            causeObject.put(PLACE_KEY, String.format(PLACE_MESSAGE, ticket.getPlace(), ticket.getTrainCoach().getId()));
 
         if (!causeObject.isEmpty()) throw new DataValidationException("Ticket is not valid!", causeObject);
     }
-
 
     private void executeCheck(HashMap<String, String> causeObject, ExistenceCheck existenceCheck) {
         try {
