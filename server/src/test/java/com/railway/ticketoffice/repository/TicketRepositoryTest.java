@@ -3,7 +3,6 @@ package com.railway.ticketoffice.repository;
 import com.railway.ticketoffice.dto.TicketDto;
 import com.railway.ticketoffice.dto.request.train.CoachTypeInfoDto;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,12 +37,32 @@ public class TicketRepositoryTest {
     }
 
     @Test
-    @Ignore
-    public void findActivePageByPassengerId() {
+    public void shouldReturnActivePageByPassengerId() {
+        List<TicketDto> expected = Arrays.asList(TicketDto.builder()
+                .id(14L)
+                .departureStation("Kyiv-Pasazhyrsky")
+                .destinationStation("Zaporizhzhya 1")
+                .departureDateTime("2019-09-30 07:07")
+                .arrivalDateTime("2019-09-30 14:35")
+                .trainId(732L)
+                .coachNumber(5)
+                .place(19)
+                .price(472)
+                .build());
+
         Page<TicketDto> result = ticketRepository.findPageByPassengerIdAndActiveStatus(DB_PASSENGER_ID, DB_DATE,
                 true, PageRequest.of(1, 5));
         Assert.assertEquals(2, result.getTotalPages());
         Assert.assertEquals(1, result.getContent().size());
+        Assert.assertEquals(expected, result.getContent());
+    }
+
+    @Test
+    public void shouldReturnHistoryPageByPassengerId() {
+        Page<TicketDto> result = ticketRepository.findPageByPassengerIdAndActiveStatus(DB_PASSENGER_ID, DB_DATE,
+                false, PageRequest.of(0, 5));
+        Assert.assertEquals(1, result.getTotalPages());
+        Assert.assertEquals(5, result.getContent().size());
     }
 
     @Test

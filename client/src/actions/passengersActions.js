@@ -14,11 +14,6 @@ export const getPassengersPage = pageNumber => async dispatch => {
   });
 };
 
-export const countPassengersPages = () => async dispatch => {
-  const res = await axios.get(`/api/passenger/page/count`);
-  return res.data;
-};
-
 export const updatePassenger = passenger => async dispatch => {
   if (window.confirm("Do you really want to update passenger data?")) {
     try {

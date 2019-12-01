@@ -1,6 +1,7 @@
 package com.railway.ticketoffice.controller;
 
 import com.railway.ticketoffice.domain.Passenger;
+import com.railway.ticketoffice.dto.PageableDto;
 import com.railway.ticketoffice.dto.PassengerDto;
 import com.railway.ticketoffice.service.PassengerService;
 import org.slf4j.Logger;
@@ -9,8 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @CrossOrigin
@@ -26,13 +25,7 @@ public class PassengerController {
     public ResponseEntity<?> findPagePassengersForManaging(@RequestParam("page") Integer page) {
         LOGGER.debug("Passengers page#{} request for manage page", page);
 
-        List<PassengerDto> response = passengerService.findPageForManaging(page);
-        return new ResponseEntity<>(response, HttpStatus.OK);
-    }
-
-    @GetMapping(value = "/page/count", produces = "application/json")
-    public ResponseEntity<Integer> countPagePassengersForManaging() {
-        Integer response = passengerService.countPageForManaging();
+        PageableDto<PassengerDto> response = passengerService.findPageForManaging(page);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

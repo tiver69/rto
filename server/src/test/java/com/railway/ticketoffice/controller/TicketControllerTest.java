@@ -4,11 +4,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.railway.ticketoffice.domain.*;
+import com.railway.ticketoffice.dto.PageableDto;
+import com.railway.ticketoffice.dto.TicketDto;
 import com.railway.ticketoffice.validator.PassengerValidator;
 import com.railway.ticketoffice.validator.TrainCoachValidator;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +20,10 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.HashMap;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
@@ -32,6 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
+@Transactional
 @TestPropertySource(locations = "classpath:application-test.properties")
 public class TicketControllerTest {
 
@@ -58,18 +62,41 @@ public class TicketControllerTest {
     }
 
     @Test
-    @Ignore
-    public void shouldReturnOkIfValidPassengerId() throws Exception {
-        mockMvc.perform(get("/api/ticket/page?passengerId=1&page=1&isActive=false"))
+    public void shouldReturnTicketPageWithValidPassengerId() throws Exception {
+        PageableDto<TicketDto> pageableDto = new PageableDto<>(
+                Arrays.asList(TicketDto.builder()
+                        .id(2L)
+                        .departureStation("Kyiv-Pasazhyrsky")
+                        .destinationStation("Zaporizhzhya 1")
+                        .departureDateTime("2019-08-31 07:07")
+                        .arrivalDateTime("2019-08-31 14:35")
+                        .trainId(732L)
+                        .coachNumber(5)
+                        .place(18)
+                        .price(472)
+                        .build()),
+                1);
+        String expectedJson = objectMapper.writeValueAsString(pageableDto);
+
+        MvcResult content = mockMvc.perform(get("/api/ticket/page?passengerId=2&page=0&isActive=false"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(APPLICATION_JSON_UTF8));
+                .andExpect(content().contentType(APPLICATION_JSON_UTF8))
+                .andReturn();
+        String resultJson = content.getResponse().getContentAsString();
+        Assert.assertEquals(expectedJson, resultJson);
     }
 
     @Test
-    @Ignore
-    public void shouldReturnBadRequestIfNotValidPassengerId() throws Exception {
-        mockMvc.perform(get("/api/ticket/page?passengerId=0&page=1&isActive=false"))
-                .andExpect(status().isNotFound());
+    public void shouldReturnBadRequestWithNotValidPassengerId() throws Exception {
+        int notExistingId = 0;
+        String expectedJson = String.format(PassengerValidator.EXIST_MESSAGE_FORMAT, notExistingId);
+
+        MvcResult content = mockMvc.perform(get("/api/ticket/page?" +
+                "passengerId=" + notExistingId + "&page=1&isActive=false"))
+                .andExpect(status().isNotFound())
+                .andReturn();
+        String resultJson = content.getResponse().getContentAsString();
+        Assert.assertEquals(expectedJson, resultJson);
     }
 
     @Test

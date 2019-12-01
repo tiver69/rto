@@ -1,10 +1,7 @@
 import React, { Component } from "react";
 import Ticket from "./Ticket";
 import { connect } from "react-redux";
-import {
-  getPassengerPageTickets,
-  countTicketsPages
-} from "../../actions/ticketActions";
+import { getPassengerPageTickets } from "../../actions/ticketActions";
 import PropTypes from "prop-types";
 import classnames from "classnames";
 import SearchForm from "./SearchForm";
@@ -14,7 +11,6 @@ class Home extends Component {
     super();
     this.state = {
       displayActive: true,
-      totalPages: 0,
       currentPage: 1
     };
   }
@@ -26,13 +22,6 @@ class Home extends Component {
       displayActive: e.target.value === "true"
     });
     this.props.getPassengerPageTickets(passengerId, 0, e.target.value);
-    this.props
-      .countTicketsPages(passengerId, e.target.value)
-      .then(countPages => {
-        this.setState({
-          totalPages: countPages
-        });
-      });
   };
 
   componentDidMount() {
@@ -42,18 +31,11 @@ class Home extends Component {
       0,
       this.state.displayActive
     );
-    this.props
-      .countTicketsPages(passengerId, this.state.displayActive)
-      .then(countPages => {
-        this.setState({
-          totalPages: countPages
-        });
-      });
   }
 
-  createPages = () => {
+  createPages = totalPages => {
     let pages = [];
-    for (let i = 0; i < this.state.totalPages; i++) {
+    for (let i = 0; i < totalPages; i++) {
       if (i + 1 === this.state.currentPage) {
         pages.push(
           <li key={"pageNumber#" + i + 1}>
@@ -158,22 +140,26 @@ class Home extends Component {
                   </li>
                 </ul>
 
-                {tickets.length === 0 && (
-                  <div className="alert alert-secondary" role="alert">
-                    Seems that you have not tickets here
-                  </div>
-                )}
-                {tickets.map(ticket => (
-                  <Ticket
-                    key={ticket.id}
-                    ticket={ticket}
-                    active={this.state.displayActive}
-                  />
-                ))}
+                {typeof tickets.currentPage !== "undefined" &&
+                  tickets.currentPage.length === 0 && (
+                    <div className="alert alert-secondary" role="alert">
+                      Seems that you have no tickets here
+                    </div>
+                  )}
+                {typeof tickets.currentPage !== "undefined" &&
+                  tickets.currentPage.map(ticket => (
+                    <Ticket
+                      key={ticket.id}
+                      ticket={ticket}
+                      active={this.state.displayActive}
+                    />
+                  ))}
 
                 {/* <!-- pages --> */}
                 <div className="col-12 mt-5 text-center">
-                  <ul className="custom-pagination">{this.createPages()}</ul>
+                  <ul className="custom-pagination">
+                    {this.createPages(tickets.totalPages)}
+                  </ul>
                 </div>
               </div>
 
@@ -188,15 +174,13 @@ class Home extends Component {
 
 Home.propTypes = {
   ticket: PropTypes.object.isRequired,
-  getPassengerPageTickets: PropTypes.func.isRequired,
-  countTicketsPages: PropTypes.func.isRequired
+  getPassengerPageTickets: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
   ticket: state.ticket
 });
 
-export default connect(
-  mapStateToProps,
-  { getPassengerPageTickets, countTicketsPages }
-)(Home);
+export default connect(mapStateToProps, {
+  getPassengerPageTickets
+})(Home);

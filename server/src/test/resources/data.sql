@@ -19,7 +19,7 @@ CREATE TABLE `passenger` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `login_UNIQUE` (`login`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
-INSERT INTO `passenger` VALUES (1,'Кибко','Александра','tiver69','6c2a5c9ead1d7d6ba86c8764d5cad395'),(2,'Savina','Evgenia','shipper1232','6c2a5c9ead1d7d6ba86c8764d5cad395'),(3,'Protasov','Vladislav','protasov1','0102812fbd5f73aa18aa0bae2cd8f79f'),(4,'Test','Test','test11','0102812fbd5f73aa18aa0bae2cd8f79f');
+INSERT INTO `passenger` VALUES (1,'Kibko','Aleksandra','tiver69','6c2a5c9ead1d7d6ba86c8764d5cad395'),(2,'Savina','Evgenia','shipper1232','6c2a5c9ead1d7d6ba86c8764d5cad395'),(3,'Protasov','Vladislav','protasov1','0102812fbd5f73aa18aa0bae2cd8f79f'),(4,'Test','Test','test11','0102812fbd5f73aa18aa0bae2cd8f79f');
 
 --DROP TABLE IF EXISTS `passenger_roles`;
 --CREATE TABLE `passenger_roles` (

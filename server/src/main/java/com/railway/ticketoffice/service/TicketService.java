@@ -1,8 +1,8 @@
 package com.railway.ticketoffice.service;
 
 import com.railway.ticketoffice.domain.Ticket;
+import com.railway.ticketoffice.dto.PageableDto;
 import com.railway.ticketoffice.dto.TicketDto;
-import com.railway.ticketoffice.exception.type.DataValidationException;
 import com.railway.ticketoffice.exception.type.UnexpectedException;
 import com.railway.ticketoffice.repository.StopRepository;
 import com.railway.ticketoffice.repository.TicketRepository;
@@ -18,7 +18,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @Service
 public class TicketService {
@@ -38,23 +37,17 @@ public class TicketService {
     private StopRepository stopRepository;
 
 
-    public List<TicketDto> findPageByPassenger(Long passengerId, Integer page, Boolean isActive) {
+    public PageableDto<TicketDto> findPageByPassenger(Long passengerId, Integer page, Boolean isActive) {
         passengerValidator.validateExistence(passengerId);
 
         Page<TicketDto> ticketsDtoPage = ticketRepository.findPageByPassengerIdAndActiveStatus(
                 passengerId, LocalDate.now(), isActive, PageUtil.getPageableFromPageNumber(page));
         PageUtil.checkPageBounds(page, ticketsDtoPage);
+        PageableDto<TicketDto> result = new PageableDto<>(ticketsDtoPage.getContent(), ticketsDtoPage.getTotalPages());
 
         MDC.put("passengerId", passengerId.toString());
         LOGGER.info("Tickets active({}) page#{} request - found {}", isActive, page, ticketsDtoPage.getContent().size());
-        return ticketsDtoPage.getContent();
-    }
-
-    public Integer countPageByPassenger(Long passengerId, Boolean isActive) {
-        passengerValidator.validateExistence(passengerId);
-        return ticketRepository.findPageByPassengerIdAndActiveStatus(
-                passengerId, LocalDate.now(), isActive, PageUtil.getPageableFromPageNumber(0))
-                .getTotalPages();
+        return result;
     }
 
     public Ticket save(Ticket ticket) {

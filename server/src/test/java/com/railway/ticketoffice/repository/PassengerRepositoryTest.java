@@ -3,7 +3,6 @@ package com.railway.ticketoffice.repository;
 import com.railway.ticketoffice.domain.Passenger;
 import com.railway.ticketoffice.dto.PassengerDto;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +44,6 @@ public class PassengerRepositoryTest {
     }
 
     @Test
-    @Ignore
     public void findPagePassengersInfo() {
         Page<PassengerDto> result = passengerRepository.findPagePassengersInfo(PageRequest.of(0, 5));
         Assert.assertEquals(1, result.getTotalPages());
@@ -57,8 +55,8 @@ public class PassengerRepositoryTest {
     public void shouldSuccessfullyUpdatePassengerWithValidUpdateData() {
         Passenger updatePassenger = Passenger.builder()
                 .id(DB_ID)
-                .firstName("Александра")
-                .lastName("Кибко")
+                .firstName("Aleksandra")
+                .lastName("Kibko")
                 .login("tiver6969")
                 .password("6c2a5c9ead1d7d6ba86c8764d5cad395")
                 .build();
@@ -77,8 +75,8 @@ public class PassengerRepositoryTest {
     public void shouldThrowExceptionWhileUpdateWithExistingEmail() {
         Passenger updatePassenger = Passenger.builder()
                 .id(DB_ID)
-                .firstName("Александра")
-                .lastName("Кибко")
+                .firstName("Aleksandra")
+                .lastName("Kibko")
                 .login(DB_LOGIN2)
                 .password("6c2a5c9ead1d7d6ba86c8764d5cad395")
                 .build();
