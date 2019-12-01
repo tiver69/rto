@@ -21,16 +21,16 @@ CREATE TABLE `passenger` (
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 INSERT INTO `passenger` VALUES (1,'Кибко','Александра','tiver69','6c2a5c9ead1d7d6ba86c8764d5cad395'),(2,'Savina','Evgenia','shipper1232','6c2a5c9ead1d7d6ba86c8764d5cad395'),(3,'Protasov','Vladislav','protasov1','0102812fbd5f73aa18aa0bae2cd8f79f'),(4,'Test','Test','test11','0102812fbd5f73aa18aa0bae2cd8f79f');
 
-DROP TABLE IF EXISTS `passenger_roles`;
-CREATE TABLE `passenger_roles` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `passenger_id` int(11) NOT NULL,
-  `role` varchar(45) NOT NULL DEFAULT 'USER',
-  PRIMARY KEY (`id`,`passenger_id`),
-  UNIQUE KEY `idpassenger_roles_UNIQUE` (`id`),
- FOREIGN KEY (`passenger_id`) REFERENCES `passenger` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
-INSERT INTO `passenger_roles` VALUES (1,1,'USER'),(2,2,'USER'),(3,3,'USER'),(4,1,'ADMIN'),(5,2,'ADMIN'),(6,4,'USER');
+--DROP TABLE IF EXISTS `passenger_roles`;
+--CREATE TABLE `passenger_roles` (
+--  `id` int(11) NOT NULL AUTO_INCREMENT,
+--  `passenger_id` int(11) NOT NULL,
+--  `role` varchar(45) NOT NULL DEFAULT 'USER',
+--  PRIMARY KEY (`id`,`passenger_id`),
+--  UNIQUE KEY `idpassenger_roles_UNIQUE` (`id`),
+-- FOREIGN KEY (`passenger_id`) REFERENCES `passenger` (`id`)
+--) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+--INSERT INTO `passenger_roles` VALUES (1,1,'USER'),(2,2,'USER'),(3,3,'USER'),(4,1,'ADMIN'),(5,2,'ADMIN'),(6,4,'USER');
 
 DROP TABLE IF EXISTS `station`;
 CREATE TABLE `station` (

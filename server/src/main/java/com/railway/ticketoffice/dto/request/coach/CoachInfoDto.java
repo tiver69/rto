@@ -1,10 +1,16 @@
 package com.railway.ticketoffice.dto.request.coach;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class CoachInfoDto {
     private Long id;
     private Long typeId;
