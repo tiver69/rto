@@ -1,31 +1,27 @@
 package com.railway.ticketoffice.validator;
 
+import com.railway.ticketoffice.exception.type.DataNotFoundException;
 import com.railway.ticketoffice.exception.type.DataValidationException;
-import com.railway.ticketoffice.service.TrainService;
 import com.railway.ticketoffice.util.DateTimeUtil;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Rollback;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.transaction.annotation.Transactional;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.HashMap;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
-@TestPropertySource(locations = "classpath:application-test.properties")
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@Transactional
+import static org.mockito.Mockito.*;
+
+@RunWith(MockitoJUnitRunner.class)
 public class RequestValidatorTest {
 
-    @Autowired
-    private TrainService trainService;
+    @Mock
+    private StationValidator stationValidator;
+
+    @InjectMocks
+    private RequestValidator requestValidator;
 
     private static String VALID_DATE = "2019-10-27";
     private static Long VALID_DEPARTURE_STATION_ID = 1L;
@@ -35,22 +31,22 @@ public class RequestValidatorTest {
     private static Long NOT_VALID_DEPARTURE_STATION_ID = 12345L;
     private static Long NOT_VALID_DESTINATION_STATION_ID = 12345L;
 
-
     @Test
-    @Rollback
-    @Ignore //TO_DO: unignore with testing db
-    public void shouldReturnTrueWithValidPassengerUpdateData() {
-        int resultSize = trainService.findAllTrainsInDirectionAtDate(VALID_DEPARTURE_STATION_ID,
-                VALID_DESTINATION_STATION_ID, VALID_DATE).size();
-        int expectedResultSize = 1;
+    public void shouldReturnNothingWithValidRequestTrainParam() {
+        doNothing().when(stationValidator).validateExistence(VALID_DEPARTURE_STATION_ID);
+        doNothing().when(stationValidator).validateExistence(VALID_DESTINATION_STATION_ID);
 
-        Assert.assertEquals(resultSize, expectedResultSize);
+        requestValidator.validateTrainRequest(VALID_DEPARTURE_STATION_ID,
+                VALID_DESTINATION_STATION_ID, VALID_DATE);
+        verify(stationValidator).validateExistence(VALID_DEPARTURE_STATION_ID);
+        verify(stationValidator).validateExistence(VALID_DESTINATION_STATION_ID);
     }
 
     @Test(expected = DataValidationException.class)
-    @Rollback
-//    @Ignore //TO_DO: unignore with testing db
     public void shouldReturnExceptionWithNotValidRequestData() {
+        doThrow(new DataNotFoundException(StationValidator.KEY,
+                String.format(StationValidator.EXIST_MESSAGE_FORMAT, NOT_VALID_DESTINATION_STATION_ID)))
+                .when(stationValidator).validateExistence(NOT_VALID_DESTINATION_STATION_ID);
 
         HashMap<String, String> expectedCauseObject = new HashMap<>();
         expectedCauseObject.put(RequestValidator.DATE_KEY, DateTimeUtil.VALIDATE_DATE_FORMAT_MESSAGE);
@@ -60,7 +56,7 @@ public class RequestValidatorTest {
                 String.format(StationValidator.EXIST_MESSAGE_FORMAT, NOT_VALID_DESTINATION_STATION_ID));
 
         try {
-            trainService.findAllTrainsInDirectionAtDate(NOT_VALID_DEPARTURE_STATION_ID,
+            requestValidator.validateTrainRequest(NOT_VALID_DEPARTURE_STATION_ID,
                     NOT_VALID_DESTINATION_STATION_ID, NOT_VALID_DATE);
         } catch (DataValidationException ex){
             Assert.assertEquals(expectedCauseObject, ex.getCauseObject());

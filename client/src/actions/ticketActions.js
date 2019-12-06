@@ -21,13 +21,6 @@ export const getPassengerPageTickets = (
   });
 };
 
-export const countTicketsPages = (passengerId, isActive) => async dispatch => {
-  const res = await axios.get(
-    `/api/ticket/page/count?passengerId=${passengerId}&isActive=${isActive}`
-  );
-  return res.data;
-};
-
 export const countTicketPrice = (
   trainId,
   trainCoachId,

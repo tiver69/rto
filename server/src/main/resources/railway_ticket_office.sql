@@ -1,3 +1,5 @@
+CREATE DATABASE  IF NOT EXISTS `railway_ticket_office` /*!40100 DEFAULT CHARACTER SET utf8 */;
+USE `railway_ticket_office`;
 -- MySQL dump 10.13  Distrib 8.0.15, for Win64 (x86_64)
 --
 -- Host: 127.0.0.1    Database: railway_ticket_office_2
@@ -66,7 +68,7 @@ CREATE TABLE `passenger` (
 
 LOCK TABLES `passenger` WRITE;
 /*!40000 ALTER TABLE `passenger` DISABLE KEYS */;
-INSERT INTO `passenger` VALUES (1,'Кибко','Александра','tiver69','6c2a5c9ead1d7d6ba86c8764d5cad395'),(2,'Savina','Evgenia','shipper1232','6c2a5c9ead1d7d6ba86c8764d5cad395'),(4,'Protasov','Vladislav','protasov1','0102812fbd5f73aa18aa0bae2cd8f79f'),(1705,'Онищенко','Елизавета','lemonycap','0102812fbd5f73aa18aa0bae2cd8f79f'),(1707,'Test','Test','test11','0102812fbd5f73aa18aa0bae2cd8f79f');
+INSERT INTO `passenger` VALUES (1,'Кибко','Александра','tiver69','6c2a5c9ead1d7d6ba86c8764d5cad395'),(2,'Savina','Evgenia','shipper1232','6c2a5c9ead1d7d6ba86c8764d5cad395'),(4,'Protasov','Vladislav','protasov1','0102812fbd5f73aa18aa0bae2cd8f79f'),(1705,'Онищенко','Елизавета','lemonycap','0102812fbd5f73aa18aa0bae2cd8f79f'),(1707,'Test','TestTest','test11','0102812fbd5f73aa18aa0bae2cd8f79f');
 /*!40000 ALTER TABLE `passenger` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -149,7 +151,7 @@ CREATE TABLE `ticket` (
   CONSTRAINT `fk_tickets_stations1` FOREIGN KEY (`departure_station_id`) REFERENCES `station` (`id`),
   CONSTRAINT `fk_tickets_stations2` FOREIGN KEY (`destination_station_id`) REFERENCES `station` (`id`),
   CONSTRAINT `fk_tickets_trains_has_coaches1` FOREIGN KEY (`coach_id`) REFERENCES `train_coach` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1721 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1774 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -158,7 +160,7 @@ CREATE TABLE `ticket` (
 
 LOCK TABLES `ticket` WRITE;
 /*!40000 ALTER TABLE `ticket` DISABLE KEYS */;
-INSERT INTO `ticket` VALUES (4,1,2,1,'2019-08-31','2019-08-31',20,17,472),(5,2,2,1,'2019-08-31','2019-08-31',20,18,472),(6,1,2,3,'2019-08-31','2019-08-31',20,19,67),(18,4,10,12,'2019-08-31','2019-08-31',35,33,140),(24,1,1,3,'2019-05-15','2019-05-16',45,4,164),(25,1,2,12,'2019-06-06','2019-06-06',35,10,280),(26,1,2,1,'2019-06-12','2019-06-12',20,16,472),(27,1,1,2,'2019-06-12','2019-06-13',45,18,220),(28,1,1,2,'2019-06-12','2019-06-13',45,20,220),(1708,1705,2,1,'2019-06-30','2019-06-30',42,27,220),(1709,1705,1,2,'2019-08-31','2019-08-31',50,24,220),(1710,1705,2,12,'2019-06-12','2019-06-12',32,67,230),(1716,1707,2,1,'2019-06-14','2019-06-14',37,12,210),(1720,1,1,2,'2019-11-16','2019-11-17',48,21,230);
+INSERT INTO `ticket` VALUES (4,1,2,1,'2019-08-31','2019-08-31',20,17,472),(5,2,2,1,'2019-08-31','2019-08-31',20,18,472),(6,1,2,3,'2019-08-31','2019-08-31',20,19,67),(18,4,10,12,'2019-08-31','2019-08-31',35,33,140),(24,1,1,3,'2019-05-15','2019-05-16',45,4,164),(25,1,2,12,'2019-06-06','2019-06-06',35,10,280),(26,1,2,1,'2019-06-12','2019-06-12',20,16,472),(27,1,1,2,'2019-06-12','2019-06-13',45,18,220),(28,1,1,2,'2019-06-12','2019-06-13',45,20,220),(1708,1705,2,1,'2019-06-30','2019-06-30',42,27,220),(1709,1705,1,2,'2019-08-31','2019-08-31',50,24,220),(1710,1705,2,12,'2019-06-12','2019-06-12',32,67,230),(1716,1707,2,1,'2019-06-14','2019-06-14',37,12,210),(1720,1,1,2,'2019-11-16','2019-11-17',48,21,230),(1721,1,1,2,'2019-08-31','2019-09-01',48,28,1500),(1722,1,1,2,'2019-08-31','2019-09-01',48,22,230),(1723,1,1,2,'2019-08-31','2019-09-01',48,18,230),(1724,1,1,2,'2019-08-31','2019-09-01',48,25,230),(1725,1,2,1,'2019-09-29','2019-09-30',20,23,472),(1763,1,1,2,'2019-08-31','2019-09-01',48,11,230),(1764,1,1,2,'2019-08-31','2019-09-01',48,6,230),(1765,1,1,2,'2019-08-31','2019-09-01',48,2,230),(1767,1,1,2,'2019-08-31','2019-09-01',48,17,230),(1773,1,2,1,'2019-11-08','2019-11-08',27,36,437);
 /*!40000 ALTER TABLE `ticket` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -253,7 +255,7 @@ DROP TABLE IF EXISTS `train_station`;
 CREATE TABLE `train_station` (
   `station_id` int(11) NOT NULL AUTO_INCREMENT,
   `train_id` int(11) NOT NULL,
-  `order` int(11) NOT NULL,
+  `stop_order` int(11) NOT NULL,
   `price` int(11) NOT NULL,
   `arrival` time DEFAULT NULL,
   `departure` time DEFAULT NULL,
@@ -284,4 +286,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-09-01 15:47:26
+-- Dump completed on 2019-11-20 22:47:51

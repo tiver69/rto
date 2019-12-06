@@ -1,10 +1,16 @@
 package com.railway.ticketoffice.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class PassengerDto {
     private Long id;
     private String firstName;
@@ -12,13 +18,4 @@ public class PassengerDto {
     private String login;
     private Long totalTickets;
     private LocalDate lastActive;
-
-    public PassengerDto(Long id, String firstName, String lastName, String login, Long totalTickets, LocalDate lastActive) {
-        this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.login = login;
-        this.totalTickets = totalTickets;
-        this.lastActive = lastActive;
-    }
 }

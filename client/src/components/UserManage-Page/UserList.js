@@ -1,9 +1,6 @@
 import React, { Component } from "react";
 import DisplayUser from "./DisplayUser";
-import {
-  getPassengersPage,
-  countPassengersPages
-} from "../../actions/passengersActions";
+import { getPassengersPage } from "../../actions/passengersActions";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
@@ -11,24 +8,17 @@ class UserList extends Component {
   constructor() {
     super();
     this.state = {
-      totalPages: 0,
       currentPage: 1
     };
   }
 
   componentDidMount() {
-    // this.props.getPassengers();
     this.props.getPassengersPage(0);
-    this.props.countPassengersPages().then(countPages => {
-      this.setState({
-        totalPages: countPages
-      });
-    });
   }
 
-  createPages = () => {
+  createPages = totalPages => {
     let pages = [];
-    for (let i = 0; i < this.state.totalPages; i++) {
+    for (let i = 0; i < totalPages; i++) {
       if (i + 1 === this.state.currentPage) {
         pages.push(
           <li key={"pageNumber#" + i + 1}>
@@ -89,13 +79,16 @@ class UserList extends Component {
             <div className="row">
               {/* <!-- user list section --> */}
               <div className="col">
-                {passengers.map(passenger => (
-                  <DisplayUser passenger={passenger} key={passenger.id} />
-                ))}
+                {passengers.length !== 0 &&
+                  passengers.currentPage.map(passenger => (
+                    <DisplayUser passenger={passenger} key={passenger.id} />
+                  ))}
 
                 {/* <!-- pages --> */}
                 <div className="col-12 mt-5 text-center">
-                  <ul className="custom-pagination">{this.createPages()}</ul>
+                  <ul className="custom-pagination">
+                    {this.createPages(passengers.totalPages)}
+                  </ul>
                 </div>
               </div>
             </div>
@@ -108,15 +101,13 @@ class UserList extends Component {
 
 UserList.propTypes = {
   passenger: PropTypes.object.isRequired,
-  getPassengersPage: PropTypes.func.isRequired,
-  countPassengersPages: PropTypes.func.isRequired
+  getPassengersPage: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
   passenger: state.passenger
 });
 
-export default connect(
-  mapStateToProps,
-  { getPassengersPage, countPassengersPages }
-)(UserList);
+export default connect(mapStateToProps, {
+  getPassengersPage
+})(UserList);

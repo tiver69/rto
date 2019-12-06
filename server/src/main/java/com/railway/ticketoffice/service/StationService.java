@@ -1,6 +1,5 @@
 package com.railway.ticketoffice.service;
 
-import com.railway.ticketoffice.domain.Station;
 import com.railway.ticketoffice.dto.StationSelectDto;
 import com.railway.ticketoffice.repository.StationRepository;
 import org.slf4j.Logger;
@@ -17,12 +16,6 @@ public class StationService {
 
     @Autowired
     private StationRepository stationRepository;
-
-    public List<Station> findAll() {
-        List<Station> stations = stationRepository.findAll();
-        LOGGER.info("All stations request found - {}", stations.size());
-        return stations;
-    }
 
     public List<StationSelectDto> findAllForSelect() {
         List<StationSelectDto> stationDtoList = stationRepository.findAllStationSelect();
