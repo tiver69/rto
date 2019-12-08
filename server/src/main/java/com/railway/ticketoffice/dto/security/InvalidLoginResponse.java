@@ -1,4 +1,4 @@
-package com.railway.ticketoffice.exception.type;
+package com.railway.ticketoffice.dto.security;
 
 import lombok.Getter;
 import lombok.Setter;

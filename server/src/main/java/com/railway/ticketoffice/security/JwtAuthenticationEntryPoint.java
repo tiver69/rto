@@ -1,7 +1,7 @@
 package com.railway.ticketoffice.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.railway.ticketoffice.exception.type.InvalidLoginResponse;
+import com.railway.ticketoffice.dto.security.InvalidLoginResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;

@@ -56,7 +56,7 @@ CREATE TABLE `passenger` (
   `last_name` varchar(45) NOT NULL,
   `first_name` varchar(45) NOT NULL,
   `login` varchar(45) NOT NULL,
-  `password` varchar(45) NOT NULL,
+  `password` varchar(128) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `login_UNIQUE` (`login`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1708 DEFAULT CHARSET=utf8;

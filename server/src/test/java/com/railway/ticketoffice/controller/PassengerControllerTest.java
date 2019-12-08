@@ -6,6 +6,8 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.railway.ticketoffice.domain.Passenger;
 import com.railway.ticketoffice.dto.PageableDto;
 import com.railway.ticketoffice.dto.PassengerDto;
+import com.railway.ticketoffice.dto.security.LoginRequest;
+import com.railway.ticketoffice.dto.security.InvalidLoginResponse;
 import com.railway.ticketoffice.util.PageUtil;
 import com.railway.ticketoffice.validator.PassengerValidator;
 import org.junit.Assert;
@@ -25,7 +27,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.regex.Pattern;
 
+import static com.railway.ticketoffice.security.Constants.TOKEN_PREFIX;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -118,6 +122,80 @@ public class PassengerControllerTest {
     }
 
     @Test
+    public void shouldReturnTokenWithValidLoginData() throws Exception {
+        LoginRequest loginRequest = new LoginRequest("tiver69", "pass17");
+        String passengerJson = objectMapper.writeValueAsString(loginRequest);
+
+        MvcResult content = mockMvc.perform(post("/api/passenger/login")
+                .contentType(APPLICATION_JSON_UTF8)
+                .content(passengerJson))
+                .andExpect(status().isOk())
+                .andReturn();
+        String resultJson = content.getResponse().getContentAsString();
+        Assert.assertTrue(resultJson.matches("\\{\"success\":true,\"token\":\"" + TOKEN_PREFIX + ".+?"));
+    }
+
+    @Test
+    public void shouldReturnBadRequestWithNotValidLoginData() throws Exception {
+        String expectedJson = objectMapper.writeValueAsString(new InvalidLoginResponse());
+        LoginRequest loginRequest = new LoginRequest("tiver69", "not_pass");
+        String passengerJson = objectMapper.writeValueAsString(loginRequest);
+
+        MvcResult content = mockMvc.perform(post("/api/passenger/login")
+                .contentType(APPLICATION_JSON_UTF8)
+                .content(passengerJson))
+                .andExpect(status().isUnauthorized())
+                .andReturn();
+        String resultJson = content.getResponse().getContentAsString();
+        Assert.assertEquals(expectedJson, resultJson);
+    }
+
+    @Test
+    @Rollback
+    public void shouldReturnTrueWithValidCreatePassengerData() throws Exception {
+        String password = "password";
+        String encryptedPassword = "encryptedPassword";
+        passenger.setId(null);
+        passenger.setPassword(password);
+        passenger.setConfirmPassword(password);
+        String passengerJson = objectMapper.writeValueAsString(passenger);
+        passenger.setId(5L);
+        passenger.setPassword(encryptedPassword);
+        passenger.setConfirmPassword(null);
+        String expectedJson = objectMapper.writeValueAsString(passenger);
+
+        MvcResult content = mockMvc.perform(post("/api/passenger/register")
+                .contentType(APPLICATION_JSON_UTF8)
+                .content(passengerJson))
+                .andExpect(status().isOk())
+                .andReturn();
+        String resultJson = content.getResponse().getContentAsString();
+        Pattern pattern = Pattern.compile("\"password\":\".+?\",");
+        resultJson = pattern.matcher(resultJson).replaceAll("\"password\":\"" + encryptedPassword + "\",");
+        Assert.assertEquals(expectedJson, resultJson);
+    }
+
+    @Test
+    public void shouldReturnBadRequestWithNotEqualPasswordsData() throws Exception {
+        HashMap<String, String> expectedCauseObject = new HashMap<>();
+        expectedCauseObject.put(
+                PassengerValidator.KEY_CONFIRM_PASSWORD, PassengerValidator.VALIDATE_CONFIRM_PASSWORD_MESSAGE);
+        String expectedJson = objectMapper.writeValueAsString(expectedCauseObject);
+        String password = "password";
+        passenger.setId(null);
+        passenger.setPassword(password);
+        passenger.setConfirmPassword(password + password);
+        String passengerJson = objectMapper.writeValueAsString(passenger);
+
+        MvcResult content = mockMvc.perform(post("/api/passenger/register")
+                .contentType(APPLICATION_JSON_UTF8)
+                .content(passengerJson))
+                .andReturn();
+        String resultJson = content.getResponse().getContentAsString();
+        Assert.assertEquals(expectedJson, resultJson);
+    }
+
+    @Test
     @Rollback
     public void shouldReturnTrueWithValidUpdatePassengerData() throws Exception {
         String passengerJson = objectMapper.writeValueAsString(passenger);
@@ -135,7 +213,7 @@ public class PassengerControllerTest {
     public void shouldReturnBadRequestWithNotExistingUpdatePassengerId() throws Exception {
         HashMap<String, String> expectedCauseObject = new HashMap<>();
         expectedCauseObject.put(PassengerValidator.KEY,
-                String.format(PassengerValidator.EXIST_MESSAGE_FORMAT, NOT_EXISTING_ID));
+                String.format(PassengerValidator.EXIST_MESSAGE_FORMAT_ID, NOT_EXISTING_ID));
         String expectedJson = objectMapper.writeValueAsString(expectedCauseObject);
         passenger.setId(NOT_EXISTING_ID);
         String passengerJson = objectMapper.writeValueAsString(passenger);
@@ -178,7 +256,7 @@ public class PassengerControllerTest {
 
     @Test
     public void shouldReturnBadRequestWithNotExistingRemovePassengerId() throws Exception {
-        String expectedJson = String.format(PassengerValidator.EXIST_MESSAGE_FORMAT, NOT_EXISTING_ID);
+        String expectedJson = String.format(PassengerValidator.EXIST_MESSAGE_FORMAT_ID, NOT_EXISTING_ID);
 
         MvcResult content = mockMvc.perform(delete("/api/passenger/remove/" + NOT_EXISTING_ID))
                 .andExpect(status().isNotFound())

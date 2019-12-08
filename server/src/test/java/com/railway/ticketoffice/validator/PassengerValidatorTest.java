@@ -63,20 +63,34 @@ public class PassengerValidatorTest {
 
     @Test(expected = DataNotFoundException.class)
     public void shouldReturnExceptionWithNotExistingPassengerId() {
+        when(passengerRepository.findByLogin(NOT_VALID_LOGIN)).thenReturn(Optional.empty());
+
+        try {
+            passengerValidator.validateExistence(NOT_VALID_LOGIN);
+        } catch (DataNotFoundException ex) {
+            String message = ex.getMessage();
+            Assert.assertEquals(String.format(PassengerValidator.EXIST_MESSAGE_FORMAT_LOGIN, NOT_VALID_LOGIN),
+                    message);
+            throw ex;
+        }
+    }
+
+    @Test(expected = DataNotFoundException.class)
+    public void shouldReturnExceptionWithNotExistingPassengerLogin() {
         when(passengerRepository.findById(NOT_EXISTING_ID)).thenReturn(Optional.empty());
 
         try {
             passengerValidator.validateExistence(NOT_EXISTING_ID);
         } catch (DataNotFoundException ex) {
             String message = ex.getMessage();
-            Assert.assertEquals(String.format(PassengerValidator.EXIST_MESSAGE_FORMAT, NOT_EXISTING_ID),
+            Assert.assertEquals(String.format(PassengerValidator.EXIST_MESSAGE_FORMAT_ID, NOT_EXISTING_ID),
                     message);
             throw ex;
         }
     }
 
     @Test(expected = DataValidationException.class)
-    public void shouldReturnExceptionWithNotValidPassengerUpdateData() {
+    public void shouldReturnExceptionWithNotValidBasicPassengerUpdateData() {
         newPassenger.setFirstName(NOT_VALID_FIRST_NAME);
         newPassenger.setLastName(NOT_VALID_LAST_NAME);
         newPassenger.setLogin(NOT_VALID_LOGIN);
@@ -87,7 +101,30 @@ public class PassengerValidatorTest {
         expectedCauseObject.put(PassengerValidator.KEY_LAST_NAME, PassengerValidator.VALIDATE_LAST_NAME_MESSAGE);
 
         try {
-            passengerValidator.validate(newPassenger);
+            passengerValidator.validateUpdate(newPassenger);
+        } catch (DataValidationException ex) {
+            HashMap<String, String> causeObject = ex.getCauseObject();
+            Assert.assertEquals(expectedCauseObject, causeObject);
+            throw ex;
+        }
+    }
+
+    @Test(expected = DataValidationException.class)
+    public void shouldReturnExceptionWithNotValidPassengerCreateData() {
+        newPassenger.setId(null);
+        newPassenger.setFirstName(NOT_VALID_FIRST_NAME);
+        newPassenger.setLastName(NOT_VALID_LAST_NAME);
+        newPassenger.setLogin(NOT_VALID_LOGIN);
+        newPassenger.setConfirmPassword(PASSWORD + "NOT_THE_SAME");
+
+        HashMap<String, String> expectedCauseObject = new HashMap<>();
+        expectedCauseObject.put(PassengerValidator.KEY_LOGIN, PassengerValidator.VALIDATE_LOGIN_MESSAGE);
+        expectedCauseObject.put(PassengerValidator.KEY_FIRST_NAME, PassengerValidator.VALIDATE_FIRST_NAME_MESSAGE);
+        expectedCauseObject.put(PassengerValidator.KEY_LAST_NAME, PassengerValidator.VALIDATE_LAST_NAME_MESSAGE);
+        expectedCauseObject.put(PassengerValidator.KEY_CONFIRM_PASSWORD, PassengerValidator.VALIDATE_CONFIRM_PASSWORD_MESSAGE);
+
+        try {
+            passengerValidator.validateCreate(newPassenger);
         } catch (DataValidationException ex) {
             HashMap<String, String> causeObject = ex.getCauseObject();
             Assert.assertEquals(expectedCauseObject, causeObject);
@@ -104,7 +141,26 @@ public class PassengerValidatorTest {
         expectedCauseObject.put(PassengerValidator.KEY_LOGIN, PassengerValidator.VALIDATE_EXISTENCE_LOGIN_MESSAGE);
 
         try {
-            passengerValidator.validate(newPassenger);
+            passengerValidator.validateUpdate(newPassenger);
+        } catch (DataValidationException ex) {
+            HashMap<String, String> causeObject = ex.getCauseObject();
+            Assert.assertEquals(expectedCauseObject, causeObject);
+            throw ex;
+        }
+    }
+
+    @Test(expected = DataValidationException.class)
+    public void shouldReturnExceptionWithExistingPassengerCreateLogin() {
+        newPassenger.setId(null);
+        newPassenger.setLogin(EXISTING_LOGIN);
+        newPassenger.setConfirmPassword(PASSWORD);
+        when(passengerRepository.findByLogin(EXISTING_LOGIN)).thenReturn(Optional.of(EXISTING_PASSENGER));
+
+        HashMap<String, String> expectedCauseObject = new HashMap<>();
+        expectedCauseObject.put(PassengerValidator.KEY_LOGIN, PassengerValidator.VALIDATE_EXISTENCE_LOGIN_MESSAGE);
+
+        try {
+            passengerValidator.validateCreate(newPassenger);
         } catch (DataValidationException ex) {
             HashMap<String, String> causeObject = ex.getCauseObject();
             Assert.assertEquals(expectedCauseObject, causeObject);
@@ -118,10 +174,10 @@ public class PassengerValidatorTest {
         newPassenger.setId(NOT_EXISTING_ID);
 
         HashMap<String, String> expectedCauseObject = new HashMap<>();
-        expectedCauseObject.put(PassengerValidator.KEY, String.format(PassengerValidator.EXIST_MESSAGE_FORMAT, NOT_EXISTING_ID));
+        expectedCauseObject.put(PassengerValidator.KEY, String.format(PassengerValidator.EXIST_MESSAGE_FORMAT_ID, NOT_EXISTING_ID));
 
         try {
-            passengerValidator.validate(newPassenger);
+            passengerValidator.validateUpdate(newPassenger);
         } catch (DataValidationException ex) {
             Assert.assertEquals(expectedCauseObject, ex.getCauseObject());
             throw ex;

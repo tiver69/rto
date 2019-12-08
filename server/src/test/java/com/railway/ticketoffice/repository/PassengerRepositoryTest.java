@@ -58,7 +58,7 @@ public class PassengerRepositoryTest {
                 .firstName("Aleksandra")
                 .lastName("Kibko")
                 .login("tiver6969")
-                .password("6c2a5c9ead1d7d6ba86c8764d5cad395")
+                .password("$2a$10$iRXmGGxSIYcu4lMDZnCN6eNjgNU7YVrNdl9A4FRgD8Y1v3/pF51aK")
                 .build();
 
         int result = passengerRepository.update(updatePassenger.getId(), updatePassenger.getFirstName(),
@@ -78,7 +78,6 @@ public class PassengerRepositoryTest {
                 .firstName("Aleksandra")
                 .lastName("Kibko")
                 .login(DB_LOGIN2)
-                .password("6c2a5c9ead1d7d6ba86c8764d5cad395")
                 .build();
 
         int result = passengerRepository.update(updatePassenger.getId(), updatePassenger.getFirstName(),

@@ -68,9 +68,9 @@ public class TicketValidatorTest {
     public void shoudReturnOkWithValidParam() {
         doNothing().when(trainCoachValidator).validateExistenceCoachInTrain(ticket.getTrainCoach().getId(),
                 ticket.getTrainCoach().getTrain().getId());
-        doNothing().when(passengerValidator).validateExistence(ticket.getPassenger().getId());
         doNothing().when(stationValidator).validateExistence(ticket.getDestinationStation().getId());
         doNothing().when(stationValidator).validateExistence(ticket.getDepartureStation().getId());
+        when(passengerValidator.validateExistence(ticket.getPassenger().getId())).thenReturn(new Passenger());
         when(trainCoachRepository.findById(ticket.getTrainCoach().getId())).thenReturn(Optional.of(TRAIN_COACH));
 
         ticketValidator.validate(ticket);
@@ -88,7 +88,7 @@ public class TicketValidatorTest {
                         NOT_EXISTING_COACH_ID, EXISTING_TRAIN_ID)))
                 .when(trainCoachValidator).validateExistenceCoachInTrain(NOT_EXISTING_COACH_ID, EXISTING_TRAIN_ID);
         doThrow(new DataNotFoundException(PassengerValidator.KEY,
-                String.format(PassengerValidator.EXIST_MESSAGE_FORMAT, NOT_EXISTING_PASSENGER_ID)))
+                String.format(PassengerValidator.EXIST_MESSAGE_FORMAT_ID, NOT_EXISTING_PASSENGER_ID)))
                 .when(passengerValidator).validateExistence(NOT_EXISTING_PASSENGER_ID);
         doThrow(new DataNotFoundException(StationValidator.KEY,
                 String.format(StationValidator.EXIST_MESSAGE_FORMAT, NOT_EXISTING_STATION_ID)))
@@ -104,7 +104,7 @@ public class TicketValidatorTest {
                 String.format(TrainCoachValidator.EXIST_COACH_IN_TRAIN_MESSAGE_FORMAT,
                         NOT_EXISTING_COACH_ID, EXISTING_TRAIN_ID));
         expectedCauseObject.put(PassengerValidator.KEY,
-                String.format(PassengerValidator.EXIST_MESSAGE_FORMAT, NOT_EXISTING_PASSENGER_ID));
+                String.format(PassengerValidator.EXIST_MESSAGE_FORMAT_ID, NOT_EXISTING_PASSENGER_ID));
         expectedCauseObject.put(StationValidator.KEY,
                 String.format(StationValidator.EXIST_MESSAGE_FORMAT, NOT_EXISTING_STATION_ID));
 

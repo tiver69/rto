@@ -89,7 +89,7 @@ public class TicketControllerTest {
     @Test
     public void shouldReturnBadRequestWithNotValidPassengerId() throws Exception {
         int notExistingId = 0;
-        String expectedJson = String.format(PassengerValidator.EXIST_MESSAGE_FORMAT, notExistingId);
+        String expectedJson = String.format(PassengerValidator.EXIST_MESSAGE_FORMAT_ID, notExistingId);
 
         MvcResult content = mockMvc.perform(get("/api/ticket/page?" +
                 "passengerId=" + notExistingId + "&page=1&isActive=false"))
@@ -120,7 +120,7 @@ public class TicketControllerTest {
         HashMap<String, String> expectedCauseObject = new HashMap<>();
         expectedCauseObject.put(TrainCoachValidator.KEY,
                 String.format(TrainCoachValidator.EXIST_COACH_IN_TRAIN_MESSAGE_FORMAT, 2, 0));
-        expectedCauseObject.put(PassengerValidator.KEY, String.format(PassengerValidator.EXIST_MESSAGE_FORMAT, 0));
+        expectedCauseObject.put(PassengerValidator.KEY, String.format(PassengerValidator.EXIST_MESSAGE_FORMAT_ID, 0));
         String expectedJson = objectMapper.writeValueAsString(expectedCauseObject);
         ticket.setPassenger(Passenger.builder().id(0L).build());
         ticket.setTrainCoach(TrainCoach.builder().id(2L).train(Train.builder().id(0L).build()).build());
