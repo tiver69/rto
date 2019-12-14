@@ -6,7 +6,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.railway.ticketoffice.domain.*;
 import com.railway.ticketoffice.dto.PageableDto;
 import com.railway.ticketoffice.dto.TicketDto;
-import com.railway.ticketoffice.validator.PassengerValidator;
+import com.railway.ticketoffice.dto.security.InvalidLoginResponse;
 import com.railway.ticketoffice.validator.TrainCoachValidator;
 import org.junit.Assert;
 import org.junit.Before;
@@ -26,6 +26,8 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.HashMap;
 
+import static com.railway.ticketoffice.configuration.TokenProvider.*;
+import static com.railway.ticketoffice.security.Constants.HEADER_STRING;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -51,7 +53,7 @@ public class TicketControllerTest {
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
         ticket = Ticket.builder()
-                .passenger(Passenger.builder().id(1L).build())
+                .passenger(PASSENGER_FOR_VALID_TOKEN)
                 .departureStation(Station.builder().id(2L).build())
                 .destinationStation(Station.builder().id(1L).build())
                 .departureDate(LocalDate.of(2019, 11, 29))
@@ -65,20 +67,21 @@ public class TicketControllerTest {
     public void shouldReturnTicketPageWithValidPassengerId() throws Exception {
         PageableDto<TicketDto> pageableDto = new PageableDto<>(
                 Arrays.asList(TicketDto.builder()
-                        .id(2L)
+                        .id(14L)
                         .departureStation("Kyiv-Pasazhyrsky")
                         .destinationStation("Zaporizhzhya 1")
-                        .departureDateTime("2019-08-31 07:07")
-                        .arrivalDateTime("2019-08-31 14:35")
+                        .departureDateTime("2019-09-30 07:07")
+                        .arrivalDateTime("2019-09-30 14:35")
                         .trainId(732L)
                         .coachNumber(5)
-                        .place(18)
+                        .place(19)
                         .price(472)
                         .build()),
-                1);
+                3);
         String expectedJson = objectMapper.writeValueAsString(pageableDto);
 
-        MvcResult content = mockMvc.perform(get("/api/ticket/page?passengerId=2&page=0&isActive=false"))
+        MvcResult content = mockMvc.perform(get("/api/ticket/page?page=2&isActive=false")
+                .header(HEADER_STRING, getValidPassengerToken(mockMvc)))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON_UTF8))
                 .andReturn();
@@ -88,12 +91,11 @@ public class TicketControllerTest {
 
     @Test
     public void shouldReturnBadRequestWithNotValidPassengerId() throws Exception {
-        int notExistingId = 0;
-        String expectedJson = String.format(PassengerValidator.EXIST_MESSAGE_FORMAT_ID, notExistingId);
+        String expectedJson = objectMapper.writeValueAsString(new InvalidLoginResponse());
 
-        MvcResult content = mockMvc.perform(get("/api/ticket/page?" +
-                "passengerId=" + notExistingId + "&page=1&isActive=false"))
-                .andExpect(status().isNotFound())
+        MvcResult content = mockMvc.perform(get("/api/ticket/page?page=1&isActive=false")
+                .header(HEADER_STRING, NOT_VALID_TOKEN))
+                .andExpect(status().isUnauthorized())
                 .andReturn();
         String resultJson = content.getResponse().getContentAsString();
         Assert.assertEquals(expectedJson, resultJson);
@@ -109,7 +111,8 @@ public class TicketControllerTest {
 
         MvcResult content = mockMvc.perform(post("/api/ticket/save")
                 .contentType(APPLICATION_JSON_UTF8)
-                .content(ticketJson))
+                .content(ticketJson)
+                .header(HEADER_STRING, getValidPassengerToken(mockMvc)))
                 .andReturn();
         String resultJson = content.getResponse().getContentAsString();
         Assert.assertEquals(expectedJson, resultJson);
@@ -120,7 +123,6 @@ public class TicketControllerTest {
         HashMap<String, String> expectedCauseObject = new HashMap<>();
         expectedCauseObject.put(TrainCoachValidator.KEY,
                 String.format(TrainCoachValidator.EXIST_COACH_IN_TRAIN_MESSAGE_FORMAT, 2, 0));
-        expectedCauseObject.put(PassengerValidator.KEY, String.format(PassengerValidator.EXIST_MESSAGE_FORMAT_ID, 0));
         String expectedJson = objectMapper.writeValueAsString(expectedCauseObject);
         ticket.setPassenger(Passenger.builder().id(0L).build());
         ticket.setTrainCoach(TrainCoach.builder().id(2L).train(Train.builder().id(0L).build()).build());
@@ -128,7 +130,8 @@ public class TicketControllerTest {
 
         MvcResult content = mockMvc.perform(post("/api/ticket/save")
                 .contentType(APPLICATION_JSON_UTF8)
-                .content(ticketJson))
+                .content(ticketJson)
+                .header(HEADER_STRING, getValidPassengerToken(mockMvc)))
                 .andExpect(status().isBadRequest())
                 .andReturn();
         String resultJson = content.getResponse().getContentAsString();
@@ -140,7 +143,8 @@ public class TicketControllerTest {
         String expectedJson = "402";
 
         MvcResult content = mockMvc.perform(get("/api/ticket/price?" +
-                "trainId=732&trainCoachId=20&departureStationId=2&destinationStationId=1"))
+                "trainId=732&trainCoachId=20&departureStationId=2&destinationStationId=1")
+                .header(HEADER_STRING, getValidPassengerToken(mockMvc)))
                 .andExpect(status().isOk())
                 .andExpect((content().contentType(APPLICATION_JSON_UTF8)))
                 .andReturn();
@@ -154,7 +158,8 @@ public class TicketControllerTest {
         String expectedJson = "Unexpected error while counting ticket price";
 
         MvcResult content = mockMvc.perform(get("/api/ticket/price?" +
-                "trainId=72332&trainCoachId=20&departureStationId=1&destinationStationId=2"))
+                "trainId=72332&trainCoachId=20&departureStationId=1&destinationStationId=2")
+                .header(HEADER_STRING, getValidPassengerToken(mockMvc)))
                 .andExpect(status().isBadRequest())
                 .andReturn();
         String resultJson = content.getResponse().getContentAsString();

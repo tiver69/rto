@@ -71,7 +71,7 @@ public class PassengerService implements UserDetailsService {
 
     @Transactional
     public Boolean removePassenger(Long passengerId) {
-        passengerValidator.validateExistence(passengerId);
+        passengerValidator.validateExistenceAndReturn(passengerId);
         boolean result = passengerRepository.removeById(passengerId).equals(1);
         if (!result) throw new UnexpectedException("Unexpected error while removing passenger");
 
@@ -81,6 +81,6 @@ public class PassengerService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
-        return passengerValidator.validateExistence(login);
+        return passengerValidator.validateExistenceAndReturn(login);
     }
 }

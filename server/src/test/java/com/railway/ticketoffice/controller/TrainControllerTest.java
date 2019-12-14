@@ -25,6 +25,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
+import static com.railway.ticketoffice.configuration.TokenProvider.getValidPassengerToken;
+import static com.railway.ticketoffice.security.Constants.HEADER_STRING;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -79,7 +81,8 @@ public class TrainControllerTest {
 
         MvcResult content = mockMvc
                 .perform(get(
-                        "/api/train/search?departureStation=1&destinationStation=2&departureDate=2019-06-12"))
+                        "/api/train/search?departureStation=1&destinationStation=2&departureDate=2019-06-12")
+                        .header(HEADER_STRING, getValidPassengerToken(mockMvc)))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON_UTF8))
                 .andReturn();
@@ -94,7 +97,8 @@ public class TrainControllerTest {
         String expectedJson = objectMapper.writeValueAsString(expectedCauseObject);
 
         MvcResult content = mockMvc.perform(get("/api/train/search?" +
-                "departureStation=1&destinationStation=2&departureDate=2019/10/18"))
+                "departureStation=1&destinationStation=2&departureDate=2019/10/18")
+                .header(HEADER_STRING, getValidPassengerToken(mockMvc)))
                 .andExpect(status().isBadRequest())
                 .andReturn();
         String resultJson = content.getResponse().getContentAsString();

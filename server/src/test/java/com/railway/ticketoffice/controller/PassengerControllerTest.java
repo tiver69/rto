@@ -6,8 +6,8 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.railway.ticketoffice.domain.Passenger;
 import com.railway.ticketoffice.dto.PageableDto;
 import com.railway.ticketoffice.dto.PassengerDto;
-import com.railway.ticketoffice.dto.security.LoginRequest;
 import com.railway.ticketoffice.dto.security.InvalidLoginResponse;
+import com.railway.ticketoffice.dto.security.LoginRequest;
 import com.railway.ticketoffice.util.PageUtil;
 import com.railway.ticketoffice.validator.PassengerValidator;
 import org.junit.Assert;
@@ -29,6 +29,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.regex.Pattern;
 
+import static com.railway.ticketoffice.configuration.TokenProvider.getValidPassengerToken;
+import static com.railway.ticketoffice.security.Constants.HEADER_STRING;
 import static com.railway.ticketoffice.security.Constants.TOKEN_PREFIX;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -50,7 +52,7 @@ public class PassengerControllerTest {
     private static long NOT_EXISTING_ID = 0L;
 
     @Before
-    public void beforeEach() {
+    public void beforeEach() throws Exception {
         objectMapper.registerModule(new JavaTimeModule());
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
@@ -101,7 +103,8 @@ public class PassengerControllerTest {
                 1);
         String expectedJson = objectMapper.writeValueAsString(pageableDto);
 
-        MvcResult content = mockMvc.perform(get("/api/passenger/page?page=0"))
+        MvcResult content = mockMvc.perform(get("/api/passenger/page?page=0")
+                .header(HEADER_STRING, getValidPassengerToken(mockMvc)))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON_UTF8))
                 .andReturn();
@@ -114,7 +117,8 @@ public class PassengerControllerTest {
         int notExistingPage = 10;
         String expectedJson = String.format(PageUtil.EXIST_MESSAGE_FORMAT, notExistingPage);
 
-        MvcResult content = mockMvc.perform(get("/api/passenger/page?page=" + notExistingPage))
+        MvcResult content = mockMvc.perform(get("/api/passenger/page?page=" + notExistingPage)
+                .header(HEADER_STRING, getValidPassengerToken(mockMvc)))
                 .andExpect(status().isNotFound())
                 .andReturn();
         String resultJson = content.getResponse().getContentAsString();
@@ -203,7 +207,8 @@ public class PassengerControllerTest {
 
         MvcResult content = mockMvc.perform(post("/api/passenger/update")
                 .contentType(APPLICATION_JSON_UTF8)
-                .content(passengerJson))
+                .content(passengerJson)
+                .header(HEADER_STRING, getValidPassengerToken(mockMvc)))
                 .andReturn();
         String resultJson = content.getResponse().getContentAsString();
         Assert.assertEquals(expectedJson, resultJson);
@@ -219,7 +224,8 @@ public class PassengerControllerTest {
         String passengerJson = objectMapper.writeValueAsString(passenger);
         MvcResult content = mockMvc.perform(post("/api/passenger/update")
                 .contentType(APPLICATION_JSON_UTF8)
-                .content(passengerJson))
+                .content(passengerJson)
+                .header(HEADER_STRING, getValidPassengerToken(mockMvc)))
                 .andExpect(status().isBadRequest())
                 .andReturn();
         String resultJson = content.getResponse().getContentAsString();
@@ -236,7 +242,8 @@ public class PassengerControllerTest {
 
         MvcResult content = mockMvc.perform(post("/api/passenger/update")
                 .contentType(APPLICATION_JSON_UTF8)
-                .content(passengerJson))
+                .content(passengerJson)
+                .header(HEADER_STRING, getValidPassengerToken(mockMvc)))
                 .andExpect(status().isBadRequest())
                 .andReturn();
         String resultJson = content.getResponse().getContentAsString();
@@ -248,7 +255,8 @@ public class PassengerControllerTest {
     public void shouldReturnTrueWithValidRemovePassengerId() throws Exception {
         String expectedJson = "true";
 
-        MvcResult content = mockMvc.perform(delete("/api/passenger/remove/4"))
+        MvcResult content = mockMvc.perform(delete("/api/passenger/remove/4")
+                .header(HEADER_STRING, getValidPassengerToken(mockMvc)))
                 .andReturn();
         String resultJson = content.getResponse().getContentAsString();
         Assert.assertEquals(expectedJson, resultJson);
@@ -258,7 +266,8 @@ public class PassengerControllerTest {
     public void shouldReturnBadRequestWithNotExistingRemovePassengerId() throws Exception {
         String expectedJson = String.format(PassengerValidator.EXIST_MESSAGE_FORMAT_ID, NOT_EXISTING_ID);
 
-        MvcResult content = mockMvc.perform(delete("/api/passenger/remove/" + NOT_EXISTING_ID))
+        MvcResult content = mockMvc.perform(delete("/api/passenger/remove/" + NOT_EXISTING_ID)
+                .header(HEADER_STRING, getValidPassengerToken(mockMvc)))
                 .andExpect(status().isNotFound())
                 .andReturn();
         String resultJson = content.getResponse().getContentAsString();

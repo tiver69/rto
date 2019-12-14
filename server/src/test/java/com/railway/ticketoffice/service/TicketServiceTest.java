@@ -4,16 +4,19 @@ import com.railway.ticketoffice.domain.*;
 import com.railway.ticketoffice.exception.type.DataValidationException;
 import com.railway.ticketoffice.repository.StopRepository;
 import com.railway.ticketoffice.repository.TicketRepository;
+import com.railway.ticketoffice.util.CloneUtil;
 import com.railway.ticketoffice.validator.PassengerValidator;
 import com.railway.ticketoffice.validator.TicketValidator;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Optional;
@@ -39,12 +42,23 @@ public class TicketServiceTest {
     private TicketService ticketService;
 
     private Ticket ticket;
+    private static Passenger passenger;
+    private static Long PASSENGER_ID = 1L;
+    private static String PASSENGER_LOGIN = "tiver69";
+
+    @BeforeClass
+    public static void setUp() {
+        passenger = Passenger.builder()
+                .id(PASSENGER_ID)
+                .login(PASSENGER_LOGIN)
+                .build();
+    }
 
     @Before
     public void beforeEach() {
         ticket = Ticket.builder()
                 .id(1L)
-                .passenger(Passenger.builder().id(1L).build())
+                .passenger(passenger)
                 .departureStation(Station.builder().id(2L).build())
                 .destinationStation(Station.builder().id(1L).build())
                 .departureDate(LocalDate.now().plusDays(1))
@@ -70,19 +84,21 @@ public class TicketServiceTest {
     }
 
     @Test
-    public void shouldReturnNotEmptyTicketWithValidParam() {
+    public void shouldReturnNotEmptyTicketWithValidParam() throws IOException {
+        Ticket expectedTicket = CloneUtil.makeClone(ticket);
         int returnPrice = 1000;
-        ticket.setPrice(returnPrice);
+        expectedTicket.setPrice(returnPrice);
         doNothing().when(ticketValidator).validate(ticket);
+        when(passengerValidator.validateExistenceAndReturn(PASSENGER_LOGIN)).thenReturn(passenger);
         when(ticketRepository.save(ticket)).thenReturn(ticket);
         when(stopRepository.countPriceByDirectionAndTrainCoachId(
                 ticket.getTrainCoach().getTrain().getId(), ticket.getTrainCoach().getId(),
                 ticket.getDepartureStation().getId(), ticket.getDestinationStation().getId()))
                 .thenReturn(Optional.of(returnPrice));
 
-        Ticket resultTicket = ticketService.save(ticket);
+        Ticket resultTicket = ticketService.save(ticket, PASSENGER_LOGIN);
         verify(ticketRepository).save(ticket);
-        Assert.assertEquals(resultTicket, ticket);
+        Assert.assertEquals(expectedTicket, resultTicket);
     }
 
     @Test(expected = DataValidationException.class)
@@ -92,7 +108,7 @@ public class TicketServiceTest {
                 .when(ticketValidator).validate(ticket);
 
         try {
-            ticketService.save(ticket);
+            ticketService.save(ticket, PASSENGER_LOGIN);
         } catch (DataValidationException ex) {
             String resultMessage = ex.getMessage();
             Assert.assertEquals(expectedMessage, resultMessage);

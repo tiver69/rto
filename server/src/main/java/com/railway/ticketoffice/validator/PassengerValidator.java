@@ -29,12 +29,12 @@ public class PassengerValidator {
     @Autowired
     private PassengerRepository passengerRepository;
 
-    public Passenger validateExistence(Long passengerId) throws DataNotFoundException {
+    public Passenger validateExistenceAndReturn(Long passengerId) throws DataNotFoundException {
         return passengerRepository.findById(passengerId).orElseThrow(
                 () -> new DataNotFoundException(KEY, String.format(EXIST_MESSAGE_FORMAT_ID, passengerId)));
     }
 
-    public Passenger validateExistence(String login) throws DataNotFoundException {
+    public Passenger validateExistenceAndReturn(String login) throws DataNotFoundException {
         return passengerRepository.findByLogin(login).orElseThrow(
                 () -> new DataNotFoundException(KEY, String.format(EXIST_MESSAGE_FORMAT_LOGIN, login)));
     }
@@ -56,7 +56,7 @@ public class PassengerValidator {
         validateBasic(passenger, causeObject);
 
         try {
-            validateExistence(passenger.getId());
+            validateExistenceAndReturn(passenger.getId());
         } catch (DataNotFoundException ex) {
             causeObject.put(ex.getKey(), ex.getMessage());
             throw new DataValidationException("Passengers data is not valid!", causeObject);

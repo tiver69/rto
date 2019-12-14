@@ -22,9 +22,6 @@ public class TicketValidator {
     private TrainCoachValidator trainCoachValidator;
 
     @Autowired
-    private PassengerValidator passengerValidator;
-
-    @Autowired
     private StationValidator stationValidator;
 
     public static String PLACE_KEY = "place";
@@ -32,10 +29,6 @@ public class TicketValidator {
 
     public void validate(Ticket ticket) throws DataValidationException {
         HashMap<String, String> causeObject = new HashMap<>();
-
-        executeCheck(causeObject, () -> {
-            passengerValidator.validateExistence(ticket.getPassenger().getId());
-        });
 
         executeCheck(causeObject, () -> {
             stationValidator.validateExistence(ticket.getDepartureStation().getId());

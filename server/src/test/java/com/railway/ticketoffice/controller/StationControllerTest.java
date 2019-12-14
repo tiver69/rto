@@ -16,6 +16,8 @@ import org.springframework.test.web.servlet.MvcResult;
 import java.util.Arrays;
 import java.util.List;
 
+import static com.railway.ticketoffice.configuration.TokenProvider.getValidPassengerToken;
+import static com.railway.ticketoffice.security.Constants.HEADER_STRING;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -35,30 +37,31 @@ public class StationControllerTest {
     @Test
     public void shouldReturnStationsList() throws Exception {
         List<StationSelectDto> stationSelectDtoList = Arrays.asList(
-                new StationSelectDto(1L,"Zaporizhzhya 1"),
-                new StationSelectDto(2L,"Kyiv-Pasazhyrsky"),
-                new StationSelectDto(3L,"Im. T. Shevchenka"),
-                new StationSelectDto(4L,"Znamyanka Pasazhyrska"),
-                new StationSelectDto(5L,"Oleksandriya"),
-                new StationSelectDto(6L,"Pyatykhatky"),
-                new StationSelectDto(7L,"Kamianske-Pasazhyrske"),
-                new StationSelectDto(8L,"Dnipro-Holovny"),
-                new StationSelectDto(9L,"Darnytsya"),
-                new StationSelectDto(10L,"Myrhorod"),
-                new StationSelectDto(11L,"Poltava Kyivska"),
-                new StationSelectDto(12L,"Kharkiv-Pas"),
-                new StationSelectDto(13L,"Dniprobud 2"),
-                new StationSelectDto(14L,"Nikopol"),
-                new StationSelectDto(15L,"Trypillya Dniprovske"),
-                new StationSelectDto(16L,"Melitopol"),
-                new StationSelectDto(17L,"Novooleksiyivka"),
-                new StationSelectDto(18L,"Henichesk"),
-                new StationSelectDto(19L,"Synelnykove-1"),
-                new StationSelectDto(20L,"Krasnopavlivka")
-                );
+                new StationSelectDto(1L, "Zaporizhzhya 1"),
+                new StationSelectDto(2L, "Kyiv-Pasazhyrsky"),
+                new StationSelectDto(3L, "Im. T. Shevchenka"),
+                new StationSelectDto(4L, "Znamyanka Pasazhyrska"),
+                new StationSelectDto(5L, "Oleksandriya"),
+                new StationSelectDto(6L, "Pyatykhatky"),
+                new StationSelectDto(7L, "Kamianske-Pasazhyrske"),
+                new StationSelectDto(8L, "Dnipro-Holovny"),
+                new StationSelectDto(9L, "Darnytsya"),
+                new StationSelectDto(10L, "Myrhorod"),
+                new StationSelectDto(11L, "Poltava Kyivska"),
+                new StationSelectDto(12L, "Kharkiv-Pas"),
+                new StationSelectDto(13L, "Dniprobud 2"),
+                new StationSelectDto(14L, "Nikopol"),
+                new StationSelectDto(15L, "Trypillya Dniprovske"),
+                new StationSelectDto(16L, "Melitopol"),
+                new StationSelectDto(17L, "Novooleksiyivka"),
+                new StationSelectDto(18L, "Henichesk"),
+                new StationSelectDto(19L, "Synelnykove-1"),
+                new StationSelectDto(20L, "Krasnopavlivka")
+        );
         String expectedJson = objectMapper.writeValueAsString(stationSelectDtoList);
 
-        MvcResult content = mockMvc.perform(get("/api/station/select"))
+        MvcResult content = mockMvc.perform(get("/api/station/select")
+                .header(HEADER_STRING, getValidPassengerToken(mockMvc)))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON_UTF8))
                 .andReturn();

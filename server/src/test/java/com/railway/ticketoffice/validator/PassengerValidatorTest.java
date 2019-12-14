@@ -66,7 +66,7 @@ public class PassengerValidatorTest {
         when(passengerRepository.findByLogin(NOT_VALID_LOGIN)).thenReturn(Optional.empty());
 
         try {
-            passengerValidator.validateExistence(NOT_VALID_LOGIN);
+            passengerValidator.validateExistenceAndReturn(NOT_VALID_LOGIN);
         } catch (DataNotFoundException ex) {
             String message = ex.getMessage();
             Assert.assertEquals(String.format(PassengerValidator.EXIST_MESSAGE_FORMAT_LOGIN, NOT_VALID_LOGIN),
@@ -80,7 +80,7 @@ public class PassengerValidatorTest {
         when(passengerRepository.findById(NOT_EXISTING_ID)).thenReturn(Optional.empty());
 
         try {
-            passengerValidator.validateExistence(NOT_EXISTING_ID);
+            passengerValidator.validateExistenceAndReturn(NOT_EXISTING_ID);
         } catch (DataNotFoundException ex) {
             String message = ex.getMessage();
             Assert.assertEquals(String.format(PassengerValidator.EXIST_MESSAGE_FORMAT_ID, NOT_EXISTING_ID),

@@ -1,8 +1,7 @@
 package com.railway.ticketoffice.security;
 
 import com.railway.ticketoffice.domain.Passenger;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
@@ -43,5 +42,29 @@ public class JwtTokenProvider {
                 .setExpiration(expirationDate)
                 .signWith(SignatureAlgorithm.HS512, SECRET)
                 .compact();
+    }
+
+    public boolean validateToken(String token) {
+        try {
+            Jwts.parser().setSigningKey(SECRET).parseClaimsJws(token);
+            return true;
+        } catch (SignatureException ex) {
+            LOGGER.error("Invalid JWT signature");
+        } catch (MalformedJwtException ex) {
+            LOGGER.error("Invalid JWT token");
+        } catch (ExpiredJwtException ex) {
+            LOGGER.error("Expired JWT token");
+        } catch (UnsupportedJwtException ex) {
+            LOGGER.error("Unsupported JWT token");
+        } catch (IllegalArgumentException ex) {
+            LOGGER.error("JWT claims string is empty");
+        }
+        return false;
+    }
+
+    public Long getPassengerIdFromToken(String token) {
+        Claims claims = Jwts.parser().setSigningKey(SECRET).parseClaimsJws(token).getBody();
+        String id = (String) claims.get("id");
+        return Long.parseLong(id);
     }
 }

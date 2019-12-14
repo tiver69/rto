@@ -16,6 +16,8 @@ import org.springframework.test.web.servlet.MvcResult;
 
 import java.util.Collections;
 
+import static com.railway.ticketoffice.configuration.TokenProvider.getValidPassengerToken;
+import static com.railway.ticketoffice.security.Constants.HEADER_STRING;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -46,7 +48,8 @@ public class CoachControllerTest {
         String expectedJson = objectMapper.writeValueAsString(coachInfoDto);
 
         MvcResult content = mockMvc
-                .perform(get("/api/coach/search?trainId=732&departureDate=2019-08-31&coachNumber=1"))
+                .perform(get("/api/coach/search?trainId=732&departureDate=2019-08-31&coachNumber=1")
+                        .header(HEADER_STRING, getValidPassengerToken(mockMvc)))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON_UTF8))
                 .andReturn();
@@ -57,7 +60,8 @@ public class CoachControllerTest {
     @Test
     public void shouldReturnBadRequestWithNotValidRequestData() throws Exception {
         MvcResult content = mockMvc
-                .perform(get("/api/coach/search?trainId=732&departureDate=2019.10.18&coachNumber=1"))
+                .perform(get("/api/coach/search?trainId=732&departureDate=2019.10.18&coachNumber=1")
+                        .header(HEADER_STRING, getValidPassengerToken(mockMvc)))
                 .andExpect(status().isBadRequest())
                 .andReturn();
         String resultJson = content.getResponse().getContentAsString();

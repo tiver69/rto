@@ -13,6 +13,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import static com.railway.ticketoffice.security.Constants.SING_UP_URLS;
 
@@ -26,6 +27,11 @@ public class Config extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private PassengerService passengerService;
+
+    @Bean
+    public JwtAuthenticationFilter jwtAuthenticationFilter() {
+        return new JwtAuthenticationFilter();
+    }
 
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -62,7 +68,8 @@ public class Config extends WebSecurityConfigurerAdapter {
                 "/**/*.html",
                 "/**/*.css",
                 "/**/*.js").permitAll() //do not need authentication for such items
-                .antMatchers(SING_UP_URLS).permitAll() //allow all temporary
+                .antMatchers(SING_UP_URLS.get(0),SING_UP_URLS.get(1)).permitAll() //TO_DO: refactor for proper param passing
                 .anyRequest().authenticated(); //all other requests require authentication
+        http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
     }
 }

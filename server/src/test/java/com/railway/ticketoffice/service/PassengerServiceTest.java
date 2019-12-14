@@ -160,11 +160,11 @@ public class PassengerServiceTest {
 
     @Test
     public void shouldReturnTrueWithValidPassengerRemoveId() {
-        when(passengerValidator.validateExistence(EXISTING_ID)).thenReturn(PASSENGER);
+        when(passengerValidator.validateExistenceAndReturn(EXISTING_ID)).thenReturn(PASSENGER);
         when(passengerRepository.removeById(EXISTING_ID)).thenReturn(1);
 
         Boolean result = passengerService.removePassenger(EXISTING_ID);
-        verify(passengerValidator).validateExistence(EXISTING_ID);
+        verify(passengerValidator).validateExistenceAndReturn(EXISTING_ID);
         verify(passengerRepository).removeById(EXISTING_ID);
         Assert.assertTrue(result);
     }
@@ -173,7 +173,7 @@ public class PassengerServiceTest {
     public void shouldReturnExceptionWithNotExistingPassengerRemoveId() {
         doThrow(new DataNotFoundException(KEY,
                 String.format(PassengerValidator.EXIST_MESSAGE_FORMAT_ID, NOT_EXISTING_ID)))
-                .when(passengerValidator).validateExistence(NOT_EXISTING_ID);
+                .when(passengerValidator).validateExistenceAndReturn(NOT_EXISTING_ID);
 
         try {
             passengerService.removePassenger(NOT_EXISTING_ID);
@@ -181,7 +181,7 @@ public class PassengerServiceTest {
             String message = ex.getMessage();
             Assert.assertEquals(String.format(PassengerValidator.EXIST_MESSAGE_FORMAT_ID, NOT_EXISTING_ID),
                     message);
-            verify(passengerValidator).validateExistence(NOT_EXISTING_ID);
+            verify(passengerValidator).validateExistenceAndReturn(NOT_EXISTING_ID);
             verify(passengerRepository, never()).removeById(NOT_EXISTING_ID);
             throw ex;
         }
@@ -190,7 +190,7 @@ public class PassengerServiceTest {
     @Test
     public void shouldReturnPassengerWithExistingLoginRequest() {
         Passenger existingPassenger = new Passenger();
-        when(passengerValidator.validateExistence(EXISTING_LOGIN)).thenReturn(existingPassenger);
+        when(passengerValidator.validateExistenceAndReturn(EXISTING_LOGIN)).thenReturn(existingPassenger);
 
         Passenger result = (Passenger) passengerService.loadUserByUsername(EXISTING_LOGIN);
         Assert.assertEquals(existingPassenger, result);
@@ -199,7 +199,7 @@ public class PassengerServiceTest {
     @Test(expected = DataNotFoundException.class)
     public void shouldThrowExceptionWithNotExistingLoginRequest() {
         String expectedMessage = String.format(EXIST_MESSAGE_FORMAT_LOGIN, NOT_EXISTING_LOGIN);
-        when(passengerValidator.validateExistence(NOT_EXISTING_LOGIN)).thenThrow(
+        when(passengerValidator.validateExistenceAndReturn(NOT_EXISTING_LOGIN)).thenThrow(
                 new DataNotFoundException(KEY, expectedMessage));
 
         try {

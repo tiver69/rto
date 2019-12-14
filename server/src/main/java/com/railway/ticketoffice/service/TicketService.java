@@ -37,20 +37,21 @@ public class TicketService {
     private StopRepository stopRepository;
 
 
-    public PageableDto<TicketDto> findPageByPassenger(Long passengerId, Integer page, Boolean isActive) {
-        passengerValidator.validateExistence(passengerId);
+    public PageableDto<TicketDto> findPageByPassenger(String passengerLogin, Integer page, Boolean isActive) {
+        Long currentPassengerId = passengerValidator.validateExistenceAndReturn(passengerLogin).getId();
 
         Page<TicketDto> ticketsDtoPage = ticketRepository.findPageByPassengerIdAndActiveStatus(
-                passengerId, LocalDate.now(), isActive, PageUtil.getPageableFromPageNumber(page));
+                currentPassengerId, LocalDate.now(), isActive, PageUtil.getPageableFromPageNumber(page));
         PageUtil.checkPageBounds(page, ticketsDtoPage);
         PageableDto<TicketDto> result = new PageableDto<>(ticketsDtoPage.getContent(), ticketsDtoPage.getTotalPages());
 
-        MDC.put("passengerId", passengerId.toString());
+        MDC.put("passengerId", currentPassengerId.toString());
         LOGGER.info("Tickets active({}) page#{} request - found {}", isActive, page, ticketsDtoPage.getContent().size());
         return result;
     }
 
-    public Ticket save(Ticket ticket) {
+    public Ticket save(Ticket ticket, String passengerLogin) {
+        ticket.setPassenger(passengerValidator.validateExistenceAndReturn(passengerLogin));
         ticketValidator.validate(ticket);
         ticket.setPrice(countTicketPrice(
                 ticket.getTrainCoach().getTrain().getId(),

@@ -12,6 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
+
 @RestController
 @CrossOrigin
 @RequestMapping("/api/ticket")
@@ -23,29 +25,28 @@ public class TicketController {
     private TicketService ticketService;
 
     @GetMapping(value = "/page", produces = "application/json")
-    public ResponseEntity<?> findPageByPassenger(@RequestParam("passengerId") Long passengerId,
-                                                 @RequestParam("page") Integer page,
-                                                 @RequestParam("isActive") Boolean isActive) {
-        MDC.put("passengerId", passengerId.toString());
+    public ResponseEntity<?> findPageByPassenger(@RequestParam Integer page, @RequestParam Boolean isActive,
+                                                 Principal principal) {
+        MDC.put("passengerId", principal.getName());
         LOGGER.debug("Tickets page#{} request", page);
 
-        PageableDto<TicketDto> response = ticketService.findPageByPassenger(passengerId, page, isActive);
+        PageableDto<TicketDto> response = ticketService.findPageByPassenger(principal.getName(), page, isActive);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PostMapping("/save")
-    public ResponseEntity<?> saveNewTicket(@RequestBody Ticket ticket) {
+    public ResponseEntity<?> saveNewTicket(@RequestBody Ticket ticket, Principal principal) {
         MDC.put("passengerId", ticket.getPassenger().getId().toString());
         LOGGER.debug("Adding new ticket - {}", ticket);
-        Ticket newTicket = ticketService.save(ticket);
+        Ticket newTicket = ticketService.save(ticket, principal.getName());
         return new ResponseEntity<>(newTicket, HttpStatus.CREATED);
     }
 
     @GetMapping(value = "/price", produces = "application/json")
-    public ResponseEntity<?> countTicketPrice(@RequestParam("trainId") Long trainId,
-                                              @RequestParam("trainCoachId") Long trainCoachId,
-                                              @RequestParam("departureStationId") Long departureStationId,
-                                              @RequestParam("destinationStationId") Long destinationStationId) {
+    public ResponseEntity<?> countTicketPrice(@RequestParam Long trainId,
+                                              @RequestParam Long trainCoachId,
+                                              @RequestParam Long departureStationId,
+                                              @RequestParam Long destinationStationId) {
         LOGGER.debug("Request for ticket price for train#{} in coach#{} from station#{} - to station#{}",
                 trainId, trainCoachId, departureStationId, destinationStationId);
         //TO_DO: refactor for a proper validation of this request independent from save-request
