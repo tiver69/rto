@@ -36,7 +36,7 @@ class ConfirmBuyingPopup extends React.Component {
     placeNumber.persist();
     await this.onConfirmClick(placeNumber);
     if (Object.keys(this.state.mappedErrors).length === 0)
-      this.props.history.push("/home/1");
+      this.props.history.push("/home");
     // TO_DO: add id of current user
   };
 
@@ -212,7 +212,7 @@ const mapStateToProps = state => ({
   error: state.error
 });
 
-export default connect(
-  mapStateToProps,
-  { savePassengerTicket, countTicketPrice }
-)(ConfirmBuyingPopup);
+export default connect(mapStateToProps, {
+  savePassengerTicket,
+  countTicketPrice
+})(ConfirmBuyingPopup);

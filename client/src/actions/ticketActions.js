@@ -13,7 +13,7 @@ export const getPassengerPageTickets = (
   isActive
 ) => async dispatch => {
   const res = await axios.get(
-    `/api/ticket/page?passengerId=${passengerId}&page=${page}&isActive=${isActive}`
+    `/api/ticket/page?page=${page}&isActive=${isActive}`
   );
   dispatch({
     type: GET_PASSENGER_PAGE_TICKETS,

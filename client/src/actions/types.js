@@ -15,6 +15,7 @@ export const SEARCH_FOR_COACH = "SEARCH_FOR_COACH";
 //  Passenger actions
 export const GET_PASSENGERS_PAGE = "GET_PASSENGERS_PAGE";
 export const REMOVE_PASSENGER = "REMOVE_PASSENGER";
+export const LOGIN_USER = "LOGIN_USER";
 
 // Internal actions
 export const SET_TRAIN_PARAM = "SET_TRAIN_PARAM";

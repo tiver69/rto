@@ -7,3 +7,7 @@ export const currentDate = () => {
 
   return now.getFullYear() + "-" + month + "-" + day;
 };
+
+export const curentTimeMillis = () => {
+  return Date.now() / 1000;
+};

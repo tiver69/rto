@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import classnames from "classnames";
 import { getStations } from "../../actions/stationActions";
 import { searchForTrain } from "../../actions/trainActions";
-import { currentDate } from "../../util/functions";
+import { currentDate } from "../../util/dateFunctions";
 import { cleanErrors } from "../../actions/errorActions";
 import { setDirectionSearchParam } from "../../actions/searchParamActions";
 import PropTypes from "prop-types";
@@ -214,7 +214,9 @@ const mapStateToProps = state => ({
   error: state.error
 });
 
-export default connect(
-  mapStateToProps,
-  { getStations, searchForTrain, setDirectionSearchParam, cleanErrors }
-)(LineSearchForm);
+export default connect(mapStateToProps, {
+  getStations,
+  searchForTrain,
+  setDirectionSearchParam,
+  cleanErrors
+})(LineSearchForm);

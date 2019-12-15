@@ -76,6 +76,7 @@ class Home extends Component {
 
   render() {
     const { tickets } = this.props.ticket;
+    const { passenger } = this.props.security;
 
     return (
       <React.Fragment>
@@ -89,7 +90,7 @@ class Home extends Component {
               <div className="col index-home-message user">
                 <div className="row justify-content-center">
                   <div className="col text-center">
-                    <h1>Welcome, USERNAME</h1>
+                    <h1>Welcome, {passenger.firstName}</h1>
                   </div>
                 </div>
               </div>
@@ -174,10 +175,12 @@ class Home extends Component {
 
 Home.propTypes = {
   ticket: PropTypes.object.isRequired,
+  security: PropTypes.object.isRequired,
   getPassengerPageTickets: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
+  security: state.security,
   ticket: state.ticket
 });
 
